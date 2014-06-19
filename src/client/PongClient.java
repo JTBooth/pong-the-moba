@@ -2,6 +2,7 @@ package client;
 
 import java.io.IOException;
 
+import packets.KryoRegisterer;
 import packets.Packet;
 import packets.Packet1Connect;
 import server.DisplayUpdate;
@@ -22,7 +23,7 @@ public class PongClient {
 		displayListener = new DisplayListener();
 		client.addListener(displayListener);
 		Log.set(Log.LEVEL_DEBUG);
-		client.start();
+		new Thread(client).start();
 		
 		
 		try {
@@ -41,7 +42,7 @@ public class PongClient {
 	}
 	
 	private void registerClasses() {
-		kryo.register(DisplayUpdate.class);
+		KryoRegisterer.register(kryo);
 	}
 
 	

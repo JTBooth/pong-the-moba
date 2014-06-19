@@ -3,11 +3,15 @@ package client;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Shape;
 
+import packets.SerializableColor;
+
 public class GamePiece {
 	private Shape shape;
-	private Color color;
+	private SerializableColor color;
 	
-	public GamePiece(Shape shape, Color color) {
+	public GamePiece() {}
+	
+	public GamePiece(Shape shape, SerializableColor color) {
 		this.shape=shape;
 		this.color=color;
 	}
@@ -16,7 +20,7 @@ public class GamePiece {
 		return shape;
 	}
 	
-	public Color getColor() {
+	public SerializableColor getColor() {
 		return color;
 	}
 }

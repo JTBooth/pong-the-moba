@@ -19,6 +19,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Polygon;
 
+import packets.SerializableCircle;
+import packets.SerializableColor;
 import client.GamePiece;
 import server.PongServer;
 
@@ -54,7 +56,7 @@ public class Pong extends BasicGame {
 		rectRenderList = new ArrayList<SolidRect>();
 		ballRenderList = new ArrayList<SolidBall>();
 		displayList = new ArrayList<GamePiece>();
-		server = new PongServer();
+		server = new PongServer(relevantKeys);
 
 		Vec2 gravity = new Vec2(0, 0);
 		world = new World(gravity);
@@ -116,11 +118,11 @@ public class Pong extends BasicGame {
 		for (SolidRect sr : rectRenderList) {
 			float[] pts = sr.getPointsInPixels();
 			Polygon poly = new Polygon(pts);
-			displayList.add(new GamePiece(poly, new Color(255,0,0)));
+			displayList.add(new GamePiece(poly, new SerializableColor(255,0,0)));
 		}
 
 		for (SolidBall sb : ballRenderList) {
-			displayList.add(new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), new Color(0, 255, 0)));
+			displayList.add(new GamePiece(new SerializableCircle(sb.getX(), sb.getY(), sb.getRadius()), new SerializableColor(0, 255, 0)));
 		}
 		
 		for (GamePiece gp : displayList) {

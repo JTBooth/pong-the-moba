@@ -28,8 +28,7 @@ public class PongDisplay extends BasicGame {
 		AppGameContainer app;
 		try {
 			app = new AppGameContainer(this);
-			app.setDisplayMode((int) (800), (int) (600),
-					false);
+			app.setDisplayMode((int) (800), (int) (600),false);
 			app.setVSync(true);
 			app.setTargetFrameRate(60);
 			app.start();

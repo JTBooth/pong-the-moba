@@ -10,6 +10,7 @@ import com.esotericsoftware.kryonet.Listener;
 
 public class DisplayListener extends Listener {
 	private DisplayUpdate currentUpdate;
+	private int[] relevantCharacters;
 	
 	public DisplayListener() {
 		currentUpdate = new DisplayUpdate(new ArrayList<GamePiece>(), 0);
@@ -26,6 +27,8 @@ public class DisplayListener extends Listener {
 			}
 			
 			
+		} else if (packet instanceof int[]) {
+			relevantCharacters = (int[]) packet;
 		}
 	}
 	
@@ -37,5 +40,9 @@ public class DisplayListener extends Listener {
 	
 	public List<GamePiece> getRenderList() {
 		return currentUpdate.getRenderList();
+	}
+	
+	public int[] getRelevantCharacters() {
+		return relevantCharacters;
 	}
 }

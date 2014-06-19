@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.util.List;
 
+import packets.KryoRegisterer;
 import packets.Packet;
 import packets.Packet1Connect;
 import client.GamePiece;
@@ -18,15 +19,17 @@ public class PongServer {
 	private Server server; 
 	private Kryo kryo;
 	
-	public PongServer() throws IOException {
+	public PongServer(int[] relevantCharacters) throws IOException {
 		server = new Server();
 		Log.set(Log.LEVEL_DEBUG);
+		
+		server.bind(54555, 54777);
+		server.addListener(new ServerListener(relevantCharacters));
+		kryo=server.getKryo();
+		registerClasses();
 
 		server.start();
-		server.bind(54555, 54777);
-		server.addListener(new ServerListener());
-		kryo=server.getKryo();
-		kryo.register(DisplayUpdate.class);
+		
 	}
 	
 	public void sendUpdate(List<GamePiece> renderList) {
@@ -35,5 +38,9 @@ public class PongServer {
 			System.out.println("renderList is empty");
 		}
 		server.sendToAllUDP(update);
+	}
+	
+	private void registerClasses() {
+		KryoRegisterer.register(kryo);
 	}
 }
