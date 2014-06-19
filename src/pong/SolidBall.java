@@ -30,7 +30,7 @@ public class SolidBall {
 		FixtureDef fd = new FixtureDef();
 		fd.density=1.0f;
 		fd.friction=1f;
-		fd.restitution=1.1f;
+		fd.restitution=1.0f;
 		fd.shape=shape;
 		body.createFixture(fd);
 		this.body = body;

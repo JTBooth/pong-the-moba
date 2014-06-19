@@ -4,37 +4,32 @@ import java.io.IOException;
 
 import packets.KryoRegisterer;
 import packets.Packet;
-import packets.Packet1Connect;
 import server.DisplayUpdate;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
 
-public class PongClient {
-	Client client;
-	Kryo kryo;
+public class PongClient extends Client {
 	DisplayListener displayListener;
+	PongDisplay pongDisplay;
 
-	public PongClient() {
-		Client client = new Client();
-		kryo = client.getKryo();
+	public PongClient(PongDisplay pongDisplay) {
 		registerClasses();
+		this.pongDisplay = pongDisplay;
 		displayListener = new DisplayListener();
-		client.addListener(displayListener);
+		addListener(displayListener);
 		Log.set(Log.LEVEL_DEBUG);
-		new Thread(client).start();
+		new Thread(this).start();
 		
 		
 		try {
-			client.connect(5000, "127.0.0.1", 54555, 54777);
-			client.setTimeout(0);
+			connect(5000, "127.0.0.1", 54555, 54777);
+			setTimeout(0);
 		} catch (IOException e) {
 			System.out.println("Server is not started. Cannot connect.");
 			e.printStackTrace();
 		}
-		
-
 	}
 	
 	public DisplayListener getDisplayListener() {
@@ -42,8 +37,11 @@ public class PongClient {
 	}
 	
 	private void registerClasses() {
-		KryoRegisterer.register(kryo);
+		KryoRegisterer.register(getKryo());
 	}
 
+	public void submit(int[] keysPressed) {
+		
+	}
 	
 }

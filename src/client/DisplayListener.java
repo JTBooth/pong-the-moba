@@ -18,7 +18,6 @@ public class DisplayListener extends Listener {
 	
 	@Override
 	public void received(Connection con, Object packet) {
-		System.out.println("package received");
 		System.out.println("currentUpdate has " + currentUpdate.getRenderList().size() + " pieces in it");
 		if (packet instanceof DisplayUpdate) {
 			DisplayUpdate displayUpdate = (DisplayUpdate) packet;

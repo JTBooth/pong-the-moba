@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
+import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
@@ -18,11 +19,12 @@ public class PongDisplay extends BasicGame {
 	private List<GamePiece> pieces;
 	private PongClient client;
 	private DisplayListener displayListener;
+	private int[] keysPressed;
 	
 	public PongDisplay() {
 		super("pongDisp");
 		pieces = new ArrayList<GamePiece>();
-		client = new PongClient();
+		client = new PongClient(this);
 		displayListener=client.getDisplayListener();
 		
 		AppGameContainer app;
@@ -55,9 +57,20 @@ public class PongDisplay extends BasicGame {
 	@Override
 	public void update(GameContainer arg0, int arg1) throws SlickException {
 		pieces = displayListener.getRenderList();
+		int[] relevantCharacters = displayListener.getRelevantCharacters();
+		int[] keysPressed = new int[relevantCharacters.length];
+		for (int i = 0; i < relevantCharacters.length; ++i) {
+			if (Keyboard.isKeyDown(relevantCharacters[i])) {
+				keysPressed[i] = relevantCharacters[i];
+			} else {
+				keysPressed[i] = Keyboard.CHAR_NONE;
+			}
+		}
+		client.submit(keysPressed);
 	}
 
 	public static void main(String[] args) {
+		
 		new PongDisplay();
 	}
 	
