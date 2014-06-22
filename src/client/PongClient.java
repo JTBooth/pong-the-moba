@@ -5,6 +5,7 @@ import java.io.IOException;
 import packets.KryoRegisterer;
 import packets.Packet;
 import server.DisplayUpdate;
+import server.HousewarmingPacket;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
@@ -13,11 +14,13 @@ import com.esotericsoftware.minlog.Log;
 public class PongClient extends Client {
 	DisplayListener displayListener;
 	PongDisplay pongDisplay;
+	long userId;
+	int[] relevantChars;
 
 	public PongClient(PongDisplay pongDisplay) {
 		registerClasses();
 		this.pongDisplay = pongDisplay;
-		displayListener = new DisplayListener();
+		displayListener = new DisplayListener(this);
 		addListener(displayListener);
 		Log.set(Log.LEVEL_DEBUG);
 		new Thread(this).start();
@@ -41,7 +44,13 @@ public class PongClient extends Client {
 	}
 
 	public void submit(int[] keysPressed) {
-		
+		CommandUpdate commandUpdate = new CommandUpdate(keysPressed, userId);
+		sendUDP(commandUpdate);
+	}
+	
+	public void initialize(HousewarmingPacket hwPacket) {
+		userId = hwPacket.getUserId();
+		relevantChars = hwPacket.getRelevantChars();
 	}
 	
 }

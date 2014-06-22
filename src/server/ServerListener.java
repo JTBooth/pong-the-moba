@@ -25,7 +25,7 @@ public class ServerListener extends Listener{
 		long id = random.nextLong();
 		Player newPlayer = new Player(connection, id);
 		HousewarmingPacket hp = new HousewarmingPacket(relevantCharacters, id);
-		connection.sendTCP(relevantCharacters);
+		connection.sendTCP(hp);
 		connection.setTimeout(0);
 		pong.addPlayer(newPlayer);
 	}

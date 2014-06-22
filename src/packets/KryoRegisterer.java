@@ -8,15 +8,19 @@ import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
 
 import server.DisplayUpdate;
+import server.HousewarmingPacket;
+import client.CommandUpdate;
 import client.GamePiece;
 
 import com.esotericsoftware.kryo.Kryo;
 
 public class KryoRegisterer {
 	public static void register(Kryo kryo) {
+		kryo.register(HousewarmingPacket.class);
 		kryo.register(SerializableCircle.class);
 		kryo.register(SerializableColor.class);
 		kryo.register(DisplayUpdate.class);
+		kryo.register(CommandUpdate.class);
 		kryo.register(ArrayList.class);
 		kryo.register(GamePiece.class);
 		kryo.register(Polygon.class);

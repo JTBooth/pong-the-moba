@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import server.DisplayUpdate;
+import server.HousewarmingPacket;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
 public class DisplayListener extends Listener {
 	private DisplayUpdate currentUpdate;
+	private PongClient pongClient;
 	private int[] relevantCharacters;
+	private long userId;
 	
-	public DisplayListener() {
+	public DisplayListener(PongClient pongClient) {
+		this.pongClient = pongClient;
 		currentUpdate = new DisplayUpdate(new ArrayList<GamePiece>(), 0);
 	}
 	
@@ -26,8 +30,11 @@ public class DisplayListener extends Listener {
 			}
 			
 			
-		} else if (packet instanceof int[]) {
-			relevantCharacters = (int[]) packet;
+		} else if (packet instanceof HousewarmingPacket) {
+			HousewarmingPacket housewarmingPacket = (HousewarmingPacket) packet;
+			pongClient.initialize(housewarmingPacket);
+			relevantCharacters = housewarmingPacket.getRelevantChars();
+			userId = housewarmingPacket.getUserId();
 		}
 	}
 	
