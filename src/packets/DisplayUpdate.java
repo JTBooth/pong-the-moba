@@ -1,20 +1,20 @@
 package packets;
 
-import java.util.List;
-
 import client.GamePiece;
 
 public class DisplayUpdate {
     public long timestamp;
-    private List<GamePiece> renderList;
-    public DisplayUpdate() {}
+    private GamePiece[] pieceArray;
 
-    public DisplayUpdate(List<GamePiece> renderList, long timestamp) {
-        this.timestamp = timestamp;
-        this.renderList = renderList;
+    public DisplayUpdate() {
     }
 
-    public List<GamePiece> getRenderList() {
-        return renderList;
+    public DisplayUpdate(GamePiece[] renderList, long timestamp) {
+        this.timestamp = timestamp;
+        this.pieceArray = renderList;
+    }
+
+    public GamePiece[] getRenderList() {
+        return pieceArray;
     }
 }

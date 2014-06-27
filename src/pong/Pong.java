@@ -15,7 +15,6 @@ import server.PongServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -35,7 +34,7 @@ public class Pong extends BasicGame {
     private String title;
     private List<SolidRect> rectRenderList;
     private List<Ball> ballRenderList;
-    private List<GamePiece> displayList;
+    private GamePiece[] pieceArray;
     private Player player1;
     private Player player2;
     private World world;
@@ -53,7 +52,7 @@ public class Pong extends BasicGame {
         this.title = title;
         rectRenderList = new ArrayList<SolidRect>();
         ballRenderList = new ArrayList<Ball>();
-        displayList = new ArrayList<GamePiece>();
+        pieceArray = new GamePiece[0];
         server = new PongServer(this, relevantKeys);
 
         Vec2 gravity = new Vec2(0, 0);
@@ -140,15 +139,19 @@ public class Pong extends BasicGame {
     @Override
     public void render(GameContainer arg0, Graphics graphics)
             throws SlickException {
-        displayList = new ArrayList<GamePiece>(rectRenderList.size() + ballRenderList.size());
+        pieceArray = new GamePiece[rectRenderList.size() + ballRenderList.size()];
+        int i = 0;
         for (SolidRect sr : rectRenderList) {
+
             float[] pts = sr.getPointsInPixels();
             Polygon poly = new Polygon(pts);
-            displayList.add(new GamePiece(poly, ShapeType.POLY, new SerializableColor(255, 0, 0)));
+            pieceArray[i] = new GamePiece(poly, ShapeType.POLY, new SerializableColor(255, 0, 0));
+            ++i;
         }
 
         for (Ball sb : ballRenderList) {
-            displayList.add(new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, new Color(0, 255, 0)));
+            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, new Color(0, 255, 0));
+            ++i;
         }
         /*
 		for (GamePiece gp : displayList) {
@@ -164,10 +167,9 @@ public class Pong extends BasicGame {
 
         int[] p1keys = player1.getKeys();
         int[] p2keys = player2.getKeys();
-        Log.info(Arrays.toString(p1keys));
 
         step(p1keys, p2keys);
-        server.sendUpdate(displayList);
+        server.sendUpdate(pieceArray);
     }
 
     public void step(int[] p1keys, int[] p2keys) {

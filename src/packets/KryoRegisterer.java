@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.Kryo;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
+import pong.ShapeType;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,8 @@ public class KryoRegisterer {
         kryo.register(SerializableColor.class);
         kryo.register(DisplayUpdate.class);
         kryo.register(CommandUpdate.class);
+        kryo.register(GamePiece[].class);
+        kryo.register(ShapeType.class);
         kryo.register(ArrayList.class);
         kryo.register(GamePiece.class);
         kryo.register(Polygon.class);

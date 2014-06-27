@@ -10,7 +10,7 @@ public class HousewarmingPacket {
     }
 
     public HousewarmingPacket(int[] relevantChars, long userId) {
-        this.relevantChars=relevantChars;
+        this.relevantChars = relevantChars;
         this.userId = userId;
     }
 
