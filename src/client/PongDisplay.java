@@ -1,10 +1,9 @@
 package client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.BodyType;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -12,8 +11,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-import pong.SolidBall;
-import pong.SolidRect;
+import com.esotericsoftware.minlog.Log;
 
 public class PongDisplay extends BasicGame {
 	private List<GamePiece> pieces;
@@ -42,6 +40,7 @@ public class PongDisplay extends BasicGame {
 
 	@Override
 	public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
+		
 		for (GamePiece gp : pieces) {
 			graphics.setColor(gp.getColor());
 			graphics.fill(gp.getShape());

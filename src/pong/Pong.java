@@ -31,8 +31,8 @@ import server.PongServer;
 public class Pong extends BasicGame {
 	private String title;
 	private List<SolidRect> rectRenderList;
-	private List<SolidBall> ballRenderList;
-	private List<GamePiece> displayList;
+	private List<Ball> ballRenderList;
+	private GamePiece[] displayList;
 	private Player player1;
 	private Player player2;
 	private World world;
@@ -50,7 +50,7 @@ public class Pong extends BasicGame {
 	Keyboard keyboard;
 	private SolidRect p1Paddle;
 	private SolidRect p2Paddle;
-	private SolidBall ball;
+	private Ball ball;
 	long frame;
 	private SolidRect topWall;
 	private SolidRect botWall;
@@ -61,8 +61,8 @@ public class Pong extends BasicGame {
 		
 		this.title = title;
 		rectRenderList = new ArrayList<SolidRect>();
-		ballRenderList = new ArrayList<SolidBall>();
-		displayList = new ArrayList<GamePiece>();
+		ballRenderList = new ArrayList<Ball>();
+		displayList = new GamePiece[0];
 		server = new PongServer(this, relevantKeys);
 		
 		Vec2 gravity = new Vec2(0, 0);
@@ -115,7 +115,7 @@ public class Pong extends BasicGame {
 		p2Paddle = new SolidRect(7.5f, 3, 0.2f, 2, BodyType.KINEMATIC, getWorld(), this);
 		makeWalls();
 
-		ball = new SolidBall(4, 3, 0.2f, getWorld(), this);
+		ball = new Ball(4, 3, 0.2f, getWorld(), this);
 		ball.getBody().setLinearVelocity(new Vec2(-2, 0));
 		
 		while (player1 == null || player2 == null) {
@@ -127,21 +127,22 @@ public class Pong extends BasicGame {
 	@Override
 	public void render(GameContainer arg0, Graphics graphics)
 			throws SlickException {
-		displayList = new ArrayList<GamePiece>();
+		displayList = GamePiece[rectRenderList.size() = ballRenderList.size()];
 		for (SolidRect sr : rectRenderList) {
 			float[] pts = sr.getPointsInPixels();
 			Polygon poly = new Polygon(pts);
-			displayList.add(new GamePiece(poly, new SerializableColor(255,0,0)));
+			displayList.add(new GamePiece(poly, ShapeType.POLY, new SerializableColor(255,0,0)));
 		}
 
-		for (SolidBall sb : ballRenderList) {
-			displayList.add(new GamePiece(new SerializableCircle(sb.getX(), sb.getY(), sb.getRadius()), new SerializableColor(0, 255, 0)));
+		for (Ball sb : ballRenderList) {
+			displayList.add(new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, new Color(0, 255, 0)));
 		}
-		
+		/*
 		for (GamePiece gp : displayList) {
 			graphics.setColor(gp.getColor());
 			graphics.fill(gp.getShape());
 		}
+		*/
 	}
 
 	@Override
@@ -150,6 +151,7 @@ public class Pong extends BasicGame {
 		
 		int[] p1keys = player1.getKeys();
 		int[] p2keys = player2.getKeys();
+		Log.info(Arrays.toString(p1keys));
 		
 		step(p1keys, p2keys);
 		server.sendUpdate(displayList);
@@ -220,11 +222,11 @@ public class Pong extends BasicGame {
 		rectRenderList.remove(sr);
 	}
 
-	public void addSolidBall(SolidBall sb) {
+	public void addSolidBall(Ball sb) {
 		ballRenderList.add(sb);
 	}
 
-	public void removeSolidBall(SolidBall sb) {
+	public void removeSolidBall(Ball sb) {
 		ballRenderList.remove(sb);
 	}
 	

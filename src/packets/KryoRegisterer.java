@@ -7,8 +7,6 @@ import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
 
-import server.DisplayUpdate;
-import server.HousewarmingPacket;
 import client.CommandUpdate;
 import client.GamePiece;
 

@@ -2,12 +2,9 @@ package client;
 
 import java.io.IOException;
 
+import packets.HousewarmingPacket;
 import packets.KryoRegisterer;
-import packets.Packet;
-import server.DisplayUpdate;
-import server.HousewarmingPacket;
 
-import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
 

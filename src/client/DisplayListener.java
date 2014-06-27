@@ -3,8 +3,8 @@ package client;
 import java.util.ArrayList;
 import java.util.List;
 
-import server.DisplayUpdate;
-import server.HousewarmingPacket;
+import packets.DisplayUpdate;
+import packets.HousewarmingPacket;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
