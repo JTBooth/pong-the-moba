@@ -35,7 +35,7 @@ public class Pong extends BasicGame {
     private String title;
     private List<SolidRect> rectRenderList;
     private List<Ball> ballRenderList;
-    private GamePiece[] displayList;
+    private List<GamePiece> displayList;
     private Player player1;
     private Player player2;
     private World world;
@@ -53,7 +53,7 @@ public class Pong extends BasicGame {
         this.title = title;
         rectRenderList = new ArrayList<SolidRect>();
         ballRenderList = new ArrayList<Ball>();
-        displayList = new GamePiece[0];
+        displayList = new ArrayList<GamePiece>();
         server = new PongServer(this, relevantKeys);
 
         Vec2 gravity = new Vec2(0, 0);
@@ -140,7 +140,7 @@ public class Pong extends BasicGame {
     @Override
     public void render(GameContainer arg0, Graphics graphics)
             throws SlickException {
-        displayList = GamePiece[rectRenderList.size() = ballRenderList.size()];
+        displayList = new ArrayList<GamePiece>(rectRenderList.size() + ballRenderList.size());
         for (SolidRect sr : rectRenderList) {
             float[] pts = sr.getPointsInPixels();
             Polygon poly = new Polygon(pts);

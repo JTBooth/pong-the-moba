@@ -8,6 +8,7 @@ import packets.KryoRegisterer;
 import pong.Pong;
 
 import java.io.IOException;
+import java.util.List;
 
 public class PongServer extends Server {
     private Pong pong;
@@ -25,9 +26,9 @@ public class PongServer extends Server {
 
     }
 
-    public void sendUpdate(GamePiece[] renderList) {
+    public void sendUpdate(List<GamePiece> renderList) {
         DisplayUpdate update = new DisplayUpdate(renderList, System.nanoTime());
-        if (renderList.length < 1) {
+        if (renderList.size() < 1) {
             System.out.println("renderList is empty");
         }
         sendToAllUDP(update);
