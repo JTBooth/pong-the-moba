@@ -17,12 +17,12 @@ public class DisplayListener extends Listener {
 	
 	public DisplayListener(PongClient pongClient) {
 		this.pongClient = pongClient;
-		currentUpdate = new DisplayUpdate(new ArrayList<GamePiece>(), 0);
+		currentUpdate = new DisplayUpdate(new GamePiece[0], 0);
 	}
 	
 	@Override
 	public void received(Connection con, Object packet) {
-		System.out.println("currentUpdate has " + currentUpdate.getRenderList().size() + " pieces in it");
+		System.out.println("currentUpdate has " + currentUpdate.getRenderList().length + " pieces in it");
 		if (packet instanceof DisplayUpdate) {
 			DisplayUpdate displayUpdate = (DisplayUpdate) packet;
 			if (displayUpdate.timestamp > currentUpdate.timestamp) {
@@ -44,7 +44,7 @@ public class DisplayListener extends Listener {
 		connection.setTimeout(0);
 	}
 	
-	public List<GamePiece> getRenderList() {
+	public GamePiece[] getRenderList() {
 		return currentUpdate.getRenderList();
 	}
 	

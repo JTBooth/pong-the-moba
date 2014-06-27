@@ -155,7 +155,6 @@ public class Pong extends BasicGame {
 		
 		int[] p1keys = player1.getKeys();
 		int[] p2keys = player2.getKeys();
-		Log.info(Arrays.toString(p1keys));
 		
 		step(p1keys, p2keys);
 		server.sendUpdate(pieceArray);

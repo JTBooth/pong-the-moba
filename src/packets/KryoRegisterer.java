@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
 
+import pong.ShapeType;
 import client.CommandUpdate;
 import client.GamePiece;
 
@@ -19,6 +20,8 @@ public class KryoRegisterer {
 		kryo.register(SerializableColor.class);
 		kryo.register(DisplayUpdate.class);
 		kryo.register(CommandUpdate.class);
+		kryo.register(GamePiece[].class);
+		kryo.register(ShapeType.class);
 		kryo.register(ArrayList.class);
 		kryo.register(GamePiece.class);
 		kryo.register(Polygon.class);

@@ -15,7 +15,7 @@ public class PongServer extends Server {
 	private Pong pong;
 	
 	public PongServer(Pong pong, int[] relevantCharacters) throws IOException {
-		Log.set(Log.LEVEL_INFO);
+		Log.set(Log.LEVEL_DEBUG);
 		this.pong = pong;
 		
 		bind(54555, 54777);
