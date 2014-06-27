@@ -6,15 +6,15 @@ import client.GamePiece;
 
 public class DisplayUpdate {
 	public long timestamp;
-	private GamePiece[] renderList;
+	private GamePiece[] pieceArray;
 	public DisplayUpdate() {}
 	
 	public DisplayUpdate(GamePiece[] renderList, long timestamp) {
 		this.timestamp = timestamp;
-		this.renderList = renderList;
+		this.pieceArray = renderList;
 	}
 	
 	public GamePiece[] getRenderList() {
-		return renderList;
+		return pieceArray;
 	}
 }
