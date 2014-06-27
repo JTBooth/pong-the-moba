@@ -1,8 +1,20 @@
 package packets;
 
-/**
- * Created by chris on 6/26/14.
- * sihrc @ Github
- */
+import client.GamePiece;
+
 public class DisplayUpdate {
+    public long timestamp;
+    private GamePiece[] pieceArray;
+
+    public DisplayUpdate() {
+    }
+
+    public DisplayUpdate(GamePiece[] renderList, long timestamp) {
+        this.timestamp = timestamp;
+        this.pieceArray = renderList;
+    }
+
+    public GamePiece[] getRenderList() {
+        return pieceArray;
+    }
 }

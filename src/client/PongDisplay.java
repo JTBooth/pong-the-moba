@@ -3,18 +3,15 @@ package client;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PongDisplay extends BasicGame {
-    private List<GamePiece> pieces;
+    private GamePiece[] pieces;
     private PongClient client;
     private DisplayListener displayListener;
     private int[] keysPressed;
 
     public PongDisplay() {
         super("pongDisp");
-        pieces = new ArrayList<GamePiece>();
+        pieces = new GamePiece[0];
         client = new PongClient(this);
         displayListener = client.getDisplayListener();
 
