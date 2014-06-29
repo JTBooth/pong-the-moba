@@ -31,7 +31,7 @@ public class PongServer extends Server {
     }
 
     public void sendUpdate(GamePiece[] renderList) {
-        DisplayUpdate update = new DisplayUpdate(renderList, System.nanoTime());
+        DisplayUpdate update = new DisplayUpdate(renderList, System.nanoTime(), new int[]{0,0}); //FIXME - placeholder - sihrc
         if (renderList.length < 1) {
             System.out.println("renderList is empty");
         }

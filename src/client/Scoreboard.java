@@ -3,8 +3,6 @@ package client;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.TrueTypeFont;
 
-import java.awt.Font;
-
 import pong.Settings;
 
 /**
@@ -19,8 +17,8 @@ public class Scoreboard {
     TrueTypeFont font;
 
     /** Constructor **/
-    public Scoreboard(){
-        font = new TrueTypeFont(new Font("Verdana", Font.BOLD, 20), true);
+    public Scoreboard(TrueTypeFont font){
+        this.font = font;
     }
 
     /** Update Scores **/

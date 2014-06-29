@@ -1,7 +1,12 @@
 package client;
 
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.*;
+import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
 
 import pong.Settings;
 
@@ -10,11 +15,9 @@ public class PongDisplay extends BasicGame {
     private Scoreboard scoreboard;
     private PongClient client;
     private DisplayListener displayListener;
-
     public PongDisplay() {
         super("pongDisp");
         pieces = new GamePiece[0];
-        scoreboard = new Scoreboard();
         client = new PongClient(this);
         displayListener = client.getDisplayListener();
 
@@ -26,6 +29,10 @@ public class PongDisplay extends BasicGame {
             app.setAlwaysRender(true);
             app.setTargetFrameRate(Settings.fps);
             app.start();
+
+            // OpenGL Dependent Initializations
+            scoreboard = new Scoreboard(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 20), false));
+
         } catch (SlickException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
