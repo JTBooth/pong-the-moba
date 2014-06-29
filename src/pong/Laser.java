@@ -8,20 +8,16 @@ import org.jbox2d.dynamics.World;
  */
 public class Laser extends Ball {
     private Vec2 direction;
-    private Vec2 velocity;
 
     /** Constructor **/
     public Laser(float x, float y, float r, Vec2 direction, World world, Pong pong) {
-        super(x, y, r, world, pong, true);
+        super(x, y, r, world, pong, true, '3');
         this.direction = direction;
-        this.velocity = direction.mul(Settings.laserVelocity);
+        this.getBody().setLinearVelocity(direction.mul(Settings.laserVelocity));
+        pong.addLaser(this);
     }
 
     public Vec2 getDirection(){
         return direction;
-    }
-
-    public Vec2 getVelocity(){
-        return velocity;
     }
 }

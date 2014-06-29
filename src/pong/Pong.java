@@ -256,7 +256,7 @@ public class Pong extends BasicGame {
     }
 
     private void makeBall(int height, int width){
-        ball = new Ball(width / 2, height / 2, Settings.ballRadius, getWorld(), this, true);
+        ball = new Ball(width / 2, height / 2, Settings.ballRadius, getWorld(), this, true, '1');
         ball.getBody().setLinearVelocity(new Vec2(-Settings.serveSpeed, 0));
     }
 
@@ -304,7 +304,7 @@ public class Pong extends BasicGame {
         }
 
         for (Ball sb : ballRenderList) {
-            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, '1');
+            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, sb.getColor());
             ++i;
         }
     }
@@ -341,8 +341,8 @@ public class Pong extends BasicGame {
         rectRenderList.add(sr);
     }
 
-    public void addLaser(int player){
-
+    public void addLaser(Laser laser){
+        ballRenderList.add(laser);
     }
 
 
