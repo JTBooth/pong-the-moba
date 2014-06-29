@@ -1,16 +1,16 @@
 package pong;
 
-public class Score {
+public class Scorekeeper {
 	private int[] goals;
 	private int winningScore;
 	private String p1name;
 	private String p2name;
 	
-	public Score(int winningScore) {
+	public Scorekeeper(int winningScore) {
 		this(winningScore, "PLAYER 1", "PLAYER 2");
 	}
 	
-	public Score(int winningScore, String p1name, String p2name) {
+	public Scorekeeper(int winningScore, String p1name, String p2name) {
 		goals = new int[2];
 		this.winningScore = winningScore;
 		this.p1name = p1name;
@@ -42,4 +42,5 @@ public class Score {
 	public int[] getScore() {
 		return goals;
 	}
+	
 }

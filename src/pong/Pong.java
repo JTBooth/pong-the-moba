@@ -24,8 +24,7 @@ import server.PongServer;
 
 public class Pong extends BasicGame {
     public static final double PTM_RATIO = 100.0;
-    private static final int[] relevantKeys = {Keyboard.KEY_UP,
-                                                      Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT};
+    private static final int[] relevantChars = Settings.relevantChars;
     float timeStep;
     int velocityIterations;
     int positionIterations;
@@ -39,11 +38,12 @@ public class Pong extends BasicGame {
     private Player player1;
     private Player player2;
     private World world;
+    private Spellkeeper spellkeeper;
     private SolidRect p1Paddle;
     private SolidRect p2Paddle;
     private Ball ball;
     private PongServer server;
-    private Score score;
+    private Scorekeeper score;
 
     public Pong(String title) throws IOException {
         super(title);
@@ -52,7 +52,7 @@ public class Pong extends BasicGame {
         rectRenderList = new ArrayList<SolidRect>();
         ballRenderList = new ArrayList<Ball>();
         pieceArray = new GamePiece[0];
-        server = new PongServer(this, relevantKeys);
+        server = new PongServer(this, relevantChars);
 
         Vec2 gravity = new Vec2(0, 0);
         world = new World(gravity);
@@ -63,7 +63,7 @@ public class Pong extends BasicGame {
         this.positionIterations = Settings.positionIterations;
         frame = 0;
 
-        this.score = new Score(Settings.winningScore);
+        this.score = new Scorekeeper(Settings.winningScore);
 
         AppGameContainer app;
         try {
@@ -193,6 +193,9 @@ public class Pong extends BasicGame {
             if (key == Keyboard.KEY_LEFT) {
                 turnRequest -= 1;
             }
+            if (key == Keyboard.KEY_SPACE) {
+            	
+            }
         }
         paddle.getBody().setLinearVelocity(new Vec2(0, linearVelocity));
         rubberBandRotation(turnRequest, paddle);
@@ -221,6 +224,7 @@ public class Pong extends BasicGame {
         }
 
     }
+
 
     public org.jbox2d.dynamics.World getWorld() {
         return world;
@@ -306,6 +310,16 @@ public class Pong extends BasicGame {
             Log.info("No player with id: " + playerId);
             return null;
         }
+    }
+    
+    public Player getPlayer(int player) {
+    	if (player == 0) {
+    		return player1;
+    	} else if (player == 1) {
+    		return player2;
+    	} else {
+    		return null;
+    	}
     }
 
     public int[] getScore() {

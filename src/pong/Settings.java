@@ -3,6 +3,7 @@ package pong;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 
 import packets.SerializableColor;
@@ -12,7 +13,8 @@ public class Settings {
 	public static final int fps = 60;
 	public static final int velocityIterations = 10;
 	public static final int positionIterations = 10;
-	public static final int winningScore = 5;
+	public static final int winningScore = 5; // unused
+	public static final int[] relevantChars = {Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT, Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_SPACE};
 
 	/** Gameplay Settings **/
 	public static final float ballRadius = 0.5f;
@@ -20,6 +22,8 @@ public class Settings {
 	public static final float paddleLength = 1f;
 	public static final float paddleSpeed = 3f;
     public static final float maxPaddleRotateAngle = 0.8f;
+    public static final int maxMana = 5;
+    
 
 
     /** Display Settings **/
