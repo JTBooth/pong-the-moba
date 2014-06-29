@@ -8,6 +8,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
+import com.esotericsoftware.minlog.Log;
+
 import pong.Settings;
 
 public class PongDisplay extends BasicGame {
