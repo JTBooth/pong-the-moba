@@ -15,11 +15,11 @@ public class Settings {
 	public static final int winningScore = 5;
 
 	/** Gameplay Settings **/
-	public static final float ballRadius = 0.2f;
-	public static final float serveSpeed = 2f;
-	public static final float paddleLength = 2f;
-	public static final float paddleSpeed = 2f;
-    public static final float maxPaddleRotateAngle = 0.5f;
+	public static final float ballRadius = 0.5f;
+	public static final float serveSpeed = 4f;
+	public static final float paddleLength = 1f;
+	public static final float paddleSpeed = 3f;
+    public static final float maxPaddleRotateAngle = 0.8f;
 
 
     /** Display Settings **/
