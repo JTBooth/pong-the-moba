@@ -29,10 +29,6 @@ public class PongDisplay extends BasicGame {
             app.setAlwaysRender(true);
             app.setTargetFrameRate(Settings.fps);
             app.start();
-
-            // OpenGL Dependent Initializations
-            scoreboard = new Scoreboard(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 20), false));
-
         } catch (SlickException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -61,8 +57,7 @@ public class PongDisplay extends BasicGame {
 
     @Override
     public void init(GameContainer arg0) throws SlickException {
-        // TODO Auto-generated method stub
-
+        scoreboard = new Scoreboard(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 20), false));
     }
 
     @Override
