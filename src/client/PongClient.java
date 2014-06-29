@@ -24,8 +24,8 @@ public class PongClient extends Client {
 
 
         try {
-//            connect(5000, "127.0.0.1", 54555, 54777);
-            connect(5000, "192.168.1.66", 54555, 54777);
+            connect(5000, "127.0.0.1", 54555, 54777);
+            //connect(5000, "192.168.1.66", 54555, 54777);
             setTimeout(0);
         } catch (IOException e) {
             System.out.println("Server is not started. Cannot connect.");

@@ -16,8 +16,8 @@ public class PongServer extends Server {
     private Pong pong;
 
     public PongServer(Pong pong, int[] relevantCharacters) throws IOException {
-	    //Setup settings for the physics engine
-	    setupEngine();
+        //Setup settings for the physics engine
+        setupEngine();
         Log.set(Log.LEVEL_DEBUG);
         this.pong = pong;
 
@@ -42,8 +42,8 @@ public class PongServer extends Server {
         KryoRegisterer.register(getKryo());
     }
 
-	/** Changes settings in box2d engine **/
-	private void setupEngine(){
-		Settings.velocityThreshold = 0f;
-	}
+    /** Changes settings in box2d engine **/
+    private void setupEngine(){
+        Settings.velocityThreshold = 0f;
+    }
 }
