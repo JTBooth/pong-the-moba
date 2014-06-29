@@ -11,6 +11,7 @@ public class Settings {
     /** Display Settings **/
     public static final int[] windowSize = new int[] {800,600};
     public static final float margin = 10f;
-    public static final float[] scorePositions = new float[] {margin,margin,windowSize[2] - margin - 10, margin};
+
+    public static final float[] scorePositions = new float[] {margin,margin,windowSize[1] - margin - 10, margin};
 
 }
