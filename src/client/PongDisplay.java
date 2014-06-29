@@ -8,6 +8,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
+import packets.GamePiece;
 import pong.Settings;
 
 public class PongDisplay extends BasicGame {

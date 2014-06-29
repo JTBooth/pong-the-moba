@@ -1,7 +1,7 @@
 package packets;
 
 import client.CommandUpdate;
-import client.GamePiece;
+
 import com.esotericsoftware.kryo.Kryo;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Polygon;

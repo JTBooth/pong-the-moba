@@ -1,14 +1,15 @@
 package server;
 
-import client.CommandUpdate;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
-import packets.HousewarmingPacket;
-import pong.Pong;
 
 import java.util.Arrays;
 import java.util.Random;
+
+import client.CommandUpdate;
+import packets.HousewarmingPacket;
+import pong.Pong;
 
 public class ServerListener extends Listener {
     private int[] relevantCharacters;
@@ -45,6 +46,5 @@ public class ServerListener extends Listener {
             Log.info(receiver.getId() + ": " + Arrays.toString(update.getKeys()));
             receiver.setKeys(update);
         }
-
     }
 }

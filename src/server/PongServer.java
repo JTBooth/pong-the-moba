@@ -7,7 +7,7 @@ import org.jbox2d.common.Settings;
 
 import java.io.IOException;
 
-import client.GamePiece;
+import packets.GamePiece;
 import packets.DisplayUpdate;
 import packets.KryoRegisterer;
 import pong.Pong;

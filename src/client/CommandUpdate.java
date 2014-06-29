@@ -1,6 +1,6 @@
 package client;
 
-public class CommandUpdate implements Comparable {
+public class CommandUpdate implements Comparable<CommandUpdate> {
     private int[] keys;
     private long timestamp;
     private long playerId;
@@ -18,18 +18,14 @@ public class CommandUpdate implements Comparable {
     }
 
     @Override
-    public int compareTo(Object other) {
-        if (other instanceof CommandUpdate) {
-            CommandUpdate otherCU = (CommandUpdate) other;
-            if (timestamp < otherCU.getTimestamp()) {
-                return -1;
-            } else if (timestamp == otherCU.getTimestamp()) {
-                return 0;
-            } else {
-                return 1;
-            }
+    public int compareTo(CommandUpdate other) {
+        if (timestamp < other.getTimestamp()) {
+            return -1;
+        } else if (timestamp == other.getTimestamp()) {
+            return 0;
+        } else {
+            return 1;
         }
-        return 0;
     }
 
     public long getTimestamp() {
