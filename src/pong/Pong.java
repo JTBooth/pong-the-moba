@@ -111,8 +111,10 @@ public class Pong extends BasicGame {
     	int width = (int) (Settings.windowSize[0]/PTM_RATIO);
     	int height = (int) (Settings.windowSize[1]/PTM_RATIO);
         botWall = new SolidRect(width/2, -0.01f, width, 0.005f, BodyType.KINEMATIC, getWorld(), this);
+        rectRenderList.remove(botWall);
         botWall.getBody().getFixtureList().m_friction = 0;
         topWall = new SolidRect(width/2, (float) (height + 0.01), width, 0.005f, BodyType.KINEMATIC, getWorld(), this);
+        rectRenderList.remove(topWall);
         topWall.getBody().getFixtureList().m_friction = 0;
     }
 
