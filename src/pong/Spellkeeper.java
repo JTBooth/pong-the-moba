@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.lwjgl.input.Keyboard;
 
+import server.Player;
+
 public class Spellkeeper {
 	Spell[] p1spells;
 	Spell[] p2spells;
@@ -21,20 +23,20 @@ public class Spellkeeper {
 		mana = new int[] {0,0};
 	}
 	
-	public boolean tryToCast(int player, int key) {
-		if (player == 0) {
+	public boolean tryToCast(Player player, int key) {
+		if (player == pong.getPlayer(0)) {
 			Spell spell = p1spells[commandSpellMap.get(key)];
-			if (mana[player] > spell.getCost()) {
+			if (mana[0] > spell.getCost() && spell.getCooldownCounter() == 0) {
 				spell.cast();
-				mana[player] -= spell.getCost();
+				mana[0] -= spell.getCost();
 				spell.setCooldownCounter(spell.getCooldown());
 				return true;
 			}
-		} else if (player == 1) {
+		} else if (player == pong.getPlayer(1)) {
 			Spell spell = p1spells[commandSpellMap.get(key)];
-			if (mana[player] > spell.getCost()) {
+			if (mana[1] > spell.getCost() && spell.getCooldownCounter() == 0) {
 				spell.cast();
-				mana[player] -= spell.getCost();
+				mana[1] -= spell.getCost();
 				spell.setCooldownCounter(spell.getCooldown());
 				return true;
 			}

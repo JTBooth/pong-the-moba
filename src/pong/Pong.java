@@ -64,7 +64,7 @@ public class Pong extends BasicGame {
         frame = 0;
 
         this.score = new Scorekeeper(Settings.winningScore);
-
+        this.spellkeeper = new Spellkeeper(this);
         AppGameContainer app;
         try {
             app = new AppGameContainer(this);
@@ -144,7 +144,7 @@ public class Pong extends BasicGame {
             score.playerScore(0, 1);
             resetBall(0);
         }
-
+        spellkeeper.decreaseCooldowns();
         server.sendUpdate(pieceArray);
     }
 
@@ -200,7 +200,7 @@ public class Pong extends BasicGame {
                     break;
                 }
                 case Keyboard.KEY_SPACE: {
-                    makeLaser(player);
+                    spellkeeper.tryToCast(player, Keyboard.KEY_SPACE);
                 }
             }
             if (key == Keyboard.KEY_SPACE) {
