@@ -9,12 +9,12 @@ public class Ball {
     private Body body;
     private Pong pong;
 
-    public Ball(float x, float y, float r, World world, Pong pong) {
+    public Ball(float x, float y, float r, World world, Pong pong, boolean isBullet) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
         bodyDef.type = BodyType.DYNAMIC;
         Body body = world.createBody(bodyDef);
-
+        body.setBullet(isBullet);
         CircleShape circleShape = new CircleShape();
         circleShape.m_radius = r;
         shape = circleShape;

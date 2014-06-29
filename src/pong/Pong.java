@@ -115,12 +115,10 @@ public class Pong extends BasicGame {
     public void init(GameContainer arg0) throws SlickException {
         int width = (int) (Settings.windowSize[0] / PTM_RATIO);
         int height = (int) (Settings.windowSize[1] / PTM_RATIO);
-        p1Paddle = new SolidRect(0.5f, height / 2, 0.2f, Settings.paddleLength, BodyType.KINEMATIC, getWorld(), this);
-        p2Paddle = new SolidRect(width - 0.5f, height / 2, 0.2f, Settings.paddleLength, BodyType.KINEMATIC, getWorld(), this);
-        makeWalls();
 
-        ball = new Ball(width / 2, height / 2, Settings.ballRadius, getWorld(), this);
-        ball.getBody().setLinearVelocity(new Vec2(-Settings.serveSpeed, 0));
+        makePaddles(height, width);
+        makeWalls();
+        makeBall(height, width);
 
         while (player1 == null || player2 == null) {
             try {
@@ -147,7 +145,7 @@ public class Pong extends BasicGame {
             resetBall(0);
         }
 
-        server.sendUpdate(pieceArray, score.getScore());
+        server.sendUpdate(pieceArray);
     }
 
     public void step(int[] p1keys, int[] p2keys) {
@@ -181,17 +179,29 @@ public class Pong extends BasicGame {
         float turnRequest = 0;
         SolidRect paddle = player.getPaddle();
         for (int key : keys) {
-            if (key == Keyboard.KEY_DOWN) {
-                linearVelocity += Settings.paddleSpeed;
-            }
-            if (key == Keyboard.KEY_UP) {
-                linearVelocity -= Settings.paddleSpeed;
-            }
-            if (key == Keyboard.KEY_RIGHT) {
-                turnRequest += 1;
-            }
-            if (key == Keyboard.KEY_LEFT) {
-                turnRequest -= 1;
+            switch (key){
+                case Keyboard.KEY_DOWN: {
+                    linearVelocity += Settings.paddleSpeed;
+                    break;
+                }
+
+                case Keyboard.KEY_UP: {
+                    linearVelocity -= Settings.paddleSpeed;
+                    break;
+                }
+
+                case Keyboard.KEY_RIGHT: {
+                    turnRequest += 1;
+                    break;
+                }
+
+                case Keyboard.KEY_LEFT: {
+                    turnRequest -= 1;
+                    break;
+                }
+                case Keyboard.KEY_SPACE: {
+                    makeLaser(player);
+                }
             }
         }
         paddle.getBody().setLinearVelocity(new Vec2(0, linearVelocity));
@@ -226,6 +236,8 @@ public class Pong extends BasicGame {
         return world;
     }
 
+    /** Make Methods **/
+
     private void makeWalls() {
     	int width = (int) (Settings.windowSize[0]/PTM_RATIO);
     	int height = (int) (Settings.windowSize[1]/PTM_RATIO);
@@ -235,6 +247,40 @@ public class Pong extends BasicGame {
         SolidRect topWall = new SolidRect(width/2, (float) (height + 0.01), width, 0.005f, BodyType.KINEMATIC, getWorld(), this);
         rectRenderList.remove(topWall);
         topWall.getBody().getFixtureList().m_friction = 0;
+    }
+
+    private void makePaddles(int height, int width){
+        p1Paddle = new SolidRect(0.5f, height / 2, 0.2f, Settings.paddleLength, BodyType.KINEMATIC, getWorld(), this);
+        p2Paddle = new SolidRect(width - 0.5f, height / 2, 0.2f, Settings.paddleLength, BodyType.KINEMATIC, getWorld(), this);
+
+    }
+
+    private void makeBall(int height, int width){
+        ball = new Ball(width / 2, height / 2, Settings.ballRadius, getWorld(), this, true);
+        ball.getBody().setLinearVelocity(new Vec2(-Settings.serveSpeed, 0));
+    }
+
+    private Ball makeLaser(Player player){
+        //Paddle positions and normals
+        float[] points = player.getPaddle().getPointsInPixels();
+        Vec2[] normals = player.getPaddle().getShape().getNormals();
+
+        //Laser Starting and Direction
+        float x,y;
+        Vec2 direction;
+
+        //Set correct values based on player
+        if (player.getId() == player1.getId()){
+            x = (points[2] + points[4])/2;
+            y = (points[3] + points[5])/2;
+            direction = normals[1];
+        } else {
+            x = (points[0] + points[6])/2;
+            y = (points[1] + points[7])/2;
+            direction = normals[3];
+        }
+
+        return new Laser(x, y, Settings.laserRadius, direction, getWorld(), this);
     }
 
     @Override
@@ -262,6 +308,8 @@ public class Pong extends BasicGame {
             ++i;
         }
     }
+
+    /** Add/Remove Pong Objects **/
 
     public void removeSolidRect(SolidRect sr) {
         rectRenderList.remove(sr);
@@ -292,6 +340,11 @@ public class Pong extends BasicGame {
     public void addSolidRect(SolidRect sr) {
         rectRenderList.add(sr);
     }
+
+    public void addLaser(int player){
+
+    }
+
 
     /**
      * Getters *

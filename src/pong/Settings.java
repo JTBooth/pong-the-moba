@@ -1,9 +1,8 @@
 package pong;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.newdawn.slick.Color;
+
+import java.util.HashMap;
 
 import packets.SerializableColor;
 
@@ -16,6 +15,8 @@ public class Settings {
 
 	/** Gameplay Settings **/
 	public static final float ballRadius = 0.5f;
+	public static final float laserRadius = 0.25f * ballRadius;
+	public static final float laserVelocity = 5f;
 	public static final float serveSpeed = 4f;
 	public static final float paddleLength = 1f;
 	public static final float paddleSpeed = 3f;
@@ -37,4 +38,8 @@ public class Settings {
     			put('2', new Color(0,0,255)); //blue, p2
     			put('3', new Color(128, 0, 128)); // purple, terrain
     		}};
+
+    /** Player Settings **/
+    public static final int PLAYERL = 0;
+    public static final int PLAYERR = 1;
 }
