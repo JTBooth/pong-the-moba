@@ -111,9 +111,9 @@ public class Pong extends BasicGame {
     	int width = (int) (Settings.windowSize[0]/PTM_RATIO);
     	int height = (int) (Settings.windowSize[1]/PTM_RATIO);
         botWall = new SolidRect(width/2, -0.01f, width, 0.005f, BodyType.KINEMATIC, getWorld(), this);
-        botWall.getBody().getFixtureList().m_friction = 1;
+        botWall.getBody().getFixtureList().m_friction = -1;
         topWall = new SolidRect(width/2, (float) (height + 0.01), width, 0.005f, BodyType.KINEMATIC, getWorld(), this);
-        topWall.getBody().getFixtureList().m_friction = 1;
+        topWall.getBody().getFixtureList().m_friction = -1;
     }
 
     @Override
