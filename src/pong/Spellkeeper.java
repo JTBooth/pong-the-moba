@@ -13,6 +13,7 @@ public class Spellkeeper {
 	int[] mana;
 	Map<Integer, Integer> commandSpellMap;
 	Pong pong;
+	int i = 0;
 	
 	public Spellkeeper(Pong pong) {
 		this.pong=pong;
@@ -46,7 +47,13 @@ public class Spellkeeper {
 		return false;
 	}
 	
-	public void decreaseCooldowns() {
+	public void update() {
+		++i;
+		if (i % 180 == 0) {
+			mana[0] += 1;
+			mana[1] += 1;
+			i = 0;
+		}
 		for (Spell spell : p1spells) {
 			if (spell.cooldown > 0) {
 				spell.cooldownCounter -= 1;

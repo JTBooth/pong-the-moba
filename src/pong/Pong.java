@@ -144,7 +144,7 @@ public class Pong extends BasicGame {
             score.playerScore(0, 1);
             resetBall(0);
         }
-        spellkeeper.decreaseCooldowns();
+        spellkeeper.update();
         server.sendUpdate(pieceArray);
     }
 
