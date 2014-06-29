@@ -22,7 +22,7 @@ public class Pong extends BasicGame {
     public static final double PTM_RATIO = 100.0;
     private static final int[] relevantKeys = {Keyboard.KEY_UP,
             Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT};
-    private static final float maxPaddleRotateAngle = 0.5f;
+
     public final int pixWidth = 800;
     public final int pixHeight = 600;
     float timeStep;
@@ -61,16 +61,16 @@ public class Pong extends BasicGame {
 
 
         this.timeStep = 1f / 60f;
-        this.velocityIterations = 10;
-        this.positionIterations = 10;
+        this.velocityIterations = Settings.velocityIterations;
+        this.positionIterations = Settings.positionIterations;
         frame = 0;
         
-        this.score = new Score(5);
+        this.score = new Score(Settings.winningScore);
 
         AppGameContainer app;
         try {
             app = new AppGameContainer(this);
-            app.setDisplayMode((int) (8 * PTM_RATIO), (int) (6 * PTM_RATIO),
+            app.setDisplayMode((int) (Settings.windowSize[0]), (int) (Settings.windowSize[1]),
                     false);
             app.setVSync(true);
             app.setAlwaysRender(true);
@@ -104,9 +104,11 @@ public class Pong extends BasicGame {
     }
 
     private void makeWalls() {
-        botWall = new SolidRect(4, -0.01f, 8, 0.005f, BodyType.KINEMATIC, getWorld(), this);
+    	int width = (int) (Settings.windowSize[0]/PTM_RATIO);
+    	int height = (int) (Settings.windowSize[1]/PTM_RATIO);
+        botWall = new SolidRect(width/2, -0.01f, width, 0.005f, BodyType.KINEMATIC, getWorld(), this);
         botWall.getBody().getFixtureList().m_friction = 0;
-        topWall = new SolidRect(4, 6.01f, 8, 0.005f, BodyType.KINEMATIC, getWorld(), this);
+        topWall = new SolidRect(width/2, (float) (height + 0.01), width, 0.005f, BodyType.KINEMATIC, getWorld(), this);
         topWall.getBody().getFixtureList().m_friction = 0;
     }
 
@@ -123,12 +125,14 @@ public class Pong extends BasicGame {
 
     @Override
     public void init(GameContainer arg0) throws SlickException {
-        p1Paddle = new SolidRect(0.5f, 3, 0.2f, 2, BodyType.KINEMATIC, getWorld(), this);
-        p2Paddle = new SolidRect(7.5f, 3, 0.2f, 2, BodyType.KINEMATIC, getWorld(), this);
+    	int width = (int) (Settings.windowSize[0]/PTM_RATIO);
+    	int height = (int) (Settings.windowSize[1]/PTM_RATIO);
+        p1Paddle = new SolidRect(0.5f, height/2, 0.2f, Settings.paddleLength, BodyType.KINEMATIC, getWorld(), this);
+        p2Paddle = new SolidRect(width - 0.5f, height/2, 0.2f, Settings.paddleLength, BodyType.KINEMATIC, getWorld(), this);
         makeWalls();
 
-        ball = new Ball(4, 3, Settings.ballRadius, getWorld(), this);
-        ball.getBody().setLinearVelocity(new Vec2(-2, 0));
+        ball = new Ball(width/2, height/2, Settings.ballRadius, getWorld(), this);
+        ball.getBody().setLinearVelocity(new Vec2(-Settings.serveSpeed, 0));
 
         while (player1 == null || player2 == null) {
             try {
@@ -148,12 +152,12 @@ public class Pong extends BasicGame {
 
             float[] pts = sr.getPointsInPixels();
             Polygon poly = new Polygon(pts);
-            pieceArray[i] = new GamePiece(poly, ShapeType.POLY, new SerializableColor(255, 0, 0));
+            pieceArray[i] = new GamePiece(poly, ShapeType.POLY, Settings.paddleColor);
             ++i;
         }
 
         for (Ball sb : ballRenderList) {
-            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, new Color(0, 255, 0));
+            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, Settings.ballColor);
             ++i;
         }
     }
@@ -211,10 +215,10 @@ public class Pong extends BasicGame {
         SolidRect paddle = player.getPaddle();
         for (int key : keys) {
             if (key == Keyboard.KEY_DOWN) {
-                linearVelocity += 2.0;
+                linearVelocity += Settings.paddleSpeed;
             }
             if (key == Keyboard.KEY_UP) {
-                linearVelocity -= 2.0;
+                linearVelocity -= Settings.paddleSpeed;
             }
             if (key == Keyboard.KEY_RIGHT) {
                 turnRequest += 1;
@@ -239,10 +243,10 @@ public class Pong extends BasicGame {
             float rate;
             if (currentAngle * request > 0) {
                 currentAngle = Math.abs(currentAngle);
-                rate = Math.abs(maxPaddleRotateAngle - currentAngle) / maxPaddleRotateAngle;
+                rate = Math.abs(Settings.maxPaddleRotateAngle - currentAngle) / Settings.maxPaddleRotateAngle;
             } else {
                 currentAngle = Math.abs(currentAngle);
-                rate = Math.abs(maxPaddleRotateAngle + currentAngle) / maxPaddleRotateAngle;
+                rate = Math.abs(Settings.maxPaddleRotateAngle + currentAngle) / Settings.maxPaddleRotateAngle;
             }
 
 

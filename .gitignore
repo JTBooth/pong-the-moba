@@ -33,16 +33,6 @@ bin/
 output/
 build/
 out/
-/bin
-/bin
-/bin
-/bin
-/bin
-/bin
-/bin
-/bin
-/bin
-/bin
-/bin
-/bin
-/bin
+
+#Local Settings
+src/client/IP.java
