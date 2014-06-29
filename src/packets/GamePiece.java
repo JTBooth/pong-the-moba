@@ -1,4 +1,4 @@
-package client;
+package packets;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Circle;
@@ -30,7 +30,7 @@ public class GamePiece {
         }
     }
 
-    public Color getColor() {
+    public Color getColor(){
         return Settings.colorMap.get(color);
     }
 }

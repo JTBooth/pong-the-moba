@@ -1,7 +1,5 @@
 package packets;
 
-import client.GamePiece;
-
 public class DisplayUpdate {
     public long timestamp;
     private GamePiece[] pieceArray;

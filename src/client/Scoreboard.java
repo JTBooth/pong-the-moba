@@ -1,6 +1,5 @@
 package client;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.TrueTypeFont;
 
 import pong.Settings;
@@ -29,8 +28,8 @@ public class Scoreboard {
 
     /** Render Scores **/
     public void render(){
-        font.drawString (Settings.scorePositions[0], Settings.scorePositions[1], String.valueOf(left), Color.lightGray);
-        font.drawString (Settings.scorePositions[2], Settings.scorePositions[3], String.valueOf(right), Color.lightGray);
+        font.drawString (Settings.scorePositions[0], Settings.scorePositions[1], String.valueOf(left), Settings.colorMap.get('0'));
+        font.drawString (Settings.scorePositions[2], Settings.scorePositions[3], String.valueOf(right), Settings.colorMap.get('1'));
     }
 
     /** Get Font for registering **/

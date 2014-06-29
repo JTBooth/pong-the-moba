@@ -10,6 +10,8 @@ import org.newdawn.slick.TrueTypeFont;
 
 import com.esotericsoftware.minlog.Log;
 
+import packets.GamePiece;
+
 import pong.Settings;
 
 public class PongDisplay extends BasicGame {

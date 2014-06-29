@@ -1,21 +1,25 @@
 package pong;
 
-import client.GamePiece;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.World;
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.*;
+import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.util.Log;
-import packets.SerializableColor;
-import server.Player;
-import server.PongServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import packets.GamePiece;
+import server.Player;
+import server.PongServer;
 
 
 public class Pong extends BasicGame {

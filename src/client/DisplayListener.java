@@ -3,6 +3,7 @@ package client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import packets.DisplayUpdate;
+import packets.GamePiece;
 import packets.HousewarmingPacket;
 
 public class DisplayListener extends Listener {
@@ -14,7 +15,7 @@ public class DisplayListener extends Listener {
     public DisplayListener(PongClient pongClient) {
         this.pongClient = pongClient;
 
-        currentUpdate = new DisplayUpdate(new GamePiece[0], new int[]{0,0}, 0); //Game Piece Array, timestamp, score left, score right
+        currentUpdate = new DisplayUpdate(new GamePiece[0], new int[]{0,0}, 0); //Game Piece Array, scores, timestamp
 
     }
 
