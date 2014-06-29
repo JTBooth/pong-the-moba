@@ -45,19 +45,21 @@ public class PongDisplay extends BasicGame {
         /** Set Typewriter **/
         graphics.setFont(scoreboard.getFont());
 
+        /** Render Score Board **/
+        scoreboard.render();
+        
         /** Render Game Pieces **/
         for (GamePiece gp : pieces) {
             graphics.setColor(gp.getColor());
             graphics.fill(gp.getShape());
         }
 
-        /** Render Score Board **/
-        scoreboard.render();
+        
     }
 
     @Override
     public void init(GameContainer arg0) throws SlickException {
-        scoreboard = new Scoreboard(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 20), false));
+        scoreboard = new Scoreboard(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 80), false));
     }
 
     @Override

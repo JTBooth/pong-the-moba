@@ -22,7 +22,8 @@ public class Settings {
     public static final float margin = 10f;
     public static final SerializableColor paddleColor = new SerializableColor(255, 0, 0);
     public static final SerializableColor ballColor = new SerializableColor(0, 255, 0);
-    public static final float[] scorePositions = new float[] {margin,margin,windowSize[1] - margin - 10, margin};
+    // public static final float[] scorePositions = new float[] {margin,margin,windowSize[1] - margin - 10, margin};
+    public static final float[] scorePositions = new float[] {windowSize[0]/4-40,windowSize[1]/2-40,3*windowSize[0]/4-40, windowSize[1]/2-40};
 	
 
 }
