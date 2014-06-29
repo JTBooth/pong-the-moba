@@ -42,7 +42,7 @@ public class ServerListener extends Listener {
         if (packet instanceof CommandUpdate) {
             CommandUpdate update = (CommandUpdate) packet;
             Player receiver = pong.getPlayer(update.getPlayerId());
-            Log.info(Arrays.toString(update.getKeys()));
+            Log.info(receiver.getId() + ": " + Arrays.toString(update.getKeys()));
             receiver.setKeys(update);
         }
 

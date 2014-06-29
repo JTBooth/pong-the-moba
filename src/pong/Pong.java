@@ -71,7 +71,7 @@ public class Pong extends BasicGame {
                     false);
             app.setVSync(true);
             app.setAlwaysRender(true);
-            app.setTargetFrameRate(60);
+            app.setTargetFrameRate(Settings.fps);
 
             app.start();
         } catch (SlickException e) {

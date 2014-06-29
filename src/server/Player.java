@@ -1,7 +1,11 @@
 package server;
 
 import client.CommandUpdate;
+
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.minlog.Log;
+
+import pong.Settings;
 import pong.SolidRect;
 
 import java.util.Collections;
@@ -12,12 +16,12 @@ public class Player {
     private Connection connection;
     private SolidRect paddle;
     private long id;
-    private List<CommandUpdate> keys;
+    private CommandUpdate commands;
 
     public Player(Connection connection, long id) {
         this.connection = connection;
         this.id = id;
-        keys = new LinkedList<CommandUpdate>();
+        commands = new CommandUpdate();
     }
 
     public SolidRect getPaddle() {
@@ -29,17 +33,11 @@ public class Player {
     }
 
     public int[] getKeys() {
-        if (keys.size() > 0) {
-            return keys.remove(0).getKeys();
-        } else {
-            return new int[0];
-        }
-
+        return commands.getKeys();
     }
 
     public void setKeys(CommandUpdate update) {
-        keys.add(update);
-        Collections.sort(keys);
+        commands=update;
     }
 
     public long getId() {

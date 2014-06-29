@@ -3,6 +3,8 @@ package client;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.*;
 
+import pong.Settings;
+
 public class PongDisplay extends BasicGame {
     private GamePiece[] pieces;
     private PongClient client;
@@ -20,7 +22,8 @@ public class PongDisplay extends BasicGame {
             app = new AppGameContainer(this);
             app.setDisplayMode((int) (800), (int) (600), false);
             app.setVSync(true);
-            app.setTargetFrameRate(60);
+            app.setAlwaysRender(true);
+            app.setTargetFrameRate(Settings.fps);
             app.start();
         } catch (SlickException e) {
             // TODO Auto-generated catch block
