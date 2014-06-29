@@ -1,18 +1,23 @@
 package server;
 
-import client.GamePiece;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
+
+import org.jbox2d.common.Settings;
+
+import java.io.IOException;
+
+import client.GamePiece;
 import packets.DisplayUpdate;
 import packets.KryoRegisterer;
 import pong.Pong;
-
-import java.io.IOException;
 
 public class PongServer extends Server {
     private Pong pong;
 
     public PongServer(Pong pong, int[] relevantCharacters) throws IOException {
+        //Setup settings for the physics engine
+        setupEngine();
         Log.set(Log.LEVEL_DEBUG);
         this.pong = pong;
 
@@ -27,6 +32,7 @@ public class PongServer extends Server {
 
     public void sendUpdate(GamePiece[] renderList, int[] score) {
         DisplayUpdate update = new DisplayUpdate(renderList, pong.getScore(), System.nanoTime());
+
         if (renderList.length < 1) {
             System.out.println("renderList is empty");
         }
@@ -35,5 +41,10 @@ public class PongServer extends Server {
 
     private void registerClasses() {
         KryoRegisterer.register(getKryo());
+    }
+
+    /** Changes settings in box2d engine **/
+    private void setupEngine(){
+        Settings.velocityThreshold = 0f;
     }
 }

@@ -14,12 +14,14 @@ public class DisplayUpdate {
         this.timestamp = timestamp;
         this.pieceArray = renderList;
         this.score=score;
-    }
+}
 
+
+    /** Getters **/
     public GamePiece[] getRenderList() {
         return pieceArray;
     }
-    
+
     public int[] getScore() {
     	return score;
     }

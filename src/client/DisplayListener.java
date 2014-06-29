@@ -13,7 +13,9 @@ public class DisplayListener extends Listener {
 
     public DisplayListener(PongClient pongClient) {
         this.pongClient = pongClient;
-        currentUpdate = new DisplayUpdate(new GamePiece[0], new int[2], 0);
+
+        currentUpdate = new DisplayUpdate(new GamePiece[0], new int[]{0,0}, 0); //Game Piece Array, timestamp, score left, score right
+
     }
 
     @Override
@@ -40,11 +42,17 @@ public class DisplayListener extends Listener {
         connection.setTimeout(0);
     }
 
+    /** Getters **/
+
     public GamePiece[] getRenderList() {
         return currentUpdate.getRenderList();
     }
 
     public int[] getRelevantCharacters() {
         return relevantCharacters;
+    }
+
+    public int[] getScores(){
+        return currentUpdate.getScore();
     }
 }
