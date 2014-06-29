@@ -152,12 +152,19 @@ public class Pong extends BasicGame {
 
             float[] pts = sr.getPointsInPixels();
             Polygon poly = new Polygon(pts);
-            pieceArray[i] = new GamePiece(poly, ShapeType.POLY, Settings.paddleColor);
+            if (sr == p1Paddle) {
+            	pieceArray[i] = new GamePiece(poly, ShapeType.POLY, (char) 0);
+            } else if (sr == p2Paddle) {
+            	pieceArray[i] = new GamePiece(poly, ShapeType.POLY, (char) 2);
+            } else {
+            	
+            }
+            
             ++i;
         }
 
         for (Ball sb : ballRenderList) {
-            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, Settings.ballColor);
+            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, (char) 1);
             ++i;
         }
     }

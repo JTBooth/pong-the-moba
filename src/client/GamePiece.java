@@ -4,19 +4,21 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
+
+import pong.Settings;
 import pong.ShapeType;
 
 public class GamePiece {
-    private float[] points;
-    private int[] color;
-    private ShapeType type;
+    public float[] points;
+    public char color;
+    public ShapeType type;
 
     public GamePiece() {
     }
 
-    public GamePiece(Shape shape, ShapeType type, Color color2) {
+    public GamePiece(Shape shape, ShapeType type, char color) {
         this.points = shape.getPoints();
-        this.color = new int[]{color2.getRed(), color2.getGreen(), color2.getBlue()};
+        this.color = color;
         this.type = type;
     }
 
@@ -29,6 +31,6 @@ public class GamePiece {
     }
 
     public Color getColor() {
-        return new Color(color[0], color[1], color[2]);
+        return Settings.colorMap.get(color);
     }
 }

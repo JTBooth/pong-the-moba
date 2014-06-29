@@ -1,5 +1,10 @@
 package pong;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.newdawn.slick.Color;
+
 import packets.SerializableColor;
 
 public class Settings {
@@ -22,8 +27,14 @@ public class Settings {
     public static final float margin = 10f;
     public static final SerializableColor paddleColor = new SerializableColor(255, 0, 0);
     public static final SerializableColor ballColor = new SerializableColor(0, 255, 0);
-    // public static final float[] scorePositions = new float[] {margin,margin,windowSize[1] - margin - 10, margin};
     public static final float[] scorePositions = new float[] {windowSize[0]/4-40,windowSize[1]/2-40,3*windowSize[0]/4-40, windowSize[1]/2-40};
 	
-
+    /** Colors **/
+    public static final HashMap<Character, Color> colorMap = new HashMap<Character, Color>()
+    		{{
+    			put('0', new Color(255,0,0)); //red, p1
+    			put('1', new Color(0,255,0)); //green, ball
+    			put('2', new Color(0,0,255)); //blue, p2
+    			put('3', new Color(128, 0, 128)); // purple, terrain
+    		}};
 }
