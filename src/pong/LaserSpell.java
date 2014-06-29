@@ -8,7 +8,7 @@ public class LaserSpell extends Spell {
 	}
 	
 	public void cast() {
-		pong.shootLaser(player);
+		pong.makeLaser(player);
 	}
 
 	

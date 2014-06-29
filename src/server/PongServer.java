@@ -30,7 +30,7 @@ public class PongServer extends Server {
 
     }
 
-    public void sendUpdate(GamePiece[] renderList, int[] score) {
+    public void sendUpdate(GamePiece[] renderList) {
         DisplayUpdate update = new DisplayUpdate(renderList, pong.getScore(), System.nanoTime());
 
         if (renderList.length < 1) {
