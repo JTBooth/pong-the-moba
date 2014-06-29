@@ -1,6 +1,7 @@
 package pong;
 
 import org.jbox2d.collision.shapes.CircleShape;
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 
 public class Ball {
@@ -49,5 +50,9 @@ public class Ball {
     public void destroy() {
         body.getWorld().destroyBody(body);
         pong.removeSolidBall(this);
+    }
+    
+    public void setPosition(float x, float y) {
+    	body.setTransform(new Vec2(x,y), 0);
     }
 }

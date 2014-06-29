@@ -13,7 +13,7 @@ public class DisplayListener extends Listener {
 
     public DisplayListener(PongClient pongClient) {
         this.pongClient = pongClient;
-        currentUpdate = new DisplayUpdate(new GamePiece[0], 0);
+        currentUpdate = new DisplayUpdate(new GamePiece[0], new int[2], 0);
     }
 
     @Override

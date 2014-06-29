@@ -45,6 +45,7 @@ public class Pong extends BasicGame {
     private SolidRect topWall;
     private SolidRect botWall;
     private PongServer server;
+    private Score score;
 
     public Pong(String title) throws IOException {
         super(title);
@@ -63,6 +64,8 @@ public class Pong extends BasicGame {
         this.velocityIterations = 10;
         this.positionIterations = 10;
         frame = 0;
+        
+        this.score = new Score(5);
 
         AppGameContainer app;
         try {
@@ -124,7 +127,7 @@ public class Pong extends BasicGame {
         p2Paddle = new SolidRect(7.5f, 3, 0.2f, 2, BodyType.KINEMATIC, getWorld(), this);
         makeWalls();
 
-        ball = new Ball(4, 3, 0.2f, getWorld(), this);
+        ball = new Ball(4, 3, Settings.ballRadius, getWorld(), this);
         ball.getBody().setLinearVelocity(new Vec2(-2, 0));
 
         while (player1 == null || player2 == null) {
@@ -153,12 +156,6 @@ public class Pong extends BasicGame {
             pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, new Color(0, 255, 0));
             ++i;
         }
-        /*
-		for (GamePiece gp : displayList) {
-			graphics.setColor(gp.getColor());
-			graphics.fill(gp.getShape());
-		}
-		*/
     }
 
     @Override
@@ -169,10 +166,35 @@ public class Pong extends BasicGame {
         int[] p2keys = player2.getKeys();
 
         step(p1keys, p2keys);
-        server.sendUpdate(pieceArray);
+        
+        if (ball.getX() < 0) {
+        	score.playerScore(1, 1);
+        	resetBall(1);
+        } else if (ball.getX() > pixWidth) {
+        	score.playerScore(0, 1);
+        	resetBall(0);
+        }
+        
+        server.sendUpdate(pieceArray, score.getScore());
     }
 
-    public void step(int[] p1keys, int[] p2keys) {
+    private void resetBall(int i) {
+		ball.setPosition((float) (pixWidth/(2*PTM_RATIO)), (float) (pixHeight/(2*PTM_RATIO)));
+		System.out.println(ball.getX() + "x" + ball.getY());
+		Vec2 ballVelocity;
+		if (i == 0) {
+			ballVelocity = new Vec2(-Settings.serveSpeed, 0);
+		} else if (i == 1) {
+			ballVelocity = new Vec2(Settings.serveSpeed,0);
+		} else {
+			Log.error("You served the ball to not a player: player # " + i + ". Players are 0 and 1.");
+			throw new RuntimeException();
+		}
+		ball.getBody().setLinearVelocity(ballVelocity);
+
+	}
+
+	public void step(int[] p1keys, int[] p2keys) {
         execute(p1keys, player1);
         execute(p2keys, player2);
 
@@ -274,5 +296,9 @@ public class Pong extends BasicGame {
 
     public org.jbox2d.dynamics.World getWorld() {
         return world;
+    }
+    
+    public int[] getScore() {
+    	return score.getScore();
     }
 }
