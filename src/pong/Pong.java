@@ -25,16 +25,13 @@ import server.PongServer;
 public class Pong extends BasicGame {
     public static final double PTM_RATIO = 100.0;
     private static final int[] relevantKeys = {Keyboard.KEY_UP,
-            Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT};
-
-    public final int pixWidth = 800;
-    public final int pixHeight = 600;
+                                                      Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT};
     float timeStep;
     int velocityIterations;
     int positionIterations;
     int lastStepTime;
-    Keyboard keyboard;
     long frame;
+
     private String title;
     private List<SolidRect> rectRenderList;
     private List<Ball> ballRenderList;
@@ -42,12 +39,9 @@ public class Pong extends BasicGame {
     private Player player1;
     private Player player2;
     private World world;
-    private AppGameContainer app;
     private SolidRect p1Paddle;
     private SolidRect p2Paddle;
     private Ball ball;
-    private SolidRect topWall;
-    private SolidRect botWall;
     private PongServer server;
     private Score score;
 
@@ -68,14 +62,14 @@ public class Pong extends BasicGame {
         this.velocityIterations = Settings.velocityIterations;
         this.positionIterations = Settings.positionIterations;
         frame = 0;
-        
+
         this.score = new Score(Settings.winningScore);
 
         AppGameContainer app;
         try {
             app = new AppGameContainer(this);
-            app.setDisplayMode((int) (Settings.windowSize[0]), (int) (Settings.windowSize[1]),
-                    false);
+            app.setDisplayMode(Settings.windowSize[0], Settings.windowSize[1],
+                                      false);
             app.setVSync(true);
             app.setAlwaysRender(true);
             app.setTargetFrameRate(Settings.fps);
@@ -107,18 +101,8 @@ public class Pong extends BasicGame {
         return (float) (pixel / PTM_RATIO);
     }
 
-    private void makeWalls() {
-    	int width = (int) (Settings.windowSize[0]/PTM_RATIO);
-    	int height = (int) (Settings.windowSize[1]/PTM_RATIO);
-        botWall = new SolidRect(width/2, -0.01f, width, 0.005f, BodyType.KINEMATIC, getWorld(), this);
-        botWall.getBody().getFixtureList().m_friction = 0;
-        topWall = new SolidRect(width/2, (float) (height + 0.01), width, 0.005f, BodyType.KINEMATIC, getWorld(), this);
-        topWall.getBody().getFixtureList().m_friction = 0;
-    }
-
     @Override
     public boolean closeRequested() {
-        // TODO Auto-generated method stub
         return true;
     }
 
@@ -129,47 +113,20 @@ public class Pong extends BasicGame {
 
     @Override
     public void init(GameContainer arg0) throws SlickException {
-    	int width = (int) (Settings.windowSize[0]/PTM_RATIO);
-    	int height = (int) (Settings.windowSize[1]/PTM_RATIO);
-        p1Paddle = new SolidRect(0.5f, height/2, 0.2f, Settings.paddleLength, BodyType.KINEMATIC, getWorld(), this);
-        p2Paddle = new SolidRect(width - 0.5f, height/2, 0.2f, Settings.paddleLength, BodyType.KINEMATIC, getWorld(), this);
+        int width = (int) (Settings.windowSize[0] / PTM_RATIO);
+        int height = (int) (Settings.windowSize[1] / PTM_RATIO);
+        p1Paddle = new SolidRect(0.5f, height / 2, 0.2f, Settings.paddleLength, BodyType.KINEMATIC, getWorld(), this);
+        p2Paddle = new SolidRect(width - 0.5f, height / 2, 0.2f, Settings.paddleLength, BodyType.KINEMATIC, getWorld(), this);
         makeWalls();
 
-        ball = new Ball(width/2, height/2, Settings.ballRadius, getWorld(), this);
+        ball = new Ball(width / 2, height / 2, Settings.ballRadius, getWorld(), this);
         ball.getBody().setLinearVelocity(new Vec2(-Settings.serveSpeed, 0));
 
         while (player1 == null || player2 == null) {
             try {
                 Thread.sleep(5000);
-            } catch (InterruptedException e) {
-            }
+            } catch (InterruptedException ignored) {}
             System.out.println("Waiting for players to load: " + (player1 == null) + " " + (player2 == null));
-        }
-    }
-
-    @Override
-    public void render(GameContainer arg0, Graphics graphics)
-            throws SlickException {
-        pieceArray = new GamePiece[rectRenderList.size() + ballRenderList.size()];
-        int i = 0;
-        for (SolidRect sr : rectRenderList) {
-
-            float[] pts = sr.getPointsInPixels();
-            Polygon poly = new Polygon(pts);
-            if (sr == p1Paddle) {
-            	pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '0');
-            } else if (sr == p2Paddle) {
-            	pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '2');
-            } else {
-            	pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '3');
-            }
-            
-            ++i;
-        }
-
-        for (Ball sb : ballRenderList) {
-            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, '1');
-            ++i;
         }
     }
 
@@ -181,43 +138,41 @@ public class Pong extends BasicGame {
         int[] p2keys = player2.getKeys();
 
         step(p1keys, p2keys);
-        
+
         if (ball.getX() < 0) {
-        	score.playerScore(1, 1);
-        	resetBall(1);
-        } else if (ball.getX() > pixWidth) {
-        	score.playerScore(0, 1);
-        	resetBall(0);
+            score.playerScore(1, 1);
+            resetBall(1);
+        } else if (ball.getX() > Settings.windowSize[0]) {
+            score.playerScore(0, 1);
+            resetBall(0);
         }
-        
+
         server.sendUpdate(pieceArray, score.getScore());
     }
 
-    private void resetBall(int i) {
-		ball.setPosition((float) (pixWidth/(2*PTM_RATIO)), (float) (pixHeight/(2*PTM_RATIO)));
-		ball.getBody().setAngularVelocity(0);
-		System.out.println(ball.getX() + "x" + ball.getY());
-		Vec2 ballVelocity;
-		if (i == 0) {
-			ballVelocity = new Vec2(-Settings.serveSpeed, 0);
-		} else if (i == 1) {
-			ballVelocity = new Vec2(Settings.serveSpeed,0);
-		} else {
-			Log.error("You served the ball to not a player: player # " + i + ". Players are 0 and 1.");
-			throw new RuntimeException();
-		}
-		ball.getBody().setLinearVelocity(ballVelocity);
-
-	}
-
-	public void step(int[] p1keys, int[] p2keys) {
+    public void step(int[] p1keys, int[] p2keys) {
         execute(p1keys, player1);
         execute(p2keys, player2);
 
         world.step(timeStep, velocityIterations, positionIterations);
 
-        int now = (int) System.nanoTime() / 1000000;
-        lastStepTime = now;
+        lastStepTime = (int) System.nanoTime() / 1000000;
+    }
+
+    private void resetBall(int i) {
+        ball.setPosition((float) (Settings.windowSize[0] / (2 * PTM_RATIO)), (float) (Settings.windowSize[1] / (2 * PTM_RATIO)));
+        ball.getBody().setAngularVelocity(0);
+        System.out.println(ball.getX() + "x" + ball.getY());
+        Vec2 ballVelocity;
+        if (i == 0) {
+            ballVelocity = new Vec2(-Settings.serveSpeed, 0);
+        } else if (i == 1) {
+            ballVelocity = new Vec2(Settings.serveSpeed, 0);
+        } else {
+            Log.error("You served the ball to not a player: player # " + i + ". Players are 0 and 1.");
+            throw new RuntimeException();
+        }
+        ball.getBody().setLinearVelocity(ballVelocity);
 
     }
 
@@ -267,16 +222,47 @@ public class Pong extends BasicGame {
 
     }
 
-    public void addSolidRect(SolidRect sr) {
-        rectRenderList.add(sr);
+    public org.jbox2d.dynamics.World getWorld() {
+        return world;
+    }
+
+    private void makeWalls() {
+        int width = (int) (Settings.windowSize[0] / PTM_RATIO);
+        int height = (int) (Settings.windowSize[1] / PTM_RATIO);
+        SolidRect botWall = new SolidRect(width / 2, -0.01f, width, 0.005f, BodyType.KINEMATIC, getWorld(), this);
+        botWall.getBody().getFixtureList().m_friction = 0;
+        SolidRect topWall = new SolidRect(width / 2, (float) (height + 0.01), width, 0.005f, BodyType.KINEMATIC, getWorld(), this);
+        topWall.getBody().getFixtureList().m_friction = 0;
+    }
+
+    @Override
+    public void render(GameContainer arg0, Graphics graphics)
+            throws SlickException {
+        pieceArray = new GamePiece[rectRenderList.size() + ballRenderList.size()];
+        int i = 0;
+        for (SolidRect sr : rectRenderList) {
+
+            float[] pts = sr.getPointsInPixels();
+            Polygon poly = new Polygon(pts);
+            if (sr == p1Paddle) {
+                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '0');
+            } else if (sr == p2Paddle) {
+                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '2');
+            } else {
+                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '3');
+            }
+
+            ++i;
+        }
+
+        for (Ball sb : ballRenderList) {
+            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, '1');
+            ++i;
+        }
     }
 
     public void removeSolidRect(SolidRect sr) {
         rectRenderList.remove(sr);
-    }
-
-    public void addSolidBall(Ball sb) {
-        ballRenderList.add(sb);
     }
 
     public void removeSolidBall(Ball sb) {
@@ -295,9 +281,19 @@ public class Pong extends BasicGame {
             // No room for this player.
             // TODO send them an apology
         }
-
-
     }
+
+    public void addSolidBall(Ball sb) {
+        ballRenderList.add(sb);
+    }
+
+    public void addSolidRect(SolidRect sr) {
+        rectRenderList.add(sr);
+    }
+
+    /**
+     * Getters *
+     */
 
     public Player getPlayer(long playerId) {
         if (player1.getId() == playerId) {
@@ -310,11 +306,7 @@ public class Pong extends BasicGame {
         }
     }
 
-    public org.jbox2d.dynamics.World getWorld() {
-        return world;
-    }
-    
     public int[] getScore() {
-    	return score.getScore();
+        return score.getScore();
     }
 }

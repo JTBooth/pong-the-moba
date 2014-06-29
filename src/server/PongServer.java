@@ -18,7 +18,7 @@ public class PongServer extends Server {
     public PongServer(Pong pong, int[] relevantCharacters) throws IOException {
         //Setup settings for the physics engine
         setupEngine();
-        Log.set(Log.LEVEL_DEBUG);
+        Log.set(Log.LEVEL_NONE);
         this.pong = pong;
 
         bind(54555, 54777);
