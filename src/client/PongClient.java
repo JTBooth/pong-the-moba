@@ -9,19 +9,27 @@ import packets.HousewarmingPacket;
 import packets.KryoRegisterer;
 
 public class PongClient extends Client {
+    /** Display Classes **/
     DisplayListener displayListener;
     PongDisplay pongDisplay;
+
+    /** Info Holders **/
     long userId;
     int[] relevantChars;
 
     public PongClient(PongDisplay pongDisplay) {
+        /** Kyro Registering **/
         registerClasses();
+
+        /** Initialize **/
         this.pongDisplay = pongDisplay;
         displayListener = new DisplayListener(this);
+
+
+        /** Start the server **/
         addListener(displayListener);
         Log.set(Log.LEVEL_DEBUG);
         new Thread(this).start();
-
 
         try {
             connect(5000, "127.0.0.1", 54555, 54777);

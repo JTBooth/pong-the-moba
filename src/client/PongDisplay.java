@@ -7,20 +7,21 @@ import pong.Settings;
 
 public class PongDisplay extends BasicGame {
     private GamePiece[] pieces;
+    private Scoreboard scoreboard;
     private PongClient client;
     private DisplayListener displayListener;
-    private int[] keysPressed;
 
     public PongDisplay() {
         super("pongDisp");
         pieces = new GamePiece[0];
+        scoreboard = new Scoreboard();
         client = new PongClient(this);
         displayListener = client.getDisplayListener();
 
         AppGameContainer app;
         try {
             app = new AppGameContainer(this);
-            app.setDisplayMode((int) (800), (int) (600), false);
+            app.setDisplayMode(Settings.windowSize[0], Settings.windowSize[1], false);
             app.setVSync(true);
             app.setAlwaysRender(true);
             app.setTargetFrameRate(Settings.fps);
@@ -38,11 +39,17 @@ public class PongDisplay extends BasicGame {
 
     @Override
     public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
+        /** Set Typewriter **/
+        graphics.setFont(scoreboard.getFont());
 
+        /** Render Game Pieces **/
         for (GamePiece gp : pieces) {
             graphics.setColor(gp.getColor());
             graphics.fill(gp.getShape());
         }
+
+        /** Render Score Board **/
+        scoreboard.render();
     }
 
     @Override
@@ -54,6 +61,7 @@ public class PongDisplay extends BasicGame {
     @Override
     public void update(GameContainer arg0, int arg1) throws SlickException {
         pieces = displayListener.getRenderList();
+        scoreboard.update(displayListener.getScores());
         int[] relevantCharacters = displayListener.getRelevantCharacters();
         int[] keysPressed = new int[relevantCharacters.length];
         for (int i = 0; i < relevantCharacters.length; ++i) {
