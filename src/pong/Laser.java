@@ -14,6 +14,7 @@ public class Laser extends Ball {
         super(x, y, r, world, pong, true, '3');
         this.direction = direction;
         this.getBody().setLinearVelocity(direction.mul(Settings.laserVelocity));
+        this.getBody().getFixtureList().setDensity(10);
     }
 
     public Vec2 getDirection(){

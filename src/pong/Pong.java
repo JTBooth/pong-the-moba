@@ -15,7 +15,9 @@ import org.newdawn.slick.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import packets.GamePiece;
 import server.Player;
@@ -44,6 +46,7 @@ public class Pong extends BasicGame {
     private Ball ball;
     private PongServer server;
     private Scorekeeper score;
+    public static Set<DelayedEffect> delayedEffects;
 
     public Pong(String title) throws IOException {
         super(title);
@@ -110,11 +113,15 @@ public class Pong extends BasicGame {
     public String getTitle() {
         return title;
     }
+    
+    /** Game Loop: init(), render() and update() **/
 
     @Override
     public void init(GameContainer arg0) throws SlickException {
         int width = (int) (Settings.windowSize[0] / PTM_RATIO);
         int height = (int) (Settings.windowSize[1] / PTM_RATIO);
+        
+        delayedEffects = new HashSet<DelayedEffect>();
 
         makePaddles(height, width);
         makeWalls();
@@ -147,8 +154,37 @@ public class Pong extends BasicGame {
             resetBall(0);
         }
         spellkeeper.update();
+        tendDelayedEffects();
         server.sendUpdate(pieceArray);
     }
+    
+    @Override
+    public void render(GameContainer arg0, Graphics graphics)
+            throws SlickException {
+        pieceArray = new GamePiece[rectRenderList.size() + ballRenderList.size()];
+        int i = 0;
+        for (SolidRect sr : rectRenderList) {
+
+            float[] pts = sr.getPointsInPixels();
+            Polygon poly = new Polygon(pts);
+            if (sr == p1Paddle) {
+                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '0');
+            } else if (sr == p2Paddle) {
+                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '2');
+            } else {
+                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '3');
+            }
+
+            ++i;
+        }
+        System.out.println(ballRenderList.size() + "");
+        for (Ball sb : ballRenderList) {
+            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, sb.getColor());
+            ++i;
+        }
+    }
+
+    /** Utility functions, called ~1/game loop **/
 
     public void step(int[] p1keys, int[] p2keys) {
         execute(p1keys, player1);
@@ -202,8 +238,8 @@ public class Pong extends BasicGame {
                     break;
                 }
                 case Keyboard.KEY_SPACE: {
-                    System.out.println("Space key pressed \n\n\n\n");
-                   // spellkeeper.tryToCast(player, Keyboard.KEY_SPACE);
+                    
+                    spellkeeper.tryToCast(player, Keyboard.KEY_SPACE);
                 }
             }
         }
@@ -235,10 +271,16 @@ public class Pong extends BasicGame {
 
     }
 
-
-    public org.jbox2d.dynamics.World getWorld() {
-        return world;
+    public void tendDelayedEffects() {
+    	for (DelayedEffect delayedEffect : delayedEffects) {
+    		delayedEffect.tick();
+    		if (delayedEffect.ticksRemaining <= 0) {
+    			delayedEffects.remove(delayedEffect);
+    		}
+    	}
     }
+
+
 
     /** Make Methods **/
 
@@ -274,13 +316,13 @@ public class Pong extends BasicGame {
         //Set correct values based on player
         if (player.getId() == player1.getId()){
             points = p1Paddle.getPointsInPixels();
-            x = (points[2] + points[4])/2;
-            y = (points[3] + points[5])/2;
+            x = (float) ((points[2] + points[4])/(2*PTM_RATIO));
+            y = (float) ((points[3] + points[5])/(2*PTM_RATIO));
             direction = p1Paddle.getShape().getNormals()[1];
         } else {
             points = p2Paddle.getPointsInPixels();
-            x = (points[0] + points[6])/2;
-            y = (points[1] + points[7])/2;
+            x = (float) ((points[0] + points[6])/(2*PTM_RATIO));
+            y = (float) ((points[1] + points[7])/(2*PTM_RATIO));
             direction = p2Paddle.getShape().getNormals()[3];
         }
         System.out.println("============= 1234============= CALLED i am here");
@@ -288,31 +330,6 @@ public class Pong extends BasicGame {
         return new Laser(x, y, Settings.laserRadius, direction, getWorld(), this);
     }
 
-    @Override
-    public void render(GameContainer arg0, Graphics graphics)
-            throws SlickException {
-        pieceArray = new GamePiece[rectRenderList.size() + ballRenderList.size()];
-        int i = 0;
-        for (SolidRect sr : rectRenderList) {
-
-            float[] pts = sr.getPointsInPixels();
-            Polygon poly = new Polygon(pts);
-            if (sr == p1Paddle) {
-                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '0');
-            } else if (sr == p2Paddle) {
-                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '2');
-            } else {
-                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '3');
-            }
-
-            ++i;
-        }
-        System.out.println(ballRenderList.size() + "");
-        for (Ball sb : ballRenderList) {
-            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, sb.getColor());
-            ++i;
-        }
-    }
 
     /** Add/Remove Pong Objects **/
 
@@ -375,6 +392,10 @@ public class Pong extends BasicGame {
     	} else {
     		return null;
     	}
+    }
+    
+    public org.jbox2d.dynamics.World getWorld() {
+        return world;
     }
 
     public int[] getScore() {
