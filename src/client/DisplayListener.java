@@ -21,7 +21,7 @@ public class DisplayListener extends Listener {
 
     @Override
     public void received(Connection con, Object packet) {
-        System.out.println("currentUpdate has " + currentUpdate.getRenderList().length + " pieces in it");
+//        System.out.println("currentUpdate has " + currentUpdate.getRenderList().length + " pieces in it");
         if (packet instanceof DisplayUpdate) {
             DisplayUpdate displayUpdate = (DisplayUpdate) packet;
             if (displayUpdate.timestamp > currentUpdate.timestamp) {

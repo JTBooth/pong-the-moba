@@ -15,6 +15,7 @@ public class Ball {
     private char color;
 
     public Ball(float x, float y, float r, World world, Pong pong, boolean isBullet, char color) {
+        System.out.println("CALLED CONSTRUCTOR");
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
         bodyDef.type = BodyType.DYNAMIC;
@@ -33,6 +34,8 @@ public class Ball {
         this.body = body;
         this.color = color;
         this.pong = pong;
+        if (color == '3')
+            System.out.println("BALL IS ADDED");
         pong.addSolidBall(this);
     }
 

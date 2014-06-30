@@ -64,7 +64,7 @@ public class Pong extends BasicGame {
         frame = 0;
 
         this.score = new Scorekeeper(Settings.winningScore);
-        this.spellkeeper = new Spellkeeper(this);
+
         AppGameContainer app;
         try {
             app = new AppGameContainer(this);
@@ -126,6 +126,8 @@ public class Pong extends BasicGame {
             } catch (InterruptedException ignored) {}
             System.out.println("Waiting for players to load: " + (player1 == null) + " " + (player2 == null));
         }
+
+        this.spellkeeper = new Spellkeeper(this);
     }
 
     @Override
@@ -200,11 +202,9 @@ public class Pong extends BasicGame {
                     break;
                 }
                 case Keyboard.KEY_SPACE: {
-                    spellkeeper.tryToCast(player, Keyboard.KEY_SPACE);
+                    System.out.println("Space key pressed \n\n\n\n");
+                   // spellkeeper.tryToCast(player, Keyboard.KEY_SPACE);
                 }
-            }
-            if (key == Keyboard.KEY_SPACE) {
-            	
             }
         }
         paddle.getBody().setLinearVelocity(new Vec2(0, linearVelocity));
@@ -264,25 +264,26 @@ public class Pong extends BasicGame {
         ball.getBody().setLinearVelocity(new Vec2(-Settings.serveSpeed, 0));
     }
 
-    Ball makeLaser(Player player){
-        //Paddle positions and normals
-        float[] points = player.getPaddle().getPointsInPixels();
-        Vec2[] normals = player.getPaddle().getShape().getNormals();
-
+    public Ball makeLaser(Player player){
+        System.out.println("============= 1234============= CALLED i am here");
         //Laser Starting and Direction
         float x,y;
         Vec2 direction;
+        float[] points;
 
         //Set correct values based on player
         if (player.getId() == player1.getId()){
+            points = p1Paddle.getPointsInPixels();
             x = (points[2] + points[4])/2;
             y = (points[3] + points[5])/2;
-            direction = normals[1];
+            direction = p1Paddle.getShape().getNormals()[1];
         } else {
+            points = p2Paddle.getPointsInPixels();
             x = (points[0] + points[6])/2;
             y = (points[1] + points[7])/2;
-            direction = normals[3];
+            direction = p2Paddle.getShape().getNormals()[3];
         }
+        System.out.println("============= 1234============= CALLED i am here");
 
         return new Laser(x, y, Settings.laserRadius, direction, getWorld(), this);
     }
@@ -306,7 +307,7 @@ public class Pong extends BasicGame {
 
             ++i;
         }
-
+        System.out.println(ballRenderList.size() + "");
         for (Ball sb : ballRenderList) {
             pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(), sb.getRadius()), ShapeType.POLY, sb.getColor());
             ++i;
@@ -346,6 +347,7 @@ public class Pong extends BasicGame {
     }
 
     public void addLaser(Laser laser){
+        System.out.println("Added laser");
         ballRenderList.add(laser);
     }
 

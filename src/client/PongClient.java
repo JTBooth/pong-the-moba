@@ -28,7 +28,7 @@ public class PongClient extends Client {
 
         /** Start the server **/
         addListener(displayListener);
-        Log.set(Log.LEVEL_DEBUG);
+        Log.set(Log.LEVEL_ERROR);
         new Thread(this).start();
 
         try {

@@ -1,9 +1,9 @@
 package pong;
 
+import org.lwjgl.input.Keyboard;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.lwjgl.input.Keyboard;
 
 import server.Player;
 
@@ -25,18 +25,20 @@ public class Spellkeeper {
 	}
 	
 	public boolean tryToCast(Player player, int key) {
-		if (player == pong.getPlayer(0)) {
+		if (player.getId() == pong.getPlayer(0).getId()) {
 			Spell spell = p1spells[commandSpellMap.get(key)];
 			if (mana[0] > spell.getCost() && spell.getCooldownCounter() == 0) {
+                System.out.println("CASTED");
 				spell.cast();
 				mana[0] -= spell.getCost();
 				spell.setCooldownCounter(spell.getCooldown());
 				return true;
 			}
-		} else if (player == pong.getPlayer(1)) {
+		} else if (player.getId() == pong.getPlayer(1).getId()) {
 			Spell spell = p1spells[commandSpellMap.get(key)];
-			if (mana[1] > spell.getCost() && spell.getCooldownCounter() == 0) {
-				spell.cast();
+            if (mana[1] > spell.getCost() && spell.getCooldownCounter() == 0) {
+                System.out.println("CASTED");
+                spell.cast();
 				mana[1] -= spell.getCost();
 				spell.setCooldownCounter(spell.getCooldown());
 				return true;
@@ -55,12 +57,12 @@ public class Spellkeeper {
 			i = 0;
 		}
 		for (Spell spell : p1spells) {
-			if (spell.cooldown > 0) {
+			if (spell.cooldownCounter > 0) {
 				spell.cooldownCounter -= 1;
 			}
 		}
 		for (Spell spell : p2spells) {
-			if (spell.cooldown > 0) {
+			if (spell.cooldownCounter > 0) {
 				spell.cooldownCounter -= 1;
 			}
 		}

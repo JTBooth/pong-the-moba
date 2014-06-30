@@ -1,9 +1,6 @@
 package pong;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 
@@ -20,13 +17,13 @@ public class Settings {
 	public static final int[] relevantChars = {Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT, Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_SPACE};
 
 	/** Gameplay Settings **/
-	public static final float ballRadius = 0.5f;
+	public static final float ballRadius = 0.2f;
 	public static final float laserRadius = 0.25f * ballRadius;
 	public static final float laserVelocity = 5f;
-	public static final float serveSpeed = 4f;
-	public static final float paddleLength = 1f;
-	public static final float paddleSpeed = 3f;
-    public static final float maxPaddleRotateAngle = 0.8f;
+	public static final float serveSpeed = 3f;
+	public static final float paddleLength = 2f;
+	public static final float paddleSpeed = 2f;
+    public static final float maxPaddleRotateAngle = 0.5f;
     public static final int maxMana = 5;
     
 
