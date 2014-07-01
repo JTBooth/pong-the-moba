@@ -4,6 +4,13 @@ package pong;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 
 import packets.SerializableColor;
@@ -14,17 +21,27 @@ public class Settings {
 	public static final int velocityIterations = 10;
 	public static final int positionIterations = 10;
 	public static final int winningScore = 5; // unused
-	public static final int[] relevantChars = {Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT, Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_SPACE};
+	public static final int[] relevantChars = 
+		{
+		 Keyboard.KEY_LEFT,
+		 Keyboard.KEY_RIGHT, 
+		 Keyboard.KEY_UP, 
+		 Keyboard.KEY_DOWN,    // movement
+		 Keyboard.KEY_SPACE,   // casts laser
+		 Keyboard.KEY_0        // resets game with new settings
+		};
+	public static final int minFramesBeforeReset = 180;
 
 	/** Gameplay Settings **/
-	public static final float ballRadius = 0.2f;
-	public static final float laserRadius = 0.25f * ballRadius;
-	public static final float laserVelocity = 5f;
-	public static final float serveSpeed = 3f;
-	public static final float paddleLength = 2f;
-	public static final float paddleSpeed = 2f;
-    public static final float maxPaddleRotateAngle = 0.5f;
-    public static final int maxMana = 5;
+	public static float ballRadius = 0.2f;
+	public static final float laserRadius = 0.05f;
+	public static float laserDensity = 10;
+	public static float laserVelocity = 5f;
+	public static float serveSpeed = 3f;
+	public static float paddleLength = 2f;
+	public static float paddleSpeed = 2f;
+    public static float maxPaddleRotateAngle = 0.5f;
+    public static int maxMana = 5;
     
 
 
@@ -47,4 +64,30 @@ public class Settings {
     /** Player Settings **/
     public static final int PLAYERL = 0;
     public static final int PLAYERR = 1;
+    
+    public static void refreshSettings() {
+    	File gameplaySettingsSpec = new File("/Users/rbooth/Documents/workspace/pong-the-moba/gameplaySettingsSpec");
+    	try {
+			BufferedReader br = new BufferedReader(new FileReader(gameplaySettingsSpec));
+			Settings.ballRadius = Float.parseFloat(br.readLine().split(" ")[0]);
+			Settings.laserDensity = Float.parseFloat(br.readLine().split(" ")[0]);
+			Settings.laserVelocity = Float.parseFloat(br.readLine().split(" ")[0]);
+			Settings.serveSpeed = Float.parseFloat(br.readLine().split(" ")[0]);
+			Settings.paddleLength = Float.parseFloat(br.readLine().split(" ")[0]);
+			Settings.paddleSpeed = Float.parseFloat(br.readLine().split(" ")[0]);
+			Settings.maxPaddleRotateAngle = Float.parseFloat(br.readLine().split(" ")[0]);
+			Settings.maxMana = Integer.parseInt(br.readLine().split(" ")[0]);
+			br.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
 }

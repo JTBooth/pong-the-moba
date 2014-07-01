@@ -24,7 +24,6 @@ public class PongDisplay extends BasicGame {
         pieces = new GamePiece[0];
         client = new PongClient(this);
         displayListener = client.getDisplayListener();
-
         AppGameContainer app;
         try {
             app = new AppGameContainer(this);

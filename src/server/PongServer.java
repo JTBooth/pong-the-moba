@@ -13,13 +13,11 @@ import packets.KryoRegisterer;
 import pong.Pong;
 
 public class PongServer extends Server {
-    private Pong pong;
 
     public PongServer(Pong pong, int[] relevantCharacters) throws IOException {
         //Setup settings for the physics engine
         setupEngine();
         Log.set(Log.LEVEL_NONE);
-        this.pong = pong;
 
         bind(54555, 54777);
         addListener(new ServerListener(pong, relevantCharacters));
@@ -30,8 +28,8 @@ public class PongServer extends Server {
 
     }
 
-    public void sendUpdate(GamePiece[] renderList) {
-        DisplayUpdate update = new DisplayUpdate(renderList, pong.getScore(), System.nanoTime());
+    public void sendUpdate(GamePiece[] renderList, int[] score) {
+        DisplayUpdate update = new DisplayUpdate(renderList, score, System.nanoTime());
 
         if (renderList.length < 1) {
             System.out.println("renderList is empty");
