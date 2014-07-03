@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="pong-the-moba" default="all">
+  
+  
+  <property file="pong-the-moba.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.zip"/>
+    <include name="*.apk"/>
+    <include name="*.war"/>
+    <include name="*.egg"/>
+    <include name="*.ear"/>
+    <include name="*.ane"/>
+    <include name="*.swc"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.jdk" value="${jdk.home.jdk}/bin"/>
+  <path id="jdk.classpath.jdk">
+    <fileset dir="${jdk.home.jdk}">
+      <include name="lib/ant-javafx.jar"/>
+      <include name="lib/dt.jar"/>
+      <include name="lib/javafx-doclet.jar"/>
+      <include name="lib/javafx-mx.jar"/>
+      <include name="lib/jconsole.jar"/>
+      <include name="lib/sa-jdi.jar"/>
+      <include name="lib/tools.jar"/>
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/htmlconverter.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jfr.jar"/>
+      <include name="jre/lib/jfxrt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.jdk}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.jdk}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.jdk"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.jars.classpath">
+    <fileset dir="${basedir}/lib/jars">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="library.lib.classpath">
+    <pathelement location="${basedir}/lib/slick/lib/ibxm.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/jinput.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/jnlp.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/jogg-0.0.7.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/jorbis-0.0.15.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/lwjgl.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/lwjgl_util.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/lwjgl_util_applet.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/natives-linux.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/natives-mac.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/natives-windows.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/slick-examples.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/slick.jar"/>
+    <pathelement location="${basedir}/lib/slick/lib/tinylinepp.jar"/>
+  </path>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm4-all.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module main -->
+  
+  <dirname property="module.main.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.main" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.main" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.main" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.main" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="main.output.dir" value="${module.main.basedir}/build/classes/production/main"/>
+  <property name="main.testoutput.dir" value="${module.main.basedir}/build/classes/test/main"/>
+  
+  <path id="main.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="main.module.production.classpath">
+    <path refid="${module.jdk.classpath.main}"/>
+  </path>
+  
+  <path id="main.runtime.production.module.classpath">
+    <pathelement location="${main.output.dir}"/>
+  </path>
+  
+  <path id="main.module.classpath">
+    <path refid="${module.jdk.classpath.main}"/>
+    <pathelement location="${main.output.dir}"/>
+  </path>
+  
+  <path id="main.runtime.module.classpath">
+    <pathelement location="${main.testoutput.dir}"/>
+    <pathelement location="${main.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.main">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.main">
+    <patternset refid="excluded.from.module.main"/>
+  </patternset>
+  
+  <path id="main.module.sourcepath">
+    <dirset dir="${module.main.basedir}/lib/box2d/jbox2d-library/src/main">
+      <include name="java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.main" depends="compile.module.main.production,compile.module.main.tests" description="Compile module main"/>
+  
+  <target name="compile.module.main.production" depends="register.custom.compilers" description="Compile module main; production classes">
+    <mkdir dir="${main.output.dir}"/>
+    <javac2 destdir="${main.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.main}/javac">
+      <compilerarg line="${compiler.args.main}"/>
+      <bootclasspath refid="main.module.bootclasspath"/>
+      <classpath refid="main.module.production.classpath"/>
+      <src refid="main.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.main"/>
+    </javac2>
+    
+    <copy todir="${main.output.dir}">
+      <fileset dir="${module.main.basedir}/lib/box2d/jbox2d-library/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.main.tests" depends="register.custom.compilers,compile.module.main.production" description="compile module main; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.main" description="cleanup module">
+    <delete dir="${main.output.dir}"/>
+    <delete dir="${main.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module slick1 -->
+  
+  <dirname property="module.slick1.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.slick1" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.slick1" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.slick1" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.slick1" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="slick1.output.dir" value="${module.slick1.basedir}/build/classes/production/slick1"/>
+  <property name="slick1.testoutput.dir" value="${module.slick1.basedir}/build/classes/test/slick1"/>
+  
+  <path id="slick1.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="slick1.module.production.classpath">
+    <path refid="${module.jdk.classpath.slick1}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="slick1.runtime.production.module.classpath">
+    <pathelement location="${slick1.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="slick1.module.classpath">
+    <path refid="${module.jdk.classpath.slick1}"/>
+    <pathelement location="${slick1.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="slick1.runtime.module.classpath">
+    <pathelement location="${slick1.testoutput.dir}"/>
+    <pathelement location="${slick1.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.slick1">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.slick1">
+    <patternset refid="excluded.from.module.slick1"/>
+  </patternset>
+  
+  <path id="slick1.module.sourcepath">
+    <dirset dir="${module.slick1.basedir}/lib/slick">
+      <include name="src"/>
+      <include name="tools"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.slick1" depends="compile.module.slick1.production,compile.module.slick1.tests" description="Compile module slick1"/>
+  
+  <target name="compile.module.slick1.production" depends="register.custom.compilers" description="Compile module slick1; production classes">
+    <mkdir dir="${slick1.output.dir}"/>
+    <javac2 destdir="${slick1.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.slick1}/javac">
+      <compilerarg line="${compiler.args.slick1}"/>
+      <bootclasspath refid="slick1.module.bootclasspath"/>
+      <classpath refid="slick1.module.production.classpath"/>
+      <src refid="slick1.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.slick1"/>
+    </javac2>
+    
+    <copy todir="${slick1.output.dir}">
+      <fileset dir="${module.slick1.basedir}/lib/slick/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.slick1.basedir}/lib/slick/tools">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.slick1.tests" depends="register.custom.compilers,compile.module.slick1.production" description="compile module slick1; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.slick1" description="cleanup module">
+    <delete dir="${slick1.output.dir}"/>
+    <delete dir="${slick1.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module pong-the-moba -->
+  
+  <dirname property="module.pong-the-moba.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.pong-the-moba" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.pong-the-moba" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.pong-the-moba" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.pong-the-moba" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="pong-the-moba.output.dir" value="${module.pong-the-moba.basedir}/build/classes/main"/>
+  <property name="pong-the-moba.testoutput.dir" value="${module.pong-the-moba.basedir}/build/classes/test"/>
+  
+  <path id="pong-the-moba.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="pong-the-moba.module.production.classpath">
+    <path refid="${module.jdk.classpath.pong-the-moba}"/>
+    <path refid="library.jars.classpath"/>
+    <pathelement location="${main.output.dir}"/>
+    <pathelement location="${slick1.output.dir}"/>
+  </path>
+  
+  <path id="pong-the-moba.runtime.production.module.classpath">
+    <pathelement location="${pong-the-moba.output.dir}"/>
+    <path refid="library.jars.classpath"/>
+    <path refid="main.runtime.production.module.classpath"/>
+    <path refid="slick1.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="pong-the-moba.module.classpath">
+    <path refid="${module.jdk.classpath.pong-the-moba}"/>
+    <pathelement location="${pong-the-moba.output.dir}"/>
+    <path refid="library.jars.classpath"/>
+    <pathelement location="${main.testoutput.dir}"/>
+    <pathelement location="${main.output.dir}"/>
+    <pathelement location="${slick1.testoutput.dir}"/>
+    <pathelement location="${slick1.output.dir}"/>
+  </path>
+  
+  <path id="pong-the-moba.runtime.module.classpath">
+    <pathelement location="${pong-the-moba.testoutput.dir}"/>
+    <pathelement location="${pong-the-moba.output.dir}"/>
+    <path refid="library.jars.classpath"/>
+    <path refid="main.runtime.module.classpath"/>
+    <path refid="slick1.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.pong-the-moba">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.pong-the-moba">
+    <patternset refid="excluded.from.module.pong-the-moba"/>
+  </patternset>
+  
+  <path id="pong-the-moba.module.sourcepath">
+    <dirset dir="${module.pong-the-moba.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.pong-the-moba" depends="compile.module.pong-the-moba.production,compile.module.pong-the-moba.tests" description="Compile module pong-the-moba"/>
+  
+  <target name="compile.module.pong-the-moba.production" depends="register.custom.compilers,compile.module.main,compile.module.slick1" description="Compile module pong-the-moba; production classes">
+    <mkdir dir="${pong-the-moba.output.dir}"/>
+    <javac2 destdir="${pong-the-moba.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.pong-the-moba}/javac">
+      <compilerarg line="${compiler.args.pong-the-moba}"/>
+      <bootclasspath refid="pong-the-moba.module.bootclasspath"/>
+      <classpath refid="pong-the-moba.module.production.classpath"/>
+      <src refid="pong-the-moba.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.pong-the-moba"/>
+    </javac2>
+    
+    <copy todir="${pong-the-moba.output.dir}">
+      <fileset dir="${module.pong-the-moba.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.pong-the-moba.tests" depends="register.custom.compilers,compile.module.pong-the-moba.production" description="compile module pong-the-moba; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.pong-the-moba" description="cleanup module">
+    <delete dir="${pong-the-moba.output.dir}"/>
+    <delete dir="${pong-the-moba.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.main, clean.module.slick1, clean.module.pong-the-moba" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.main, compile.module.slick1, compile.module.pong-the-moba" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>
