@@ -61,7 +61,7 @@ public class Debugger {
         log(message, WARNING_TAG, WARNING);
     }
 
-    private void e(String message){ //Error
+    public void e(String message){ //Error
         log(message, ERROR_TAG, ERROR);
     }
 

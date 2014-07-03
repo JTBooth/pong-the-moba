@@ -10,11 +10,12 @@ public class Laser extends Ball {
     private Vec2 direction;
 
     /** Constructor **/
-    public Laser(float x, float y, float r, Vec2 direction, World world, Pong pong) {
-        super(x, y, r, world, pong, true, '3');
+    public Laser(float x, float y, float r, Vec2 direction, World world) {
+        super(x, y, r, world, true, '3');
         this.direction = direction;
-        this.getBody().setLinearVelocity(direction.mul(Settings.laserVelocity));
-        this.getBody().getFixtureList().setDensity(10);
+        getBody().setLinearVelocity(direction.mul(Settings.laserVelocity));
+        getBody().getFixtureList().setDensity(10);
+        getBody().getFixtureList().setDensity(Settings.laserDensity);
     }
 
     public Vec2 getDirection(){

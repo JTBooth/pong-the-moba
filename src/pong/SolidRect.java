@@ -11,9 +11,9 @@ public class SolidRect {
     private PolygonShape shape;
     private float width;
     private float height;
-    private Pong pong;
 
-    public SolidRect(float x, float y, float width, float height, BodyType bodyType, World world, Pong pong) {
+
+    public SolidRect(float x, float y, float width, float height, BodyType bodyType, World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
         bodyDef.type = bodyType;
@@ -32,9 +32,6 @@ public class SolidRect {
         fd.shape = polyShape;
         body.createFixture(fd);
         this.body = body;
-
-        this.pong = pong;
-        pong.addSolidRect(this);
     }
 
     public Body getBody() {
@@ -48,8 +45,8 @@ public class SolidRect {
         float[] ret = new float[points.length * 2];
         int j = 0;
         for (int i = 0; i < points.length; ++i, j += 2) {
-            ret[j] = (float) ((points[i].x + center.x) * Pong.PTM_RATIO);
-            ret[j + 1] = (float) ((points[i].y + center.y) * Pong.PTM_RATIO);
+            ret[j] =  Settings.m2p((points[i].x + center.x));
+            ret[j + 1] =  Settings.m2p((points[i].y + center.y));
         }
         return ret;
 
@@ -62,6 +59,6 @@ public class SolidRect {
 
     public void destroy() {
         body.getWorld().destroyBody(body);
-        pong.removeSolidRect(this);
+        Pong.pong.removeSolidPiece(this);
     }
 }

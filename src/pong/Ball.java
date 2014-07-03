@@ -11,10 +11,9 @@ import org.jbox2d.dynamics.World;
 public class Ball {
     private CircleShape shape;
     private Body body;
-    private Pong pong;
     private char color;
 
-    public Ball(float x, float y, float r, World world, Pong pong, boolean isBullet, char color) {
+    public Ball(float x, float y, float r, World world, boolean isBullet, char color) {
         System.out.println("CALLED CONSTRUCTOR");
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
@@ -33,22 +32,20 @@ public class Ball {
         body.createFixture(fd);
         this.body = body;
         this.color = color;
-        this.pong = pong;
         if (color == '3')
             System.out.println("BALL IS ADDED");
-        pong.addSolidBall(this);
     }
 
     public float getX() {
-        return (float) (body.getPosition().x * Pong.PTM_RATIO);
+        return Settings.m2p(body.getPosition().x);
     }
 
     public float getY() {
-        return (float) (body.getPosition().y * Pong.PTM_RATIO);
+        return  Settings.m2p(body.getPosition().y);
     }
 
     public float getRadius() {
-        return (float) (shape.m_radius * Pong.PTM_RATIO);
+        return  Settings.m2p(shape.m_radius);
     }
 
     public char getColor(){return color;}
@@ -59,7 +56,7 @@ public class Ball {
 
     public void destroy() {
         body.getWorld().destroyBody(body);
-        pong.removeSolidBall(this);
+        Pong.pong.removeBallPiece(this);
     }
     
     public void setPosition(float x, float y) {

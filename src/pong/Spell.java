@@ -7,15 +7,13 @@ public abstract class Spell {
 	int cooldownCounter;
     int cooldown;
 	String name;
-	Pong pong;
 	Player player;
 	
-	public Spell (String name, int cost, int cooldown, Pong pong, Player player) {
+	public Spell(String name, int cost, int cooldown, Player player) {
 		this.name=name;
 		this.setCost(cost);
 		this.setCooldown(cooldown);
 		this.setCooldownCounter(0);
-		this.pong=pong;
 		this.player=player;
 	}
 	

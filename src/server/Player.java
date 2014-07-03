@@ -1,19 +1,16 @@
 package server;
 
-import client.CommandUpdate;
-
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.minlog.Log;
 
-import pong.Settings;
+import client.CommandUpdate;
 import pong.SolidRect;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 public class Player {
+    final public static int LEFT = 0;
+    final public static int RIGHT = 1;
+
     private Connection connection;
+    private int who;
     private SolidRect paddle;
     private long id;
     private CommandUpdate commands;
@@ -24,23 +21,38 @@ public class Player {
         commands = new CommandUpdate();
     }
 
+    /** GETTERS **/
     public SolidRect getPaddle() {
         return paddle;
-    }
-
-    public void setPaddle(SolidRect paddle) {
-        this.paddle = paddle;
     }
 
     public int[] getKeys() {
         return commands.getKeys();
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public int who(){
+        return who;
+    }
+
+    /** SETTERS **/
+    public void setPaddle(SolidRect paddle) {
+        this.paddle = paddle;
+    }
+
     public void setKeys(CommandUpdate update) {
         commands=update;
     }
 
-    public long getId() {
-        return id;
+    public void setWho(int who) {
+        this.who = who;
+    }
+
+    /** IDENTITY **/
+    public boolean isPlayer(Player otherPlayer){
+        return otherPlayer.getId() == id;
     }
 }
