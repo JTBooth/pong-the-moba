@@ -9,7 +9,7 @@ import server.Player;
 import utils.Debugger;
 
 public class Spellkeeper {
-    Debugger debbie = new Debugger(Spellkeeper.class.getSimpleName(), Debugger.DEBUG);
+    Debugger debbie = new Debugger(Spellkeeper.class.getSimpleName(), Debugger.DEBUG | Debugger.INFO);
     Spell[] p1spells;
     Spell[] p2spells;
     int[] mana;
@@ -27,19 +27,19 @@ public class Spellkeeper {
     public boolean tryToCast(Player player, int key) {
         debbie.d(Pong.pong.getStringPlayer(player) + " trying to cast key " + key);
         int pos = Pong.pong.getStringPlayer(player).equals("LEFT") ? 0 : 1;
-        if (player.getId() == Pong.pong.getPlayer(0).getId()) {
+        if (player.isPlayer(Pong.pong.getPlayer(Player.LEFT))) {
             Spell spell = p1spells[commandSpellMap.get(key)];
             if (mana[0] > spell.getCost() && spell.getCooldownCounter() == 0) {
-                System.out.println("CASTED");
+                debbie.i("Player Left casted a spell");
                 spell.cast();
                 mana[0] -= spell.getCost();
                 spell.setCooldownCounter(spell.getCooldown());
                 return true;
             }
-        } else if (player.getId() == Pong.pong.getPlayer(1).getId()) {
-            Spell spell = p1spells[commandSpellMap.get(key)];
+        } else if (player.isPlayer(Pong.pong.getPlayer(Player.RIGHT))) {
+            Spell spell = p2spells[commandSpellMap.get(key)];
             if (mana[1] > spell.getCost() && spell.getCooldownCounter() == 0) {
-                System.out.println("CASTED");
+                debbie.i("Player Right casted a spell");
                 spell.cast();
                 mana[1] -= spell.getCost();
                 spell.setCooldownCounter(spell.getCooldown());

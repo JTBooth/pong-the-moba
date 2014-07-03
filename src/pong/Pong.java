@@ -62,16 +62,18 @@ public class Pong extends BasicGame {
         ballRenderList = new ArrayList<Ball>();
         pieceArray = new GamePiece[0];
 
+        /** Grab a server **/
         if (bankedServer == null) {
             try {
                 server = new PongServer(this, relevantChars);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                debbie.e(e.getMessage());
             }
         } else {
             server = bankedServer;
         }
+        /** turn debbie off **/
+        debbie.disable();
 
         /** Grab Everything **/
         Vec2 gravity = new Vec2(0, 0);
@@ -96,8 +98,7 @@ public class Pong extends BasicGame {
 
             app.start();
         } catch (SlickException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            debbie.e(e.getMessage());
         }
     }
 
@@ -216,7 +217,9 @@ public class Pong extends BasicGame {
 
     public void addRectPiece(SolidRect rect) {
         rectRenderList.add(rect);
-    }    @Override
+    }
+
+    @Override
     public void update(GameContainer arg0, int arg1) throws SlickException {
         ++frame;
 
@@ -262,10 +265,6 @@ public class Pong extends BasicGame {
         }
     }
 
-
-
-
-
     /**
      * GET ALL GAME PIECES *
      */
@@ -274,7 +273,6 @@ public class Pong extends BasicGame {
         rectRenderList.add(playerR.getPaddle());
         ballRenderList.add(ball);
     }
-
 
     /**
      * Utility functions, called ~1/game loop *
