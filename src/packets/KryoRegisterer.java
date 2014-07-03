@@ -1,14 +1,15 @@
 package packets;
 
-import client.CommandUpdate;
-
 import com.esotericsoftware.kryo.Kryo;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
-import pong.ShapeType;
 
 import java.util.ArrayList;
+
+import client.CommandUpdate;
+import pong.ShapeType;
 
 public class KryoRegisterer {
     public static void register(Kryo kryo) {

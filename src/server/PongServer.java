@@ -7,8 +7,8 @@ import org.jbox2d.common.Settings;
 
 import java.io.IOException;
 
-import packets.GamePiece;
 import packets.DisplayUpdate;
+import packets.GamePiece;
 import packets.KryoRegisterer;
 import pong.Pong;
 
@@ -28,6 +28,17 @@ public class PongServer extends Server {
 
     }
 
+    /**
+     * Changes settings in box2d engine *
+     */
+    private void setupEngine() {
+        Settings.velocityThreshold = 0f;
+    }
+
+    private void registerClasses() {
+        KryoRegisterer.register(getKryo());
+    }
+
     public void sendUpdate(GamePiece[] renderList, int[] score) {
         DisplayUpdate update = new DisplayUpdate(renderList, score, System.nanoTime());
 
@@ -35,14 +46,5 @@ public class PongServer extends Server {
             System.out.println("renderList is empty");
         }
         sendToAllUDP(update);
-    }
-
-    private void registerClasses() {
-        KryoRegisterer.register(getKryo());
-    }
-
-    /** Changes settings in box2d engine **/
-    private void setupEngine(){
-        Settings.velocityThreshold = 0f;
     }
 }

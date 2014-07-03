@@ -9,11 +9,15 @@ import packets.HousewarmingPacket;
 import packets.KryoRegisterer;
 
 public class PongClient extends Client {
-    /** Display Classes **/
+    /**
+     * Display Classes *
+     */
     DisplayListener displayListener;
     PongDisplay pongDisplay;
 
-    /** Info Holders **/
+    /**
+     * Info Holders *
+     */
     long userId;
     int[] relevantChars;
 
@@ -41,12 +45,12 @@ public class PongClient extends Client {
         }
     }
 
-    public DisplayListener getDisplayListener() {
-        return displayListener;
-    }
-
     private void registerClasses() {
         KryoRegisterer.register(getKryo());
+    }
+
+    public DisplayListener getDisplayListener() {
+        return displayListener;
     }
 
     public void submit(int[] keysPressed) {

@@ -41,14 +41,16 @@ public class Ball {
     }
 
     public float getY() {
-        return  Settings.m2p(body.getPosition().y);
+        return Settings.m2p(body.getPosition().y);
     }
 
     public float getRadius() {
-        return  Settings.m2p(shape.m_radius);
+        return Settings.m2p(shape.m_radius);
     }
 
-    public char getColor(){return color;}
+    public char getColor() {
+        return color;
+    }
 
     public Body getBody() {
         return body;
@@ -58,8 +60,8 @@ public class Ball {
         body.getWorld().destroyBody(body);
         Pong.pong.removeBallPiece(this);
     }
-    
+
     public void setPosition(float x, float y) {
-    	body.setTransform(new Vec2(x,y), 0);
+        body.setTransform(new Vec2(x, y), 0);
     }
 }

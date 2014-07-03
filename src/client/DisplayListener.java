@@ -2,6 +2,7 @@ package client;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+
 import packets.DisplayUpdate;
 import packets.GamePiece;
 import packets.HousewarmingPacket;
@@ -15,8 +16,14 @@ public class DisplayListener extends Listener {
     public DisplayListener(PongClient pongClient) {
         this.pongClient = pongClient;
 
-        currentUpdate = new DisplayUpdate(new GamePiece[0], new int[]{0,0}, 0); //Game Piece Array, scores, timestamp
+        currentUpdate = new DisplayUpdate(new GamePiece[0], new int[]{0, 0}, 0); //Game Piece Array, scores, timestamp
 
+    }
+
+    @Override
+    public void connected(Connection connection) {
+        super.connected(connection);
+        connection.setTimeout(0);
     }
 
     @Override
@@ -37,13 +44,9 @@ public class DisplayListener extends Listener {
         }
     }
 
-    @Override
-    public void connected(Connection connection) {
-        super.connected(connection);
-        connection.setTimeout(0);
-    }
-
-    /** Getters **/
+    /**
+     * Getters *
+     */
 
     public GamePiece[] getRenderList() {
         return currentUpdate.getRenderList();
@@ -53,7 +56,7 @@ public class DisplayListener extends Listener {
         return relevantCharacters;
     }
 
-    public int[] getScores(){
+    public int[] getScores() {
         return currentUpdate.getScore();
     }
 }

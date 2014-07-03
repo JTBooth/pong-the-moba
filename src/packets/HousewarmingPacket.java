@@ -1,8 +1,8 @@
 package packets;
 
-import java.util.List;
-
 import org.newdawn.slick.geom.Shape;
+
+import java.util.List;
 
 public class HousewarmingPacket {
     int[] relevantChars;

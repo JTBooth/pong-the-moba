@@ -153,7 +153,17 @@ public class Pong extends BasicGame {
                 getWorld());
     }
 
+    public org.jbox2d.dynamics.World getWorld() {
+        return world;
+    }
+
     /**
+     * Add/Remove Pong Objects *
+     */
+
+    public void removeSolidPiece(SolidRect sr) {
+        rectRenderList.remove(sr);
+    }    /**
      * Game Loop: init(), render() and update() *
      */
 
@@ -181,37 +191,8 @@ public class Pong extends BasicGame {
         this.spellkeeper = new Spellkeeper();
     }
 
-    /**
-     * Add/Remove Pong Objects *
-     */
-
-    public void removeSolidPiece(SolidRect sr) {
-        rectRenderList.remove(sr);
-    }
-
     public void removeBallPiece(Ball sb) {
         ballRenderList.remove(sb);
-    }
-
-    @Override
-    public void update(GameContainer arg0, int arg1) throws SlickException {
-        ++frame;
-
-        int[] p1keys = playerL.getKeys();
-        int[] p2keys = playerR.getKeys();
-
-        step(p1keys, p2keys);
-
-        if (ball.getX() < 0) {
-            score.playerScore(1, 1);
-            resetBall(1);
-        } else if (ball.getX() > Settings.windowSize[0]) {
-            score.playerScore(0, 1);
-            resetBall(0);
-        }
-        spellkeeper.update();
-        tendDelayedEffects();
-        server.sendUpdate(pieceArray, score.getScore());
     }
 
     public void addPlayer(Player player) {
@@ -235,15 +216,25 @@ public class Pong extends BasicGame {
 
     public void addRectPiece(SolidRect rect) {
         rectRenderList.add(rect);
-    }
+    }    @Override
+    public void update(GameContainer arg0, int arg1) throws SlickException {
+        ++frame;
 
-    /**
-     * GET ALL GAME PIECES *
-     */
-    private void updateGamePieces() {
-        rectRenderList.add(playerL.getPaddle());
-        rectRenderList.add(playerR.getPaddle());
-        ballRenderList.add(ball);
+        int[] p1keys = playerL.getKeys();
+        int[] p2keys = playerR.getKeys();
+
+        step(p1keys, p2keys);
+
+        if (ball.getX() < 0) {
+            score.playerScore(1, 1);
+            resetBall(1);
+        } else if (ball.getX() > Settings.windowSize[0]) {
+            score.playerScore(0, 1);
+            resetBall(0);
+        }
+        spellkeeper.update();
+        tendDelayedEffects();
+        server.sendUpdate(pieceArray, score.getScore());
     }
 
     /**
@@ -270,6 +261,20 @@ public class Pong extends BasicGame {
             return null;
         }
     }
+
+
+
+
+
+    /**
+     * GET ALL GAME PIECES *
+     */
+    private void updateGamePieces() {
+        rectRenderList.add(playerL.getPaddle());
+        rectRenderList.add(playerR.getPaddle());
+        ballRenderList.add(ball);
+    }
+
 
     /**
      * Utility functions, called ~1/game loop *
@@ -437,9 +442,6 @@ public class Pong extends BasicGame {
         return player.isPlayer(playerL) ? "LEFT" : "RIGHT";
     }
 
-    public org.jbox2d.dynamics.World getWorld() {
-        return world;
-    }
 
     @Override
     public boolean closeRequested() {

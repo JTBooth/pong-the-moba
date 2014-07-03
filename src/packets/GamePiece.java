@@ -30,7 +30,7 @@ public class GamePiece {
         }
     }
 
-    public Color getColor(){
+    public Color getColor() {
         return Settings.colorMap.get(color);
     }
 }

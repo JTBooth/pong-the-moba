@@ -8,10 +8,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
-import com.esotericsoftware.minlog.Log;
-
 import packets.GamePiece;
-
 import pong.Settings;
 
 public class PongDisplay extends BasicGame {
@@ -19,6 +16,7 @@ public class PongDisplay extends BasicGame {
     private Scoreboard scoreboard;
     private PongClient client;
     private DisplayListener displayListener;
+
     public PongDisplay() {
         super("pongDisp");
         pieces = new GamePiece[0];
@@ -50,14 +48,14 @@ public class PongDisplay extends BasicGame {
 
         /** Render Score Board **/
         scoreboard.render();
-        
+
         /** Render Game Pieces **/
         for (GamePiece gp : pieces) {
             graphics.setColor(gp.getColor());
             graphics.fill(gp.getShape());
         }
 
-        
+
     }
 
     @Override

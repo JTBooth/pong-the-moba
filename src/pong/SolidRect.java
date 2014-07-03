@@ -2,7 +2,11 @@ package pong;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.*;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
 
 import java.util.Arrays;
 
@@ -45,8 +49,8 @@ public class SolidRect {
         float[] ret = new float[points.length * 2];
         int j = 0;
         for (int i = 0; i < points.length; ++i, j += 2) {
-            ret[j] =  Settings.m2p((points[i].x + center.x));
-            ret[j + 1] =  Settings.m2p((points[i].y + center.y));
+            ret[j] = Settings.m2p((points[i].x + center.x));
+            ret[j + 1] = Settings.m2p((points[i].y + center.y));
         }
         return ret;
 

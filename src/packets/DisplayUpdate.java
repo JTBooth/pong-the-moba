@@ -11,16 +11,18 @@ public class DisplayUpdate {
     public DisplayUpdate(GamePiece[] renderList, int[] score, long timestamp) {
         this.timestamp = timestamp;
         this.pieceArray = renderList;
-        this.score=score;
-}
+        this.score = score;
+    }
 
 
-    /** Getters **/
+    /**
+     * Getters *
+     */
     public GamePiece[] getRenderList() {
         return pieceArray;
     }
 
     public int[] getScore() {
-    	return score;
+        return score;
     }
 }

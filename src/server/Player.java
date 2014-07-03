@@ -21,38 +21,44 @@ public class Player {
         commands = new CommandUpdate();
     }
 
-    /** GETTERS **/
+    /**
+     * GETTERS *
+     */
     public SolidRect getPaddle() {
         return paddle;
+    }
+
+    /**
+     * SETTERS *
+     */
+    public void setPaddle(SolidRect paddle) {
+        this.paddle = paddle;
     }
 
     public int[] getKeys() {
         return commands.getKeys();
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public int who(){
-        return who;
-    }
-
-    /** SETTERS **/
-    public void setPaddle(SolidRect paddle) {
-        this.paddle = paddle;
-    }
-
     public void setKeys(CommandUpdate update) {
-        commands=update;
+        commands = update;
+    }
+
+    public int who() {
+        return who;
     }
 
     public void setWho(int who) {
         this.who = who;
     }
 
-    /** IDENTITY **/
-    public boolean isPlayer(Player otherPlayer){
+    /**
+     * IDENTITY *
+     */
+    public boolean isPlayer(Player otherPlayer) {
         return otherPlayer.getId() == id;
+    }
+
+    public long getId() {
+        return id;
     }
 }

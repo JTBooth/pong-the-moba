@@ -9,7 +9,9 @@ import org.jbox2d.dynamics.World;
 public class Laser extends Ball {
     private Vec2 direction;
 
-    /** Constructor **/
+    /**
+     * Constructor *
+     */
     public Laser(float x, float y, float r, Vec2 direction, World world) {
         super(x, y, r, world, true, '3');
         this.direction = direction;
@@ -18,7 +20,7 @@ public class Laser extends Ball {
         getBody().getFixtureList().setDensity(Settings.laserDensity);
     }
 
-    public Vec2 getDirection(){
+    public Vec2 getDirection() {
         return direction;
     }
 }

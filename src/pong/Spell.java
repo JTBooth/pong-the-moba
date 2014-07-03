@@ -3,47 +3,47 @@ package pong;
 import server.Player;
 
 public abstract class Spell {
-	int cost;
-	int cooldownCounter;
+    int cost;
+    int cooldownCounter;
     int cooldown;
-	String name;
-	Player player;
-	
-	public Spell(String name, int cost, int cooldown, Player player) {
-		this.name=name;
-		this.setCost(cost);
-		this.setCooldown(cooldown);
-		this.setCooldownCounter(0);
-		this.player=player;
-	}
-	
-	public abstract void cast();
+    String name;
+    Player player;
 
-	public int getCost() {
-		return cost;
-	}
+    public Spell(String name, int cost, int cooldown, Player player) {
+        this.name = name;
+        this.setCost(cost);
+        this.setCooldown(cooldown);
+        this.setCooldownCounter(0);
+        this.player = player;
+    }
 
-	public void setCost(int cost) {
-		this.cost = cost;
-	}
+    public abstract void cast();
 
-	public int getCooldownCounter() {
-		return cooldownCounter;
-	}
+    public int getCost() {
+        return cost;
+    }
 
-	public void setCooldownCounter(int cooldownCounter) {
-		this.cooldownCounter = cooldownCounter;
-	}
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
 
-	public int getCooldown() {
-		return cooldown;
-	}
+    public int getCooldownCounter() {
+        return cooldownCounter;
+    }
 
-	public void setCooldown(int cooldown) {
-		this.cooldown = cooldown;
-	}
+    public void setCooldownCounter(int cooldownCounter) {
+        this.cooldownCounter = cooldownCounter;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    public void setCooldown(int cooldown) {
+        this.cooldown = cooldown;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
