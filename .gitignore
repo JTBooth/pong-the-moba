@@ -39,3 +39,5 @@ src/client/IP.java
 
 *gradle*
 .gradle/
+*.bin
+*.lock
