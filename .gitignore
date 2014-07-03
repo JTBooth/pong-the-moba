@@ -36,3 +36,6 @@ out/
 
 #Local Settings
 src/client/IP.java
+
+*gradle*
+.gradle/
