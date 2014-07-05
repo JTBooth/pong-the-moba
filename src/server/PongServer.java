@@ -7,7 +7,6 @@ import org.jbox2d.common.Settings;
 
 import java.io.IOException;
 
-import client.Scoreboard;
 import packets.KryoRegisterer;
 import pong.Pong;
 
@@ -38,7 +37,7 @@ public class PongServer extends Server {
         KryoRegisterer.register(getKryo());
     }
 
-    public void sendUpdate(Object[] renderList) {
+    public void sendUpdate(byte[] renderList) {
 
         if (renderList.length < 1) {
             System.out.println("renderList is empty");

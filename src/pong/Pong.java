@@ -1,7 +1,6 @@
 package pong;
 
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.World;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.AppGameContainer;
@@ -9,10 +8,9 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Circle;
-import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import server.Laser;
+import shapes.Laser;
 import server.Player;
 import server.PongServer;
 import shapes.Ball;
@@ -175,13 +173,15 @@ public class Pong extends BasicGame {
     @Override
     public void render(GameContainer arg0, Graphics graphics)
             throws SlickException {
-    	Object[] displayPacket = new Object[shapeList.size()];
-        int i = 0;
-        for (PongShape ps : shapeList) {
-        	displayPacket[i] = ps.serialize();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        for (PongShape ps : shapeList){
+            try {
+                outputStream.write(ps.serialize());
+            } catch (IOException e) {
+                debbie.e(ps.getId() + " failed to write to bytearrayoutputstream " + e.getMessage());
+            }
         }
-        debbie.i("Rendered " + i + " Pieces!");
-        server.sendUpdate(displayPacket);
+        server.sendUpdate(outputStream.toByteArray());
     }
 
     @Override

@@ -8,15 +8,15 @@ import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 
-import pong.Settings;
-
 import java.util.Arrays;
 
+import pong.Settings;
 import utils.Bytes;
 
 public class Wall extends PongShape {
@@ -26,6 +26,7 @@ public class Wall extends PongShape {
 	private char color;
 	private boolean visible;
 
+    public Wall(){}
 	public Wall(float x, float y, float height, float width, float angle,
 			boolean visible, char color, World world) {
 		BodyDef bodyDef = new BodyDef();
@@ -47,6 +48,11 @@ public class Wall extends PongShape {
 		this.body = body;
 		this.visible = visible;
 	}
+
+    @Override
+    public char getId() {
+        return ShapeRegistry.WALL;
+    }
 
 	@Override
 	public byte[] serialize() {
@@ -76,12 +82,12 @@ public class Wall extends PongShape {
 	}
 
 	@Override
-	public Shape deserialize(byte[] cereal) {
-		byte[] byteRotation = Arrays.copyOfRange(cereal, 0, 2);
-		byte byteX = cereal[2];
-		byte byteY = cereal[3];
-		byte byteHeight = cereal[4];
-		byte[] byteColor = Arrays.copyOfRange(cereal, 5, 7);
+	public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
+		byte[] byteRotation = Arrays.copyOfRange(cereal, pointer+=2, 2);
+		byte byteX = cereal[pointer++];
+		byte byteY = cereal[pointer++];
+		byte byteHeight = cereal[pointer++];
+		byte[] byteColor = Arrays.copyOfRange(cereal, pointer+=2, 7);
 
 		/** Create a rectangle given position and size **/
 		Rectangle rect = new Rectangle(Settings.m2p(Bytes.byte2Float(byteX,
@@ -98,7 +104,9 @@ public class Wall extends PongShape {
 		polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(
 				byteRotation, MathUtils.TWOPI)));
 
-		return polygon;
+        graphics.setColor(Settings.colorMap.get(color)); //TODO - Refactor Settings colormap to convert to bytes
+        graphics.fill(polygon);
+		return pointer;
 	}
 
 	@Override
@@ -111,7 +119,7 @@ public class Wall extends PongShape {
 		return null;
 	}
 
-	public Body getBody() {
+    public Body getBody() {
 		return body;
 	}
 

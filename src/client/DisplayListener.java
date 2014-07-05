@@ -3,10 +3,14 @@ package client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 import packets.HousewarmingPacket;
 
 public class DisplayListener extends Listener {
-	private Object[] currentUpdate;
+	private byte[] currentUpdate;
 	private PongClient pongClient;
 	private int[] relevantCharacters;
 	private long userId;
@@ -14,7 +18,7 @@ public class DisplayListener extends Listener {
 	public DisplayListener(PongClient pongClient) {
 		this.pongClient = pongClient;
 
-		currentUpdate = new Object[0]; // Game Piece Array, scores, timestamp
+		currentUpdate = new byte[0]; // Game Piece Array, scores, timestamp
 
 	}
 
@@ -29,9 +33,18 @@ public class DisplayListener extends Listener {
 		// System.out.println("currentUpdate has " +
 		// currentUpdate.getRenderList().length + " pieces in it");
 		if (packet instanceof Object[]) {
-			Object[] displayUpdate = (Object[]) packet;
-			currentUpdate = displayUpdate;
-
+            currentUpdate = new byte[0];
+            ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(bytesOut);
+                oos.flush();
+                oos.writeObject(oos);
+                currentUpdate = bytesOut.toByteArray();
+                bytesOut.close();
+                oos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 		} else if (packet instanceof HousewarmingPacket) {
 			HousewarmingPacket housewarmingPacket = (HousewarmingPacket) packet;
 			pongClient.initialize(housewarmingPacket);
@@ -44,7 +57,7 @@ public class DisplayListener extends Listener {
 	 * Getters *
 	 */
 
-	public Object[] getRenderList() {
+	public byte[] getRenderList() {
 		return currentUpdate;
 	}
 

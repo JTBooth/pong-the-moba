@@ -8,15 +8,15 @@ import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 
-import pong.Settings;
-
 import java.util.Arrays;
 
+import pong.Settings;
 import utils.Bytes;
 
 public class Paddle extends PongShape {
@@ -25,7 +25,7 @@ public class Paddle extends PongShape {
     private float height;
     private char color;
 
-
+    public Paddle(){}
     public Paddle(float x, float y, float length, float width, char color, World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
@@ -44,6 +44,11 @@ public class Paddle extends PongShape {
         body.createFixture(fd);
         this.color = color;
         this.body = body;
+    }
+
+    @Override
+    public char getId() {
+        return ShapeRegistry.PADDLE;
     }
 
     @Override
@@ -70,12 +75,12 @@ public class Paddle extends PongShape {
     }
 
     @Override
-    public Shape deserialize(byte[] cereal) {
-        byte[] byteRotation = Arrays.copyOfRange(cereal, 0, 2);
-        byte byteX = cereal[2];
-        byte byteY = cereal[3];
-        byte byteHeight = cereal[4];
-        byte[] byteColor = Arrays.copyOfRange(cereal, 5, 7);
+    public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
+        byte[] byteRotation = Arrays.copyOfRange(cereal, pointer+=2, 2);
+        byte byteX = cereal[pointer++];
+        byte byteY = cereal[pointer++];
+        byte byteHeight = cereal[pointer++];
+        byte[] byteColor = Arrays.copyOfRange(cereal, pointer+=2, 7);
 
         /** Create a rectangle given position and size **/
         Rectangle rect = new Rectangle(
@@ -92,7 +97,9 @@ public class Paddle extends PongShape {
         Polygon polygon = new Polygon(rect.getPoints());
         polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(byteRotation, MathUtils.TWOPI)));
 
-        return polygon;
+        graphics.setColor(Settings.colorMap.get(color));
+        graphics.fill(polygon);
+        return pointer;
     }
 
     @Override
