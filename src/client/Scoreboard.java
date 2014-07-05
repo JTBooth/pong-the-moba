@@ -42,7 +42,7 @@ public class Scoreboard {
     }
 
     /**
-     * Get Font for registering *
+     * Get Font for registering
      */
     public TrueTypeFont getFont() {
         return font;
