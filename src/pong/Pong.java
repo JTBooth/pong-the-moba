@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import packets.GamePiece;
 import server.Player;
 import server.PongServer;
+import shapes.PongShape;
 import utils.Debugger;
 
 public class Pong extends BasicGame {
@@ -160,9 +161,10 @@ public class Pong extends BasicGame {
 
     /**
      * Add/Remove Pong Objects *
+     * @param sr - the pong shape we want to remove
      */
 
-    public void removeSolidPiece(SolidRect sr) {
+    public void removePongShape(PongShape sr) {
         rectRenderList.remove(sr);
     }    /**
      * Game Loop: init(), render() and update() *

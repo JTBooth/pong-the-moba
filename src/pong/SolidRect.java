@@ -63,6 +63,6 @@ public class SolidRect {
 
     public void destroy() {
         body.getWorld().destroyBody(body);
-        Pong.pong.removeSolidPiece(this);
+        Pong.pong.removePongShape(this);
     }
 }
