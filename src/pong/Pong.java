@@ -20,10 +20,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import packets.GamePiece;
+import server.Laser;
 import server.Player;
 import server.PongServer;
+import shapes.Ball;
+import shapes.Paddle;
 import shapes.PongShape;
+import shapes.Wall;
+import spell.Spellkeeper;
 import utils.Debugger;
 
 public class Pong extends BasicGame {
@@ -36,9 +40,7 @@ public class Pong extends BasicGame {
     int positionIterations;
     int lastStepTime;
     long frame;
-    private List<Paddle> rectRenderList;
-    private List<Ball> ballRenderList;
-    private GamePiece[] pieceArray;
+    private List<PongShape> shapeList;
     private Player playerL;
     private Player playerR;
     private World world;
@@ -59,9 +61,7 @@ public class Pong extends BasicGame {
     private void createGame(PongServer bankedServer, Player bankedPlayer1,
                             Player bankedPlayer2) {
         /** Initialize Game Pieces **/
-        rectRenderList = new ArrayList<Paddle>();
-        ballRenderList = new ArrayList<Ball>();
-        pieceArray = new GamePiece[0];
+        shapeList = new ArrayList<PongShape>();
 
         /** Grab a server **/
         if (bankedServer == null) {
@@ -103,35 +103,6 @@ public class Pong extends BasicGame {
         }
     }
 
-    @Override
-    public void render(GameContainer arg0, Graphics graphics)
-            throws SlickException {
-        pieceArray = new GamePiece[rectRenderList.size()
-                + ballRenderList.size()];
-
-        int i = 0;
-        for (Paddle sr : rectRenderList) {
-            float[] pts = sr.getPointsInPixels();
-            Polygon poly = new Polygon(pts);
-            if (sr == playerL.getPaddle()) {
-                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '0');
-            } else if (sr == playerR.getPaddle()) {
-                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '2');
-            } else {
-                pieceArray[i] = new GamePiece(poly, ShapeType.POLY, '3');
-            }
-
-            ++i;
-        }
-        debbie.i("Rendered " + i + " Rects!!");
-        for (Ball sb : ballRenderList) {
-            pieceArray[i] = new GamePiece(new Circle(sb.getX(), sb.getY(),
-                    sb.getRadius()), ShapeType.POLY, sb.getColor());
-            ++i;
-        }
-        debbie.i("Rendered " + i + " Pieces!");
-    }
-
     public Ball makeLaser(Player player) {
         // Laser Starting and Direction
         float x, y;
@@ -161,12 +132,19 @@ public class Pong extends BasicGame {
 
     /**
      * Add/Remove Pong Objects *
-     * @param sr - the pong shape we want to remove
+     * @param ps - the pong shape we want to remove
      */
 
-    public void removePongShape(PongShape sr) {
-        rectRenderList.remove(sr);
-    }    /**
+    public void removePongShape(PongShape ps) {
+        shapeList.remove(ps);
+    }
+    
+
+    public void addShape(PongShape ps) {
+        shapeList.add(ps);
+    }
+    
+    /**
      * Game Loop: init(), render() and update() *
      */
 
@@ -190,35 +168,20 @@ public class Pong extends BasicGame {
         playerR.setPaddle(makePaddle(Player.RIGHT));
         frame = 0;
 
-        updateGamePieces();
+        addPaddlesAndBallToShapeList();
         this.spellkeeper = new Spellkeeper();
     }
 
-    public void removeBallPiece(Ball sb) {
-        ballRenderList.remove(sb);
-    }
-
-    public void addPlayer(Player player) {
-        if (playerL == null) {
-            playerL = player;
-            playerL.setWho(Player.LEFT);
-        } else if (playerR == null) {
-            playerR = player;
-            playerR.setWho(Player.RIGHT);
-        } else {
-            Log.info("No room for player " + player.getId());
-            // No room for this player.
-            // TODO send them an apology
-            debbie.w("Not enough room for another player!");
+    @Override
+    public void render(GameContainer arg0, Graphics graphics)
+            throws SlickException {
+    	Object[] displayPacket = new Object[shapeList.size()];
+        int i = 0;
+        for (PongShape ps : shapeList) {
+        	displayPacket[i] = ps.serialize();
         }
-    }
-
-    public void addBallPiece(Ball b) {
-        ballRenderList.add(b);
-    }
-
-    public void addRectPiece(Paddle rect) {
-        rectRenderList.add(rect);
+        debbie.i("Rendered " + i + " Pieces!");
+        server.sendUpdate(displayPacket);
     }
 
     @Override
@@ -239,7 +202,6 @@ public class Pong extends BasicGame {
         }
         spellkeeper.update();
         tendDelayedEffects();
-        server.sendUpdate(pieceArray, score.getScore());
     }
 
     /**
@@ -270,10 +232,10 @@ public class Pong extends BasicGame {
     /**
      * GET ALL GAME PIECES *
      */
-    private void updateGamePieces() {
-        rectRenderList.add(playerL.getPaddle());
-        rectRenderList.add(playerR.getPaddle());
-        ballRenderList.add(ball);
+    private void addPaddlesAndBallToShapeList() {
+        shapeList.add(playerL.getPaddle());
+        shapeList.add(playerR.getPaddle());
+        shapeList.add(ball);
     }
 
     /**
@@ -402,33 +364,46 @@ public class Pong extends BasicGame {
      */
 
     private void makeWalls() {
-        int width = (int) Settings.windowMeters[0];
-        int height = (int) Settings.windowMeters[1];
+        float width = Settings.windowMeters[0];
+        float height = Settings.windowMeters[1];
 
-        Paddle botWall = new Paddle(width / 2, -0.01f, width, 0.005f,
-                BodyType.KINEMATIC, getWorld());
-        botWall.getBody().getFixtureList().m_friction = 0;
+        Wall botWall = new Wall(width/2, height + 0.001f, 0.001f, width, 0f, false, (char) 0, getWorld());
 
-        Paddle topWall = new Paddle(width / 2, (float) (height + 0.01),
-                width, 0.005f, BodyType.KINEMATIC, getWorld());
-        topWall.getBody().getFixtureList().m_friction = 0;
+        Wall topWall = new Wall(width/2, height - 0.001f, 0.001f, width, 0f, false, (char) 0, getWorld());
     }
 
     private Paddle makePaddle(int player) {
         float x;
+        char color = 0;
         switch (player) {
             case Player.LEFT:
                 x = 0.5f;
+                color = '0';
                 break;
             case Player.RIGHT:
                 x = Settings.windowMeters[0] - 0.5f;
+                color = '1';
                 break;
             default:
                 x = 1f;
         }
         debbie.i("Making Paddle for player " + player);
-        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleWidth,
-                Settings.paddleLength, BodyType.KINEMATIC, getWorld());
+        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleWidth, Settings.paddleLength, color, getWorld());
+    }
+    
+    public void addPlayer(Player player) {
+        if (playerL == null) {
+            playerL = player;
+            playerL.setWho(Player.LEFT);
+        } else if (playerR == null) {
+            playerR = player;
+            playerR.setWho(Player.RIGHT);
+        } else {
+            Log.info("No room for player " + player.getId());
+            // No room for this player.
+            // TODO send them an apology
+            debbie.w("Not enough room for another player!");
+        }
     }
 
     private void makeBall(int height, int width) {

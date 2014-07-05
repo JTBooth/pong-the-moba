@@ -1,4 +1,4 @@
-package pong;
+package shapes;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.MathUtils;
@@ -13,9 +13,10 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 
+import pong.Settings;
+
 import java.util.Arrays;
 
-import shapes.PongShape;
 import utils.Bytes;
 
 public class Paddle extends PongShape {
@@ -25,20 +26,19 @@ public class Paddle extends PongShape {
     private char color;
 
 
-    public Paddle(float x, float y, float length, char color, BodyType bodyType, World world) {
+    public Paddle(float x, float y, float length, float width, char color, World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
-        bodyDef.type = bodyType;
+        bodyDef.type = BodyType.KINEMATIC;
         Body body = world.createBody(bodyDef);
+        
 
         PolygonShape polyShape = new PolygonShape();
         polyShape.setAsBox(Settings.paddleWidth / 2, length / 2);
         this.height = length;
         shape = polyShape;
 
-
         FixtureDef fd = new FixtureDef();
-        fd.density = 1.0f;
         fd.friction = 1f;
         fd.shape = polyShape;
         body.createFixture(fd);
@@ -48,6 +48,7 @@ public class Paddle extends PongShape {
 
     @Override
     public byte[] serialize() {
+    	
         byte[] serialized = new byte[7];
 
         byte[] rotation = Bytes.float2Byte2(body.getAngle(), MathUtils.TWOPI); // Rotation
@@ -59,7 +60,7 @@ public class Paddle extends PongShape {
         byte yposition = Bytes.float2Byte(body.getPosition().y, Settings.windowMeters[1]);  // Y position
         serialized[3] = yposition;
 
-        byte length = Bytes.float2Byte(height, Settings.windowMeters[1]);// Radius
+        byte length = Bytes.float2Byte(height, Settings.windowMeters[1]);// Length
         serialized[4] = length;
 
         byte[] color = Bytes.char2Bytes2(this.color);// Color
@@ -126,4 +127,9 @@ public class Paddle extends PongShape {
     public PolygonShape getShape() {
         return shape;
     }
+
+	@Override
+	public boolean visible() {
+		return true;
+	}
 }

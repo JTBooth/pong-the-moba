@@ -3,7 +3,7 @@ package server;
 import com.esotericsoftware.kryonet.Connection;
 
 import client.CommandUpdate;
-import pong.Paddle;
+import shapes.Paddle;
 
 public class Player {
     final public static int LEFT = 0;

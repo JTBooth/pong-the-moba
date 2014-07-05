@@ -1,7 +1,10 @@
-package pong;
+package server;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
+
+import pong.Settings;
+import shapes.Ball;
 
 /**
  * Created by sihrc on 6/29/14.

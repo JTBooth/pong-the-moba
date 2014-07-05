@@ -12,9 +12,12 @@ import pong.Pong;
 public abstract class PongShape {
     Body body;
 
+    public PongShape() {}
+    
     /** Serialization **/
     public abstract byte[] serialize();
     public abstract Shape deserialize(byte[] cereal);
+    public abstract boolean visible();
 
     /** Absstract Get Methods **/
     public abstract org.jbox2d.collision.shapes.Shape getBoxShape();

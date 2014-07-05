@@ -1,4 +1,4 @@
-package pong;
+package shapes;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.Shape;
@@ -11,9 +11,11 @@ import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 import org.newdawn.slick.geom.Circle;
 
+import pong.Pong;
+import pong.Settings;
+
 import java.util.Arrays;
 
-import shapes.PongShape;
 import utils.Bytes;
 
 public class Ball extends PongShape {
@@ -116,10 +118,15 @@ public class Ball extends PongShape {
 
     public void destroy() {
         body.getWorld().destroyBody(body);
-        Pong.pong.removeBallPiece(this);
+        Pong.pong.removePongShape(this);
     }
 
     public void setPosition(float x, float y) {
         body.setTransform(new Vec2(x, y), 0);
     }
+
+	@Override
+	public boolean visible() {
+		return true;
+	}
 }

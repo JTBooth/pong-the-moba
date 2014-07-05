@@ -38,11 +38,11 @@ public class PongServer extends Server {
         KryoRegisterer.register(getKryo());
     }
 
-    public void sendUpdate(Object[] renderList, Scoreboard board) {
+    public void sendUpdate(Object[] renderList) {
 
         if (renderList.length < 1) {
             System.out.println("renderList is empty");
         }
-        sendToAllUDP(update);
+        sendToAllUDP(renderList);
     }
 }

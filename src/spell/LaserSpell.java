@@ -1,6 +1,9 @@
-package pong;
+package spell;
 
+import pong.DestroyBall;
+import pong.Pong;
 import server.Player;
+import shapes.Ball;
 
 public class LaserSpell extends Spell {
     public LaserSpell(Pong pong, Player player) {

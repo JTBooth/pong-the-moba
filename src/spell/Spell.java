@@ -1,4 +1,4 @@
-package pong;
+package spell;
 
 import server.Player;
 
