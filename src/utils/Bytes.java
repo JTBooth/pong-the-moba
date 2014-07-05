@@ -21,7 +21,7 @@ public class Bytes {
     }
 
     public static float twoByte2Float(byte[] sizeByte, float scale){
-        char c = (char) ((((char) sizeByte[0]) << 8) | sizeByte[1]);
+        char c = twoBytes2Char(sizeByte);
         return (float) (scale/65536.0)*((float) (c+1));
     }
 
@@ -30,6 +30,10 @@ public class Bytes {
         ret[0] = (byte)((c & 0Xff00) >> 8);
         ret[1] = (byte)((c & 0x00ff));
         return ret;
+    }
+
+    public static char twoBytes2Char(byte[] sizeByte){
+        return (char) ((((char) sizeByte[0]) << 8) | sizeByte[1]);
     }
 
     public static void main(String[] args){

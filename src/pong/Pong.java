@@ -36,7 +36,7 @@ public class Pong extends BasicGame {
     int positionIterations;
     int lastStepTime;
     long frame;
-    private List<SolidRect> rectRenderList;
+    private List<Paddle> rectRenderList;
     private List<Ball> ballRenderList;
     private GamePiece[] pieceArray;
     private Player playerL;
@@ -59,7 +59,7 @@ public class Pong extends BasicGame {
     private void createGame(PongServer bankedServer, Player bankedPlayer1,
                             Player bankedPlayer2) {
         /** Initialize Game Pieces **/
-        rectRenderList = new ArrayList<SolidRect>();
+        rectRenderList = new ArrayList<Paddle>();
         ballRenderList = new ArrayList<Ball>();
         pieceArray = new GamePiece[0];
 
@@ -110,7 +110,7 @@ public class Pong extends BasicGame {
                 + ballRenderList.size()];
 
         int i = 0;
-        for (SolidRect sr : rectRenderList) {
+        for (Paddle sr : rectRenderList) {
             float[] pts = sr.getPointsInPixels();
             Polygon poly = new Polygon(pts);
             if (sr == playerL.getPaddle()) {
@@ -217,7 +217,7 @@ public class Pong extends BasicGame {
         ballRenderList.add(b);
     }
 
-    public void addRectPiece(SolidRect rect) {
+    public void addRectPiece(Paddle rect) {
         rectRenderList.add(rect);
     }
 
@@ -363,7 +363,7 @@ public class Pong extends BasicGame {
     }
 
 
-    private void rubberBandRotation(float request, SolidRect paddle) {
+    private void rubberBandRotation(float request, Paddle paddle) {
         float currentAngle = paddle.getBody().getAngle();
         if (currentAngle > 180) {
             currentAngle = currentAngle - 360;
@@ -405,16 +405,16 @@ public class Pong extends BasicGame {
         int width = (int) Settings.windowMeters[0];
         int height = (int) Settings.windowMeters[1];
 
-        SolidRect botWall = new SolidRect(width / 2, -0.01f, width, 0.005f,
+        Paddle botWall = new Paddle(width / 2, -0.01f, width, 0.005f,
                 BodyType.KINEMATIC, getWorld());
         botWall.getBody().getFixtureList().m_friction = 0;
 
-        SolidRect topWall = new SolidRect(width / 2, (float) (height + 0.01),
+        Paddle topWall = new Paddle(width / 2, (float) (height + 0.01),
                 width, 0.005f, BodyType.KINEMATIC, getWorld());
         topWall.getBody().getFixtureList().m_friction = 0;
     }
 
-    private SolidRect makePaddle(int player) {
+    private Paddle makePaddle(int player) {
         float x;
         switch (player) {
             case Player.LEFT:
@@ -427,7 +427,7 @@ public class Pong extends BasicGame {
                 x = 1f;
         }
         debbie.i("Making Paddle for player " + player);
-        return new SolidRect(x, Settings.windowMeters[1] / 2, Settings.paddleWidth,
+        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleWidth,
                 Settings.paddleLength, BodyType.KINEMATIC, getWorld());
     }
 

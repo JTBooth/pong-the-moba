@@ -3,7 +3,7 @@ package server;
 import com.esotericsoftware.kryonet.Connection;
 
 import client.CommandUpdate;
-import pong.SolidRect;
+import pong.Paddle;
 
 public class Player {
     final public static int LEFT = 0;
@@ -11,7 +11,7 @@ public class Player {
 
     private Connection connection;
     private int who;
-    private SolidRect paddle;
+    private Paddle paddle;
     private long id;
     private CommandUpdate commands;
 
@@ -24,14 +24,14 @@ public class Player {
     /**
      * GETTERS *
      */
-    public SolidRect getPaddle() {
+    public Paddle getPaddle() {
         return paddle;
     }
 
     /**
      * SETTERS *
      */
-    public void setPaddle(SolidRect paddle) {
+    public void setPaddle(Paddle paddle) {
         this.paddle = paddle;
     }
 
