@@ -1,5 +1,7 @@
 package pong;
 
+import shapes.Ball;
+
 public class DestroyBall extends DelayedEffect {
     Ball ball;
 

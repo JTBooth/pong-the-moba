@@ -46,11 +46,12 @@ public class Settings {
     /**
      * Colors *
      */
-    public static final HashMap<Character, Color> colorMap = new HashMap<Character, Color>() {{
+    public static final HashMap<Character, Color>  colorMap = new HashMap<Character, Color>() {{
+    	put(Character.MAX_VALUE, null); // do not render this
         put('0', new Color(255, 0, 0)); //red, p1
         put('1', new Color(0, 255, 0)); //green, ball
         put('2', new Color(0, 0, 255)); //blue, p2
-        put('3', new Color(128, 0, 128)); // purple, terrain
+        put('3', new Color(128, 0, 128)); // purple, terrain+lasers
     }};
     /**
      * Player Settings *
@@ -61,8 +62,8 @@ public class Settings {
      * Gameplay Settings *
      */
     public static float ballRadius = 0.2f;
-    public static float laserDensity = 10;
-    public static float laserVelocity = 5f;
+    public static float laserDensity = 50f;
+    public static float laserVelocity = 8f;
     public static float serveSpeed = 3f;
     public static float paddleLength = 2f;
     public static float paddleWidth = 0.2f;
@@ -70,6 +71,13 @@ public class Settings {
     public static float paddleSpeed = 2f;
     public static float maxPaddleRotateAngle = 0.5f;
     public static int maxMana = 5;
+    
+    /*
+     * Serialization Settings
+     */
+    public static byte SCALABLE_CIRCLE = 0;
+    public static byte SCALABLE_BASIC_PADDLE=1;
+    
 
     public static void refreshSettings() {
         File gameplaySettingsSpec = new File("/Users/rbooth/Documents/workspace/pong-the-moba/gameplaySettingsSpec");

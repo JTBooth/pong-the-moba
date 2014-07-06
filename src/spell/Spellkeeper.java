@@ -1,6 +1,8 @@
-package pong;
+package spell;
 
 import org.lwjgl.input.Keyboard;
+
+import pong.Pong;
 
 import java.util.HashMap;
 import java.util.Map;

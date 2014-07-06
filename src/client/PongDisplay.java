@@ -8,18 +8,19 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
-import packets.GamePiece;
 import pong.Settings;
+import shapes.PongShape;
+import shapes.InfoBoard;
 
 public class PongDisplay extends BasicGame {
-    private GamePiece[] pieces;
-    private Scoreboard scoreboard;
+    private byte[] pieces;
+    private InfoBoard scoreboard;
     private PongClient client;
     private DisplayListener displayListener;
 
     public PongDisplay() {
         super("pongDisp");
-        pieces = new GamePiece[0];
+        pieces = new byte[0];
         client = new PongClient(this);
         displayListener = client.getDisplayListener();
         AppGameContainer app;
@@ -46,27 +47,18 @@ public class PongDisplay extends BasicGame {
         /** Set Typewriter **/
         graphics.setFont(scoreboard.getFont());
 
-        /** Render Score Board **/
-        scoreboard.render();
-
         /** Render Game Pieces **/
-        for (GamePiece gp : pieces) {
-            graphics.setColor(gp.getColor());
-            graphics.fill(gp.getShape());
-        }
-
-
+        PongShape.render(pieces, graphics);
     }
 
     @Override
     public void init(GameContainer arg0) throws SlickException {
-        scoreboard = new Scoreboard(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 80), false));
+        scoreboard = new InfoBoard(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 80), false));
     }
 
     @Override
     public void update(GameContainer arg0, int arg1) throws SlickException {
         pieces = displayListener.getRenderList();
-        scoreboard.update(displayListener.getScores());
         int[] relevantCharacters = displayListener.getRelevantCharacters();
         int[] keysPressed = new int[relevantCharacters.length];
         for (int i = 0; i < relevantCharacters.length; ++i) {
