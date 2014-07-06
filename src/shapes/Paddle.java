@@ -75,7 +75,6 @@ public class Paddle extends PongShape {
 
         byte[] color = Bytes.char2Bytes2(this.color);// Color
         System.arraycopy(color, 0, serialized, pointer, color.length);
-        pointer += 2;
 
         Debugger.debugger.i("PADDLE Serialized byte array: " + Arrays.toString(serialized));
         return serialized;
