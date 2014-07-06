@@ -18,7 +18,6 @@ import java.util.Arrays;
 
 import pong.Settings;
 import utils.Bytes;
-import utils.Debugger;
 
 public class Wall extends PongShape {
 	private Body body;
@@ -37,12 +36,12 @@ public class Wall extends PongShape {
 		Body body = world.createBody(bodyDef);
 
 		PolygonShape polyShape = new PolygonShape();
-		polyShape.setAsBox(Settings.paddleWidth / 2, height / 2);
+		polyShape.setAsBox(width/ 2, height / 2);
 		this.height = height;
 		shape = polyShape;
 
 		FixtureDef fd = new FixtureDef();
-		fd.friction = 1f;
+		fd.friction = 0f;
 		fd.shape = polyShape;
 		body.createFixture(fd);
 		this.color = color;
@@ -56,7 +55,7 @@ public class Wall extends PongShape {
     }
 
 	@Override
-	public byte[] serialize() {
+	public byte[] serialize() throws IllegalArgumentException{
 		if (!visible) {
 			return null;
 		}
@@ -66,7 +65,7 @@ public class Wall extends PongShape {
         byte[] id = Bytes.char2Bytes2(getId());
         System.arraycopy(id, 0, serialized,pointer,pointer+=2);
 
-		byte[] rotation = Bytes.float2Byte2(body.getAngle(), MathUtils.TWOPI); // Rotation
+		byte[] rotation = Bytes.float2Byte2(getAngle(), MathUtils.TWOPI); // Rotation
 		System.arraycopy(rotation, 0, serialized, pointer, rotation.length);
         pointer += 2;
 

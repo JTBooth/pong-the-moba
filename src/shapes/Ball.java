@@ -17,6 +17,7 @@ import java.util.Arrays;
 
 import pong.Settings;
 import utils.Bytes;
+import utils.Debugger;
 
 public class Ball extends PongShape {
     private CircleShape shape;
@@ -69,29 +70,33 @@ public class Ball extends PongShape {
 
 
     @Override
-    public byte[] serialize() {
-        byte[] serialized = new byte[9];
+    public byte[] serialize() throws IllegalArgumentException {
+        byte[] serialized = new byte[11];
         int pointer = 0;
 
         byte[] id = Bytes.char2Bytes2(getId());
         System.arraycopy(id, 0, serialized,pointer,id.length);
         pointer += 2;
 
-        byte[] rotation = Bytes.float2Byte2(body.getAngle(), MathUtils.TWOPI); // Rotation
+        byte[] rotation = Bytes.float2Byte2(getAngle(), MathUtils.TWOPI);                  // Rotation
         System.arraycopy(rotation, 0, serialized,pointer,rotation.length);
         pointer+=2;
 
-        byte xposition = Bytes.float2Byte(body.getPosition().x, Settings.windowMeters[0]);  // X position
-        serialized[pointer++] = xposition;
+        byte[] xposition = Bytes.float2Byte2(body.getPosition().x, Settings.windowMeters[0]);   // X position
+        System.arraycopy(xposition, 0, serialized, pointer, xposition.length);
+        pointer += 2;
 
-        byte yposition = Bytes.float2Byte(body.getPosition().y, Settings.windowMeters[1]);  // Y position
-        serialized[pointer++] = yposition;
+        byte[] yposition = Bytes.float2Byte2(body.getPosition().y, Settings.windowMeters[1]);   // Y position
+        System.arraycopy(yposition, 0, serialized,pointer,yposition.length);
+        pointer += 2;
 
-        byte radius = Bytes.float2Byte(shape.getRadius(), Settings.windowMeters[1] / 2f);// Radius
+        byte radius = Bytes.float2Byte(shape.getRadius(), Settings.windowMeters[1] / 2f);       // Radius
         serialized[pointer++] = radius;
 
         byte[] color = Bytes.char2Bytes2(this.color);// Color
         System.arraycopy(color, 0, serialized, pointer, color.length);
+
+        Debugger.debugger.i("BALL Serialized byte array: " + Arrays.toString(serialized));
 
         return serialized;
     }
@@ -99,15 +104,15 @@ public class Ball extends PongShape {
     @Override
     public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
         byte[] rotation = Arrays.copyOfRange(cereal, pointer, pointer+=2);
-
-        byte xposition = cereal[pointer++];
-        byte yposition = cereal[pointer++];
+        byte[] xposition = Arrays.copyOfRange(cereal, pointer, pointer+=2);
+        byte[] yposition = Arrays.copyOfRange(cereal, pointer, pointer+=2);
         byte radius = cereal[pointer++];
 
-        graphics.setColor(Settings.colorMap.get(Arrays.copyOfRange(cereal, pointer, pointer+=2)));
+        graphics.setColor(Settings.colorMap.get(Bytes.twoBytes2Char(Arrays.copyOfRange(cereal, pointer, pointer += 2))));
+
         Circle circle = new Circle(
-                Settings.m2p(Bytes.byte2Float(xposition, Settings.windowMeters[0])),
-                Settings.m2p(Bytes.byte2Float(yposition, Settings.windowMeters[1])),
+                Settings.m2p(Bytes.twoByte2Float(xposition, Settings.windowMeters[0])),
+                Settings.m2p(Bytes.twoByte2Float(yposition, Settings.windowMeters[1])),
                 Settings.m2p(Bytes.byte2Float(radius, Settings.windowMeters[1]/2f))
         );
         circle.transform(Transform.createRotateTransform(Bytes.twoByte2Float(rotation, MathUtils.TWOPI)));

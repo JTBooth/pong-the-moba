@@ -62,8 +62,8 @@ public class Settings {
      * Gameplay Settings *
      */
     public static float ballRadius = 0.2f;
-    public static float laserDensity = 10;
-    public static float laserVelocity = 5f;
+    public static float laserDensity = 50f;
+    public static float laserVelocity = 8f;
     public static float serveSpeed = 3f;
     public static float paddleLength = 2f;
     public static float paddleWidth = 0.2f;

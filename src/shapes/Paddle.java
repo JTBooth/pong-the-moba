@@ -52,7 +52,7 @@ public class Paddle extends PongShape {
     }
 
     @Override
-    public byte[] serialize() {
+    public byte[] serialize() throws IllegalArgumentException{
         byte[] serialized = new byte[9];
         int pointer = 0;
 
@@ -60,7 +60,7 @@ public class Paddle extends PongShape {
         System.arraycopy(id, 0, serialized, pointer,id.length);
         pointer += 2;
 
-        byte[] rotation = Bytes.float2Byte2(body.getAngle(), MathUtils.TWOPI); // Rotation
+        byte[] rotation = Bytes.float2Byte2(getAngle(), MathUtils.TWOPI); // Rotation
         System.arraycopy(rotation, 0, serialized,pointer, rotation.length);
         pointer += 2;
 
@@ -77,7 +77,7 @@ public class Paddle extends PongShape {
         System.arraycopy(color, 0, serialized, pointer, color.length);
         pointer += 2;
 
-        Debugger.debugger.i("Serialized byte array: " + Arrays.toString(serialized));
+        Debugger.debugger.i("PADDLE Serialized byte array: " + Arrays.toString(serialized));
         return serialized;
     }
 

@@ -1,5 +1,6 @@
 package shapes;
 
+import org.jbox2d.common.MathUtils;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import org.newdawn.slick.Graphics;
@@ -18,7 +19,14 @@ public abstract class PongShape {
     Body body;
     
     /** Serialization **/
-    public abstract byte[] serialize();
+    public byte[] serialize_(){
+        try {
+            return this.serialize();
+        } catch (IllegalArgumentException e) {
+            return new byte[0];
+        }
+    }
+    public abstract byte[] serialize() throws IllegalArgumentException;
     public abstract int deserialize(byte[] cereal, int pointer, Graphics graphics);
     public abstract boolean visible();
 
@@ -42,6 +50,15 @@ public abstract class PongShape {
             Debugger.debugger.i(ShapeRegistry.get(shape).getClass().getSimpleName());
             pointer = ShapeRegistry.get(shape).deserialize(bytes, pointer, graphics);
         }
+    }
+
+    public float getAngle() {
+        float angle = body.getAngle();
+        angle = angle % MathUtils.TWOPI;
+        if (angle < 0) {
+            angle += MathUtils.TWOPI;
+        }
+        return angle;
     }
 
     /** Remove from world **/

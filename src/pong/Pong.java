@@ -175,9 +175,12 @@ public class Pong extends BasicGame {
             throws SlickException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Debugger.debugger.d("Shape List " + shapeList.size());
+        byte[] cereal;
         for (PongShape ps : shapeList){
             try {
-                outputStream.write(ps.serialize());
+                cereal = ps.serialize_();
+                if (cereal.length > 0)
+                    outputStream.write(cereal);
             } catch (IOException e) {
                 debbie.e(ps.getId() + " failed to write to bytearrayoutputstream " + e.getMessage());
             }
@@ -370,7 +373,7 @@ public class Pong extends BasicGame {
 
         Wall botWall = new Wall(width/2, height + 0.001f, 0.001f, width, 0f, false, (char) 0, getWorld());
 
-        Wall topWall = new Wall(width/2, height - 0.001f, 0.001f, width, 0f, false, (char) 0, getWorld());
+        Wall topWall = new Wall(width/2, 0      - 0.001f, 0.001f, width, 0f, false, (char) 0, getWorld());
     }
 
     private Paddle makePaddle(int player) {
