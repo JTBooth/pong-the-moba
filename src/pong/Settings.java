@@ -70,6 +70,8 @@ public class Settings {
     public static float paddleDistance = .5f;
     public static float paddleSpeed = 2f;
     public static float maxPaddleRotateAngle = 0.5f;
+    public static float paddleSpringConstant = 2f;
+    public static float paddleDampingConstant = .2f;
     public static int maxMana = 5;
     
     /*

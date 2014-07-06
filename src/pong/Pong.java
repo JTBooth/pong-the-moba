@@ -329,29 +329,51 @@ public class Pong extends BasicGame {
     }
 
 
-    private void rubberBandRotation(float request, Paddle paddle) {
+//    private void rubberBandRotation(float isClockwise, Paddle paddle) {
+//        float currentAngle = paddle.getBody().getAngle();
+//        if (currentAngle > 180) {
+//            currentAngle = currentAngle - 360;
+//        }
+//
+//        if (isClockwise == 0) {
+//            paddle.getBody().setAngularVelocity(-currentAngle * 4);
+//        } else {
+//            float rate;
+//            if (currentAngle * isClockwise > 0) {
+//                currentAngle = Math.abs(currentAngle);
+//                rate = Math.abs(Settings.maxPaddleRotateAngle - currentAngle)
+//                        / Settings.maxPaddleRotateAngle;
+//            } else {
+//                currentAngle = Math.abs(currentAngle);
+//                rate = Math.abs(Settings.maxPaddleRotateAngle + currentAngle)
+//                        / Settings.maxPaddleRotateAngle;
+//            }
+//
+//            paddle.getBody().setAngularVelocity(isClockwise * rate);
+//        }
+//    }
+
+    private void rubberBandRotation(float isClockwise, Paddle paddle){
+        /** Getting current angle of body **/
         float currentAngle = paddle.getBody().getAngle();
-        if (currentAngle > 180) {
-            currentAngle = currentAngle - 360;
+        float currentVelocity = paddle.getBody().getAngularVelocity();
+        if (currentAngle > 180){
+            currentAngle -= 360;
         }
 
-        if (request == 0) {
-            paddle.getBody().setAngularVelocity(-currentAngle * 4);
-        } else {
-            float rate;
-            if (currentAngle * request > 0) {
-                currentAngle = Math.abs(currentAngle);
-                rate = Math.abs(Settings.maxPaddleRotateAngle - currentAngle)
-                        / Settings.maxPaddleRotateAngle;
-            } else {
-                currentAngle = Math.abs(currentAngle);
-                rate = Math.abs(Settings.maxPaddleRotateAngle + currentAngle)
-                        / Settings.maxPaddleRotateAngle;
-            }
+        /** Create initial force **/
+        float force = 0f;
 
-            paddle.getBody().setAngularVelocity(request * rate);
-        }
+        /** Paddle Push **/
+        force += isClockwise * (Settings.maxPaddleRotateAngle * Settings.paddleSpringConstant);
 
+        /** Rubber Band **/
+        force += -currentAngle * (Settings.paddleSpringConstant);
+
+        /** Damper Force **/
+        force += -currentVelocity * Settings.paddleDampingConstant;
+
+        paddle.getBody().setAngularVelocity(currentVelocity + force);
     }
 
     public void tendDelayedEffects() {
