@@ -46,7 +46,7 @@ public class Settings {
     /**
      * Colors *
      */
-    public static final HashMap<Character, Color> colorMap = new HashMap<Character, Color>() {{
+    public static final HashMap<Character, Color>  colorMap = new HashMap<Character, Color>() {{
     	put(Character.MAX_VALUE, null); // do not render this
         put('0', new Color(255, 0, 0)); //red, p1
         put('1', new Color(0, 255, 0)); //green, ball

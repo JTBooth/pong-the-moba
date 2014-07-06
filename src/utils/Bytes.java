@@ -49,7 +49,7 @@ public class Bytes {
     }
 
     private static void test_float(){
-        float a = 1.1f;
+        float a = 0.5f;
         System.out.println(a);
 
         byte res[] = float2Byte2(a, MathUtils.TWOPI);

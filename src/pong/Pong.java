@@ -389,7 +389,7 @@ public class Pong extends BasicGame {
                 x = 1f;
         }
         debbie.i("Making Paddle for player " + player);
-        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleWidth, Settings.paddleLength, color, getWorld());
+        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleLength, color, getWorld());
     }
     
     public void addPlayer(Player player) {

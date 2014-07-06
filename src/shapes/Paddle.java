@@ -22,11 +22,11 @@ import utils.Debugger;
 
 public class Paddle extends PongShape {
     private PolygonShape shape;
-    private float height;
+    private float length;
     private char color;
 
     public Paddle(){}
-    public Paddle(float x, float y, float length, float width, char color, World world) {
+    public Paddle(float x, float y, float length, char color, World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
         bodyDef.type = BodyType.KINEMATIC;
@@ -35,7 +35,7 @@ public class Paddle extends PongShape {
 
         PolygonShape polyShape = new PolygonShape();
         polyShape.setAsBox(Settings.paddleWidth / 2, length / 2);
-        this.height = length;
+        this.length = length;
         shape = polyShape;
 
         FixtureDef fd = new FixtureDef();
@@ -57,7 +57,9 @@ public class Paddle extends PongShape {
         int pointer = 0;
 
         byte[] id = Bytes.char2Bytes2(getId());
-        System.arraycopy(id, 0, serialized,pointer, pointer+=id.length);
+        System.arraycopy(id, 0, serialized, pointer,id.length);
+        pointer += 2;
+
         byte[] rotation = Bytes.float2Byte2(body.getAngle(), MathUtils.TWOPI); // Rotation
         System.arraycopy(rotation, 0, serialized,pointer, rotation.length);
         pointer += 2;
@@ -68,7 +70,7 @@ public class Paddle extends PongShape {
         byte yposition = Bytes.float2Byte(body.getPosition().y, Settings.windowMeters[1]);  // Y position
         serialized[pointer++] = yposition;
 
-        byte length = Bytes.float2Byte(height, Settings.windowMeters[1]);// Length
+        byte length = Bytes.float2Byte(this.length, Settings.windowMeters[1]);// Length
         serialized[pointer++] = length;
 
         byte[] color = Bytes.char2Bytes2(this.color);// Color
@@ -87,27 +89,30 @@ public class Paddle extends PongShape {
         byte byteY = cereal[pointer++];
         byte byteHeight = cereal[pointer++];
         byte[] byteColor = Arrays.copyOfRange(cereal, pointer, pointer += 2);
+        Debugger.debugger.i("FUCKING PADDLE IS ALIVE ");
+
+        int x = Settings.m2p(Bytes.byte2Float(byteX, Settings.windowMeters[0]));
+        int y = Settings.m2p(Bytes.byte2Float(byteY, Settings.windowMeters[1]));
+        int width = Settings.m2p(Settings.paddleWidth);
+        int length = Settings.m2p(Bytes.byte2Float(byteHeight, Settings.windowMeters[1]));
 
         /** Create a rectangle given position and size **/
         Rectangle rect = new Rectangle(
-                Settings.m2p(Bytes.byte2Float(byteX, Settings.windowMeters[0])),
-                Settings.m2p(Bytes.byte2Float(byteY, Settings.windowMeters[1])),
-                Settings.paddleWidth,
-                Settings.m2p(Bytes.byte2Float(byteHeight, Settings.windowMeters[1]/2f))
-        );
+                x - width/2,
+                y - length/2,
+                width,
+                length)
+        ;
 
         Debugger.debugger.i("Rectangle Created " + Arrays.toString(rect.getPoints()));
 
         /** Get Color **/
         this.color = Bytes.twoBytes2Char(byteColor);
-        Debugger.debugger.d("COLOR " + color);
+        graphics.setColor(Settings.colorMap.get(this.color));
 
         /** Polygon to rotate**/
         Polygon polygon = new Polygon(rect.getPoints());
-        polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(byteRotation, MathUtils.TWOPI)));
-
-        graphics.setColor(Settings.colorMap.get(this.color));
-        graphics.fill(polygon);
+        graphics.fill(polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(byteRotation, MathUtils.TWOPI), polygon.getCenterX(), polygon.getCenterY())));
         return pointer;
     }
 
@@ -128,7 +133,7 @@ public class Paddle extends PongShape {
     public float[] getPointsInPixels() {
         Vec2 center = body.getPosition();
         Vec2[] points = Arrays.copyOf(shape.getVertices(), 4);
-        shape.setAsBox(Settings.paddleWidth / 2, height / 2, new Vec2(0, 0), body.getAngle());
+        shape.setAsBox(Settings.paddleWidth / 2, length / 2, new Vec2(0, 0), body.getAngle());
         float[] ret = new float[points.length * 2];
         int j = 0;
         for (int i = 0; i < points.length; ++i, j += 2) {
