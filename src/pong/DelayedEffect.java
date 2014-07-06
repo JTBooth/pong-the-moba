@@ -4,6 +4,10 @@ package pong;
 public abstract class DelayedEffect {
     public int ticksRemaining;
 
+    public DelayedEffect(int timeout) {
+    	this.ticksRemaining=timeout;
+    }
+    
     public void tick() {
         if (ticksRemaining > 0) {
             ticksRemaining -= 1;
@@ -13,7 +17,7 @@ public abstract class DelayedEffect {
         }
     }
 
-    abstract boolean timeToAct();
+    public abstract boolean timeToAct();
 
-    abstract void takeAction();
+    public abstract void takeAction();
 }

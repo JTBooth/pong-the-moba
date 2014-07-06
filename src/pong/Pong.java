@@ -309,6 +309,10 @@ public class Pong extends BasicGame {
                     spellkeeper.tryToCast(player, Keyboard.KEY_SPACE);
                     break;
                 }
+                case Keyboard.KEY_Q: {
+                	spellkeeper.tryToCast(player, Keyboard.KEY_SPACE);
+                    break;
+                }
                 case Keyboard.KEY_0: {
                     if (frame > Settings.minFramesBeforeReset) {
                         resetGame();

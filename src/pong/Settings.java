@@ -28,6 +28,7 @@ public class Settings {
                     Keyboard.KEY_UP,
                     Keyboard.KEY_DOWN,    // movement
                     Keyboard.KEY_SPACE,   // casts laser
+                    Keyboard.KEY_Q,		  // casts restitution boost
                     Keyboard.KEY_0        // resets game with new settings
             };
     public static final int minFramesBeforeReset = 180;
@@ -62,8 +63,8 @@ public class Settings {
      * Gameplay Settings *
      */
     public static float ballRadius = 0.2f;
-    public static float laserDensity = 50f;
-    public static float laserVelocity = 8f;
+    public static float laserDensity = 50000f;
+    public static float laserVelocity = 25f;
     public static float serveSpeed = 3f;
     public static float paddleLength = 2f;
     public static float paddleWidth = 0.2f;

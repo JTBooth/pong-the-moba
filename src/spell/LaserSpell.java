@@ -1,6 +1,5 @@
 package spell;
 
-import pong.DestroyBall;
 import pong.Pong;
 import server.Player;
 import shapes.Ball;

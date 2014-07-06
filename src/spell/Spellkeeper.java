@@ -19,10 +19,19 @@ public class Spellkeeper {
     int i = 0;
 
     public Spellkeeper() {
-        p1spells = new Spell[]{new LaserSpell(Pong.pong, Pong.pong.getPlayer(0))};
-        p2spells = new Spell[]{new LaserSpell(Pong.pong, Pong.pong.getPlayer(1))};
+        p1spells = new Spell[]{
+        		new LaserSpell(Pong.pong, Pong.pong.getPlayer(0)),
+        		new RestitutionBoost("Restitution Boost", 3, 300, Pong.pong.getPlayer(0))
+        		};
+        
+        p2spells = new Spell[]{
+        		new LaserSpell(Pong.pong, Pong.pong.getPlayer(1)),
+        		new RestitutionBoost("Restitution Boost", 3, 300, Pong.pong.getPlayer(1))
+        		};
+        
         commandSpellMap = new HashMap<Integer, Integer>();
         commandSpellMap.put(Keyboard.KEY_SPACE, 0);
+        commandSpellMap.put(Keyboard.KEY_Q, 1);
         mana = new int[]{0, 0};
     }
 
