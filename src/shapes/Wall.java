@@ -18,6 +18,7 @@ import java.util.Arrays;
 
 import pong.Settings;
 import utils.Bytes;
+import utils.Debugger;
 
 public class Wall extends PongShape {
 	private Body body;
@@ -84,7 +85,8 @@ public class Wall extends PongShape {
 		System.arraycopy(color, 0, serialized, pointer, color.length);
         pointer += 2;
 
-		return serialized;
+        Debugger.debugger.i("WALL Serialized byte array: " + Arrays.toString(serialized));
+        return serialized;
 	}
 
 	@Override
@@ -110,6 +112,7 @@ public class Wall extends PongShape {
 		polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(
 				byteRotation, MathUtils.TWOPI)));
 
+        Debugger.debugger.i("WALL points deserialized: " + Arrays.toString(polygon.getPoints()));
         graphics.setColor(Settings.colorMap.get(color)); //TODO - Refactor Settings colormap to convert to bytes
         graphics.fill(polygon);
 		return pointer;

@@ -89,7 +89,6 @@ public class Paddle extends PongShape {
         byte byteY = cereal[pointer++];
         byte byteHeight = cereal[pointer++];
         byte[] byteColor = Arrays.copyOfRange(cereal, pointer, pointer += 2);
-        Debugger.debugger.i("FUCKING PADDLE IS ALIVE ");
 
         int x = Settings.m2p(Bytes.byte2Float(byteX, Settings.windowMeters[0]));
         int y = Settings.m2p(Bytes.byte2Float(byteY, Settings.windowMeters[1]));
@@ -101,10 +100,8 @@ public class Paddle extends PongShape {
                 x - width/2,
                 y - length/2,
                 width,
-                length)
-        ;
-
-        Debugger.debugger.i("Rectangle Created " + Arrays.toString(rect.getPoints()));
+                length
+        );
 
         /** Get Color **/
         this.color = Bytes.twoBytes2Char(byteColor);
@@ -113,6 +110,8 @@ public class Paddle extends PongShape {
         /** Polygon to rotate**/
         Polygon polygon = new Polygon(rect.getPoints());
         graphics.fill(polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(byteRotation, MathUtils.TWOPI), polygon.getCenterX(), polygon.getCenterY())));
+
+        Debugger.debugger.i("Rectangle Created " + Arrays.toString(rect.getPoints()));
         return pointer;
     }
 
