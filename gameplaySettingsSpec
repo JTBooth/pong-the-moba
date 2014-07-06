@@ -1,8 +1,8 @@
 0.2f #ball radius
 10f  #laser density
-5f   #laser speed
+10000f   #laser speed
 3f   #serve speed
-3f   #paddle length
+6f   #paddle length
 2f   #paddle speed
 0.5f #maximum paddle rotation (radians)
 5    #max mana
