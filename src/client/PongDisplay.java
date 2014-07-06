@@ -3,20 +3,22 @@ package client;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
 import pong.Settings;
-import shapes.PongShape;
 import shapes.InfoBoard;
+import shapes.PongShape;
 
 public class PongDisplay extends BasicGame {
     private byte[] pieces;
     private InfoBoard scoreboard;
     private PongClient client;
     private DisplayListener displayListener;
+    private Font font;
 
     public PongDisplay() {
         super("pongDisp");
@@ -45,7 +47,7 @@ public class PongDisplay extends BasicGame {
     @Override
     public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
         /** Set Typewriter **/
-        graphics.setFont(scoreboard.getFont());
+        graphics.setFont(font);
 
         /** Render Game Pieces **/
         PongShape.render(pieces, graphics);
@@ -53,7 +55,7 @@ public class PongDisplay extends BasicGame {
 
     @Override
     public void init(GameContainer arg0) throws SlickException {
-        scoreboard = new InfoBoard(new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 80), false));
+        font = new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 80), false);
     }
 
     @Override

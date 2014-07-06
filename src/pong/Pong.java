@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import shapes.InfoBoard;
 import shapes.Laser;
 import server.Player;
 import server.PongServer;
@@ -45,7 +46,7 @@ public class Pong extends BasicGame {
     private Spellkeeper spellkeeper;
     private Ball ball;
     private PongServer server;
-    private Scorekeeper score;
+    private InfoBoard score;
 
     public Pong(String title) {
         super(title);
@@ -83,7 +84,7 @@ public class Pong extends BasicGame {
         velocityIterations = Settings.velocityIterations;
         positionIterations = Settings.positionIterations;
         frame = 0;
-        score = new Scorekeeper(Settings.winningScore);
+        score = new InfoBoard(Settings.winningScore);
 
         /** Start the Game **/
         AppGameContainer app;
@@ -166,7 +167,7 @@ public class Pong extends BasicGame {
         playerR.setPaddle(makePaddle(Player.RIGHT));
         frame = 0;
 
-        addPaddlesAndBallToShapeList();
+        addToShapeList();
         this.spellkeeper = new Spellkeeper();
     }
 
@@ -198,10 +199,10 @@ public class Pong extends BasicGame {
         step(p1keys, p2keys);
 
         if (ball.getX() < 0) {
-            score.playerScore(1, 1);
+            score.playerScored(Player.LEFT);
             resetBall(1);
         } else if (ball.getX() > Settings.windowSize[0]) {
-            score.playerScore(0, 1);
+            score.playerScored(Player.RIGHT);
             resetBall(0);
         }
         spellkeeper.update();
@@ -236,10 +237,11 @@ public class Pong extends BasicGame {
     /**
      * GET ALL GAME PIECES *
      */
-    private void addPaddlesAndBallToShapeList() {
+    private void addToShapeList() {
         shapeList.add(playerL.getPaddle());
         shapeList.add(playerR.getPaddle());
         shapeList.add(ball);
+        shapeList.add(score);
     }
 
     /**

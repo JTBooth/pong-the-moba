@@ -13,9 +13,6 @@ public class ShapeRegistry {
     final static public char INFO_BOARD = '5';
 
     public static PongShape get(char key) {
-        Debugger.debugger.i("KEY " + key);
-        Debugger.debugger.i("SAVED KEY " + BALL);
-
         switch (key){
             case BALL:
                 return new Ball();
