@@ -199,11 +199,11 @@ public class Pong extends BasicGame {
         step(p1keys, p2keys);
 
         if (ball.getX() < 0) {
-            score.playerScored(Player.LEFT);
-            resetBall(1);
-        } else if (ball.getX() > Settings.windowSize[0]) {
             score.playerScored(Player.RIGHT);
-            resetBall(0);
+            resetBall(Player.RIGHT);
+        } else if (ball.getX() > Settings.windowSize[0]) {
+            score.playerScored(Player.LEFT);
+            resetBall(Player.LEFT);
         }
         spellkeeper.update();
         tendDelayedEffects();
