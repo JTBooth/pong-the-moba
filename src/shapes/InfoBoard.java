@@ -47,10 +47,13 @@ public class InfoBoard extends PongShape{
         int pointer = 0;
 
         //Shape ID
-        System.arraycopy(Bytes.char2Bytes2(getId()), 0, serialized, pointer+=2, 2);
+        System.arraycopy(Bytes.char2Bytes2(getId()), 0, serialized, pointer, 2);
+        pointer += 2;
+
 
         //Left Score
-        serialized[pointer++] = left;
+        serialized[pointer] = left;
+        pointer++;
 
         //Right Score
         serialized[pointer] = right;

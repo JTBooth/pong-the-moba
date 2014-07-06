@@ -174,6 +174,7 @@ public class Pong extends BasicGame {
     public void render(GameContainer arg0, Graphics graphics)
             throws SlickException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Debugger.debugger.d("Shape List " + shapeList.size());
         for (PongShape ps : shapeList){
             try {
                 outputStream.write(ps.serialize());
@@ -382,7 +383,7 @@ public class Pong extends BasicGame {
                 break;
             case Player.RIGHT:
                 x = Settings.windowMeters[0] - 0.5f;
-                color = '1';
+                color = '2';
                 break;
             default:
                 x = 1f;

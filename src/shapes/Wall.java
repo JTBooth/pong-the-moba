@@ -18,6 +18,7 @@ import java.util.Arrays;
 
 import pong.Settings;
 import utils.Bytes;
+import utils.Debugger;
 
 public class Wall extends PongShape {
 	private Body body;
@@ -59,35 +60,41 @@ public class Wall extends PongShape {
 		if (!visible) {
 			return null;
 		}
-		byte[] serialized = new byte[7];
+		byte[] serialized = new byte[9];
+        int pointer = 0;
+
+        byte[] id = Bytes.char2Bytes2(getId());
+        System.arraycopy(id, 0, serialized,pointer,pointer+=2);
 
 		byte[] rotation = Bytes.float2Byte2(body.getAngle(), MathUtils.TWOPI); // Rotation
-		System.arraycopy(rotation, 0, serialized, 0, 2);
+		System.arraycopy(rotation, 0, serialized, pointer, rotation.length);
+        pointer += 2;
 
-		byte xposition = Bytes.float2Byte(body.getPosition().x,
+        byte xposition = Bytes.float2Byte(body.getPosition().x,
 				Settings.windowMeters[0]); // X position
-		serialized[2] = xposition;
+		serialized[pointer++] = xposition;
 
 		byte yposition = Bytes.float2Byte(body.getPosition().y,
 				Settings.windowMeters[1]); // Y position
-		serialized[3] = yposition;
+		serialized[pointer++] = yposition;
 
 		byte length = Bytes.float2Byte(height, Settings.windowMeters[1]);// Length
-		serialized[4] = length;
+		serialized[pointer++] = length;
 
 		byte[] color = Bytes.char2Bytes2(this.color);// Color
-		System.arraycopy(color, 5, serialized, 0, 2);
+		System.arraycopy(color, 0, serialized, pointer, color.length);
+        pointer += 2;
 
 		return serialized;
 	}
 
 	@Override
 	public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
-		byte[] byteRotation = Arrays.copyOfRange(cereal, pointer+=2, 2);
+		byte[] byteRotation = Arrays.copyOfRange(cereal, pointer, pointer+=2);
 		byte byteX = cereal[pointer++];
 		byte byteY = cereal[pointer++];
 		byte byteHeight = cereal[pointer++];
-		byte[] byteColor = Arrays.copyOfRange(cereal, pointer+=2, 7);
+		byte[] byteColor = Arrays.copyOfRange(cereal, pointer, pointer+=2);
 
 		/** Create a rectangle given position and size **/
 		Rectangle rect = new Rectangle(Settings.m2p(Bytes.byte2Float(byteX,

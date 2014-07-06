@@ -20,16 +20,15 @@ import utils.Bytes;
 
 public class Ball extends PongShape {
     private CircleShape shape;
-    private Body body;
     private char color;
     private float radius;
 
     public Ball(){}
     public Ball(float x, float y, float r, World world, boolean isBullet, char color) {
-        System.out.println("CALLED CONSTRUCTOR");
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
         bodyDef.type = BodyType.DYNAMIC;
+
         Body body = world.createBody(bodyDef);
         body.setBullet(isBullet);
         CircleShape circleShape = new CircleShape();
@@ -71,38 +70,41 @@ public class Ball extends PongShape {
 
     @Override
     public byte[] serialize() {
-        byte[] serialized = new byte[7];
-        int i = 0;
+        byte[] serialized = new byte[9];
+        int pointer = 0;
 
-        byte[] id = Bytes.float2Byte2(getId(), 100);
-        System.arraycopy(id, 0, serialized,i+=2,2);
+        byte[] id = Bytes.char2Bytes2(getId());
+        System.arraycopy(id, 0, serialized,pointer,id.length);
+        pointer += 2;
 
         byte[] rotation = Bytes.float2Byte2(body.getAngle(), MathUtils.TWOPI); // Rotation
-        System.arraycopy(rotation, 0, serialized,i+=2,2);
+        System.arraycopy(rotation, 0, serialized,pointer,rotation.length);
+        pointer+=2;
 
         byte xposition = Bytes.float2Byte(body.getPosition().x, Settings.windowMeters[0]);  // X position
-        serialized[i++] = xposition;
+        serialized[pointer++] = xposition;
 
         byte yposition = Bytes.float2Byte(body.getPosition().y, Settings.windowMeters[1]);  // Y position
-        serialized[i++] = yposition;
+        serialized[pointer++] = yposition;
 
         byte radius = Bytes.float2Byte(shape.getRadius(), Settings.windowMeters[1] / 2f);// Radius
-        serialized[i++] = radius;
+        serialized[pointer++] = radius;
 
         byte[] color = Bytes.char2Bytes2(this.color);// Color
-        System.arraycopy(color, 0, serialized, i++, 2);
+        System.arraycopy(color, 0, serialized, pointer, color.length);
 
         return serialized;
     }
 
     @Override
     public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
-        byte[] rotation = Arrays.copyOfRange(cereal, pointer += 2, 2);
+        byte[] rotation = Arrays.copyOfRange(cereal, pointer, pointer+=2);
+
         byte xposition = cereal[pointer++];
         byte yposition = cereal[pointer++];
         byte radius = cereal[pointer++];
 
-        graphics.setColor(Settings.colorMap.get(Arrays.copyOfRange(cereal, pointer+=2, 7)));
+        graphics.setColor(Settings.colorMap.get(Arrays.copyOfRange(cereal, pointer, pointer+=2)));
         Circle circle = new Circle(
                 Settings.m2p(Bytes.byte2Float(xposition, Settings.windowMeters[0])),
                 Settings.m2p(Bytes.byte2Float(yposition, Settings.windowMeters[1])),

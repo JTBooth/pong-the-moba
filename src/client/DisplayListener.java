@@ -3,10 +3,6 @@ package client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-
 import packets.HousewarmingPacket;
 
 public class DisplayListener extends Listener {
@@ -32,19 +28,8 @@ public class DisplayListener extends Listener {
 	public void received(Connection con, Object packet) {
 		// System.out.println("currentUpdate has " +
 		// currentUpdate.getRenderList().length + " pieces in it");
-		if (packet instanceof Object[]) {
-            currentUpdate = new byte[0];
-            ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-            try {
-                ObjectOutputStream oos = new ObjectOutputStream(bytesOut);
-                oos.flush();
-                oos.writeObject(oos);
-                currentUpdate = bytesOut.toByteArray();
-                bytesOut.close();
-                oos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+		if (packet instanceof byte[]) {
+            currentUpdate = (byte[]) packet;
 		} else if (packet instanceof HousewarmingPacket) {
 			HousewarmingPacket housewarmingPacket = (HousewarmingPacket) packet;
 			pongClient.initialize(housewarmingPacket);
