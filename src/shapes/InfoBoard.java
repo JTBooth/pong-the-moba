@@ -5,6 +5,7 @@ import org.newdawn.slick.Graphics;
 
 import java.util.Arrays;
 
+import org.newdawn.slick.geom.Rectangle;
 import pong.Settings;
 import server.Player;
 import utils.Bytes;
@@ -20,6 +21,10 @@ public class InfoBoard extends PongShape{
     private byte left = 0;
     private byte right = 0;
     private int winningScore;
+
+    /** Mana **/
+    private manaBar leftMana = new manaBar(Settings.maxMana, 0);
+    private manaBar rightMana = new manaBar(Settings.maxMana, Settings.windowSize[0] - Settings.manaBarWidth);
 
     /** Players **/
     private String p1name = "Player 1";
@@ -62,6 +67,11 @@ public class InfoBoard extends PongShape{
         }
     }
 
+    public void setMana(byte leftMana, byte rightMana) {
+        this.leftMana.setCurrentMana(leftMana);
+        this.rightMana.setCurrentMana(rightMana);
+    }
+
     @Override
     public char getId() {
         return ShapeRegistry.INFO_BOARD;
@@ -69,7 +79,7 @@ public class InfoBoard extends PongShape{
 
     @Override
     public byte[] serialize() {
-        byte[] serialized = new byte[4];
+        byte[] serialized = new byte[6];
         int pointer = 0;
 
         //Shape ID
@@ -83,6 +93,12 @@ public class InfoBoard extends PongShape{
 
         //Right Score
         serialized[pointer++] = right;
+
+        //Left Mana
+        serialized[pointer++] = leftMana.getCurrentMana();
+
+        //Right Mana
+        serialized[pointer++] = rightMana.getCurrentMana();
 
         Debugger.debugger.i("INFOBOARD Serialized byte array: " + Arrays.toString(serialized));
         return serialized;
@@ -99,6 +115,15 @@ public class InfoBoard extends PongShape{
         //Draw right score
         graphics.setColor(Settings.colorMap.get('2'));
         graphics.drawString(String.valueOf((int) cereal[pointer++]),Settings.scorePositions[2], Settings.scorePositions[3]);
+
+        //Draw left mana
+        leftMana.setCurrentMana(cereal[pointer++]);
+        leftMana.render(graphics);
+
+        //Draw right mana
+        rightMana.setCurrentMana(cereal[pointer++]);
+        rightMana.render(graphics);
+
         return pointer;
     }
 
@@ -115,5 +140,37 @@ public class InfoBoard extends PongShape{
     @Override
     public org.newdawn.slick.geom.Shape getSlickShape() {
         return null;
+    }
+
+    private class manaBar {
+        private byte maxMana;
+        private byte currentMana;
+        private float currentFraction;
+        private int x;
+
+        manaBar(byte maxMana, int x) {
+            this.maxMana=maxMana;
+            this.currentMana=0;
+            this.x=x;
+        }
+
+        byte getCurrentMana() {
+            return currentMana;
+        }
+
+        void setCurrentMana(byte currentMana) {
+            this.currentMana=currentMana;
+            this.currentFraction = (float) (((double) currentMana)/((double)maxMana));
+        }
+
+        void render(Graphics graphics) {
+            graphics.setColor(Settings.colorMap.get('4'));
+            int height = (int) (currentFraction*Settings.windowSize[1]);
+            int y = Settings.windowSize[1]/2 - height/2;
+
+            Debugger.debugger.d("mana bar constructed with x: " + x + " y: " + y + " width: " + Settings.manaBarWidth + " height: " + height + " cf: " + currentFraction);
+            Rectangle rect = new Rectangle(x, Settings.windowSize[1]/2 - height/2, Settings.manaBarWidth, height);
+            graphics.fill(rect);
+        }
     }
 }

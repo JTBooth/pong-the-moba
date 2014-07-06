@@ -34,7 +34,7 @@ public class Settings {
     public static final int minFramesBeforeReset = 180;
     public static final double PTM_RATIO = 100.0;
     public static final String title = "Pong the Moba";
-    public static final float laserRadius = 0.05f;
+    public static final float laserRadius = 0.15f;
     /**
      * Display Settings *
      */
@@ -42,8 +42,7 @@ public class Settings {
     public static final float[] scorePositions = new float[]{windowSize[0] / 4 - 40, windowSize[1] / 2 - 40, 3 * windowSize[0] / 4 - 40, windowSize[1] / 2 - 40};
     public static final float[] windowMeters = new float[]{p2m(800), p2m(600)};
     public static final float margin = 10f;
-    public static final SerializableColor paddleColor = new SerializableColor(255, 0, 0);
-    public static final SerializableColor ballColor = new SerializableColor(0, 255, 0);
+    public static final int manaBarWidth = 25;
     /**
      * Colors *
      */
@@ -53,6 +52,7 @@ public class Settings {
         put('1', new Color(0, 255, 0)); //green, ball
         put('2', new Color(0, 0, 255)); //blue, p2
         put('3', new Color(128, 0, 128)); // purple, terrain+lasers
+        put('4', new Color(90, 245, 245)); // light blue, mana bars
     }};
     /**
      * Player Settings *
@@ -63,8 +63,8 @@ public class Settings {
      * Gameplay Settings *
      */
     public static float ballRadius = 0.2f;
-    public static float laserDensity = 50000f;
-    public static float laserVelocity = 25f;
+    public static float laserDensity = 2000f;
+    public static float laserVelocity = 15f;
     public static float serveSpeed = 3f;
     public static float paddleLength = 2f;
     public static float paddleWidth = 0.2f;
@@ -73,7 +73,8 @@ public class Settings {
     public static float maxPaddleRotateAngle = 0.5f;
     public static float paddleSpringConstant = 2f;
     public static float paddleDampingConstant = .2f;
-    public static int maxMana = 5;
+    public static int ticksPerManaGain = 60;
+    public static byte maxMana = 100;
     
     /*
      * Serialization Settings
@@ -93,7 +94,7 @@ public class Settings {
             Settings.paddleLength = Float.parseFloat(br.readLine().split(" ")[0]);
             Settings.paddleSpeed = Float.parseFloat(br.readLine().split(" ")[0]);
             Settings.maxPaddleRotateAngle = Float.parseFloat(br.readLine().split(" ")[0]);
-            Settings.maxMana = Integer.parseInt(br.readLine().split(" ")[0]);
+            Settings.maxMana = Byte.parseByte(br.readLine().split(" ")[0]);
             br.close();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block

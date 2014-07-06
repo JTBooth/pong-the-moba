@@ -3,12 +3,13 @@ package pong;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
+import server.Player;
+import server.PongServer;
+import shapes.*;
+import spell.Spellkeeper;
+import utils.Debugger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,17 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import shapes.InfoBoard;
-import shapes.Laser;
-import server.Player;
-import server.PongServer;
-import shapes.Ball;
-import shapes.Paddle;
-import shapes.PongShape;
-import shapes.Wall;
-import spell.Spellkeeper;
-import utils.Debugger;
 
 public class Pong extends BasicGame {
     private static final int[] relevantChars = Settings.relevantChars;
@@ -46,7 +36,7 @@ public class Pong extends BasicGame {
     private Spellkeeper spellkeeper;
     private Ball ball;
     private PongServer server;
-    private InfoBoard score;
+    private InfoBoard infoBoard;
 
     public Pong(String title) {
         super(title);
@@ -84,7 +74,7 @@ public class Pong extends BasicGame {
         velocityIterations = Settings.velocityIterations;
         positionIterations = Settings.positionIterations;
         frame = 0;
-        score = new InfoBoard(Settings.winningScore);
+        infoBoard = new InfoBoard(Settings.winningScore);
 
         /** Start the Game **/
         AppGameContainer app;
@@ -199,10 +189,10 @@ public class Pong extends BasicGame {
         step(p1keys, p2keys);
 
         if (ball.getX() < 0) {
-            score.playerScored(Player.RIGHT);
+            infoBoard.playerScored(Player.RIGHT);
             resetBall(Player.RIGHT);
         } else if (ball.getX() > Settings.windowSize[0]) {
-            score.playerScored(Player.LEFT);
+            infoBoard.playerScored(Player.LEFT);
             resetBall(Player.LEFT);
         }
         spellkeeper.update();
@@ -238,10 +228,10 @@ public class Pong extends BasicGame {
      * GET ALL GAME PIECES *
      */
     private void addToShapeList() {
+        shapeList.add(infoBoard);
         shapeList.add(playerL.getPaddle());
         shapeList.add(playerR.getPaddle());
         shapeList.add(ball);
-        shapeList.add(score);
     }
 
     /**
@@ -312,7 +302,7 @@ public class Pong extends BasicGame {
                     break;
                 }
                 case Keyboard.KEY_Q: {
-                	spellkeeper.tryToCast(player, Keyboard.KEY_SPACE);
+                	spellkeeper.tryToCast(player, Keyboard.KEY_Q);
                     break;
                 }
                 case Keyboard.KEY_0: {
@@ -326,6 +316,9 @@ public class Pong extends BasicGame {
         rubberBandRotation(turnRequest, player.getPaddle());
     }
 
+    public void setMana(byte leftMana, byte rightMana) {
+        infoBoard.setMana(leftMana, rightMana);
+    }
 
     private void resetGame() {
         this.closeRequested();
@@ -358,6 +351,10 @@ public class Pong extends BasicGame {
 //            paddle.getBody().setAngularVelocity(isClockwise * rate);
 //        }
 //    }
+
+    public Set<DelayedEffect> getDelayedEffects() {
+        return delayedEffects;
+    }
 
     private void rubberBandRotation(float isClockwise, Paddle paddle){
         /** Getting current angle of body **/

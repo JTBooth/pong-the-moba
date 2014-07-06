@@ -7,6 +7,7 @@ import pong.Pong;
 import java.util.HashMap;
 import java.util.Map;
 
+import pong.Settings;
 import server.Player;
 import utils.Debugger;
 
@@ -14,25 +15,25 @@ public class Spellkeeper {
     Debugger debbie = new Debugger(Spellkeeper.class.getSimpleName(), Debugger.DEBUG | Debugger.INFO);
     Spell[] p1spells;
     Spell[] p2spells;
-    int[] mana;
+    byte[] mana;
     Map<Integer, Integer> commandSpellMap;
     int i = 0;
 
     public Spellkeeper() {
         p1spells = new Spell[]{
         		new LaserSpell(Pong.pong, Pong.pong.getPlayer(0)),
-        		new RestitutionBoost("Restitution Boost", 3, 300, Pong.pong.getPlayer(0))
+        		new RestitutionBoost("Restitution Boost", Pong.pong.getPlayer(0))
         		};
         
         p2spells = new Spell[]{
         		new LaserSpell(Pong.pong, Pong.pong.getPlayer(1)),
-        		new RestitutionBoost("Restitution Boost", 3, 300, Pong.pong.getPlayer(1))
+        		new RestitutionBoost("Restitution Boost", Pong.pong.getPlayer(1))
         		};
         
         commandSpellMap = new HashMap<Integer, Integer>();
         commandSpellMap.put(Keyboard.KEY_SPACE, 0);
         commandSpellMap.put(Keyboard.KEY_Q, 1);
-        mana = new int[]{0, 0};
+        mana = new byte[]{0, 0};
     }
 
     public boolean tryToCast(Player player, int key) {
@@ -64,7 +65,7 @@ public class Spellkeeper {
 
     public void update() {
         ++i;
-        if (i % 180 == 0) {
+        if (i % Settings.ticksPerManaGain == 0) {
             mana[0] += 1;
             mana[1] += 1;
             i = 0;
@@ -79,5 +80,6 @@ public class Spellkeeper {
                 spell.cooldownCounter -= 1;
             }
         }
+        Pong.pong.setMana(mana[0], mana[1]);
     }
 }
