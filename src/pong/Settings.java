@@ -9,9 +9,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 
-import packets.SerializableColor;
+import utils.Debugger;
 
 public class Settings {
     /**
@@ -84,7 +86,17 @@ public class Settings {
     
 
     public static void refreshSettings() {
-        File gameplaySettingsSpec = new File("/Users/rbooth/Documents/workspace/pong-the-moba/gameplaySettingsSpec");
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        URL url = classLoader.getResource("res/gameplaySettingsSpec");
+        Debugger.debugger.d(url.toString());
+        File gameplaySettingsSpec = null;
+        try {
+            gameplaySettingsSpec = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        if (gameplaySettingsSpec == null)
+            return;
         try {
             BufferedReader br = new BufferedReader(new FileReader(gameplaySettingsSpec));
             Settings.ballRadius = Float.parseFloat(br.readLine().split(" ")[0]);
