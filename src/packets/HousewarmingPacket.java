@@ -6,18 +6,18 @@ import java.util.List;
 
 public class HousewarmingPacket {
     int[] relevantChars;
-    long userId;
+    String userId;
     List<Shape> shapes;
 
     public HousewarmingPacket() {
     }
 
-    public HousewarmingPacket(int[] relevantChars, long userId) {
+    public HousewarmingPacket(int[] relevantChars, String userId) {
         this.relevantChars = relevantChars;
         this.userId = userId;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 

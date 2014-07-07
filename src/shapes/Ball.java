@@ -15,6 +15,7 @@ import org.newdawn.slick.geom.Transform;
 
 import java.util.Arrays;
 
+import pong.Pong;
 import pong.Settings;
 import utils.Bytes;
 import utils.Debugger;
@@ -25,7 +26,7 @@ public class Ball extends PongShape {
     private float radius;
 
     public Ball(){}
-    public Ball(float x, float y, float r, World world, boolean isBullet, char color) {
+    public Ball(float x, float y, float r, World world, boolean isBullet, char color, Pong pong) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
         bodyDef.type = BodyType.DYNAMIC;
@@ -45,6 +46,7 @@ public class Ball extends PongShape {
         this.radius = r;
         this.body = body;
         this.color = color;
+        this.pong = pong;
     }
 
     @Override

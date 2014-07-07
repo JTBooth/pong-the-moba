@@ -11,13 +11,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import packets.SerializableColor;
-
 public class Settings {
     /**
      * System Settings *
      */
     public static final int fps = 60;
+    public static final float timeStep =1f/((float) fps);
     public static final int velocityIterations = 10;
     public static final int positionIterations = 10;
     public static final int winningScore = 5; // unused
@@ -35,12 +34,13 @@ public class Settings {
     public static final double PTM_RATIO = 100.0;
     public static final String title = "Pong the Moba";
     public static final float laserRadius = 0.15f;
+
     /**
      * Display Settings *
      */
     public static final int[] windowSize = new int[]{800, 600};
     public static final float[] scorePositions = new float[]{windowSize[0] / 4 - 40, windowSize[1] / 2 - 40, 3 * windowSize[0] / 4 - 40, windowSize[1] / 2 - 40};
-    public static final float[] windowMeters = new float[]{p2m(800), p2m(600)};
+    public static final float[] windowMeters = new float[]{p2m(windowSize[0]), p2m(windowSize[1])};
     public static final float margin = 10f;
     public static final int manaBarWidth = 25;
     /**

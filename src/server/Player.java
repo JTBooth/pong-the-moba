@@ -12,12 +12,12 @@ public class Player {
     private Connection connection;
     private int who;
     private Paddle paddle;
-    private long id;
+    private String id;
     private CommandUpdate commands;
 
-    public Player(Connection connection, long id) {
+    public Player(Connection connection) {
         this.connection = connection;
-        this.id = id;
+        this.id = connection.getRemoteAddressUDP().getAddress().toString();
         commands = new CommandUpdate();
     }
 
@@ -55,10 +55,10 @@ public class Player {
      * IDENTITY *
      */
     public boolean isPlayer(Player otherPlayer) {
-        return otherPlayer.getId() == id;
+        return otherPlayer.getId().equals(id);
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 }

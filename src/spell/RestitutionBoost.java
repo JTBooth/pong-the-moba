@@ -6,15 +6,15 @@ import server.Player;
 public class RestitutionBoost extends Spell {
     Player player;
 
-	public RestitutionBoost(String name, Player player) {
-		super(name, 3, 90, player);
+	public RestitutionBoost(String name, Player player, Pong pong) {
+		super(name, 3, 90, player, pong);
         this.player=player;
 	}
 
 	@Override
 	public void cast() {
 		player.getPaddle().getFixture().setRestitution(2.5f);
-		Pong.pong.getDelayedEffects().add(new SetRestitution(player.getPaddle(), 1, 20));
+		pong.getDelayedEffects().add(new SetRestitution(player.getPaddle(), 1, 20));
 	}
 
 }

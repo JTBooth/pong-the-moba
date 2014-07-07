@@ -1,5 +1,6 @@
 package spell;
 
+import pong.Pong;
 import server.Player;
 
 public abstract class Spell {
@@ -8,13 +9,15 @@ public abstract class Spell {
     int cooldown;
     String name;
     Player player;
+    Pong pong;
 
-    public Spell(String name, int cost, int cooldown, Player player) {
+    public Spell(String name, int cost, int cooldown, Player player, Pong pong) {
         this.name = name;
         this.setCost(cost);
         this.setCooldown(cooldown);
         this.setCooldownCounter(0);
         this.player = player;
+        this.pong = pong;
     }
 
     public abstract void cast();

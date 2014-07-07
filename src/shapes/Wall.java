@@ -16,6 +16,7 @@ import org.newdawn.slick.geom.Transform;
 
 import java.util.Arrays;
 
+import pong.Pong;
 import pong.Settings;
 import utils.Bytes;
 import utils.Debugger;
@@ -29,7 +30,7 @@ public class Wall extends PongShape {
 
     public Wall(){}
 	public Wall(float x, float y, float height, float width, float angle,
-			boolean visible, char color, World world) {
+			boolean visible, char color, World world, Pong pong) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(x, y);
 		bodyDef.type = BodyType.KINEMATIC;
@@ -48,6 +49,7 @@ public class Wall extends PongShape {
 		this.color = color;
 		this.body = body;
 		this.visible = visible;
+        this.pong = pong;
 	}
 
     @Override

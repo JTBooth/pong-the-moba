@@ -8,28 +8,33 @@ import org.jbox2d.common.Settings;
 import java.io.IOException;
 
 import packets.KryoRegisterer;
-import pong.Pong;
 
 public class PongServer extends Server {
-
-    public PongServer(Pong pong, int[] relevantCharacters) throws IOException {
-        //Setup settings for the physics engine
+    public static void main (String[] args){
+        /** Setup Server Physics Engine Settings **/
         setupEngine();
+
+        /** Setup Logging **/
         Log.set(Log.LEVEL_NONE);
 
-        bind(54555, 54777);
-        addListener(new ServerListener(pong, relevantCharacters));
+        try {
+            PongServer server = new PongServer();
+            server.addListener(new ServerListener(server, pong.Settings.relevantChars));
+            server.bind(54555, 54777);
 
-        registerClasses();
+            /** Packet Serialization via Kryo **/
+            server.registerClasses();
 
-        new Thread(this).start();
-
+            new Thread(server).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Changes settings in box2d engine *
      */
-    private void setupEngine() {
+    private static void setupEngine() {
         Settings.velocityThreshold = 0f;
     }
 
@@ -38,7 +43,6 @@ public class PongServer extends Server {
     }
 
     public void sendUpdate(byte[] renderList) {
-
         if (renderList.length < 1) {
             System.out.println("renderList is empty");
         }

@@ -17,6 +17,7 @@ import utils.Debugger;
  */
 public abstract class PongShape {
     Body body;
+    Pong pong;
     
     /** Serialization **/
     public byte[] serialize_(){
@@ -63,7 +64,7 @@ public abstract class PongShape {
 
     /** Remove from world **/
     public void destroy() {
-        Pong.pong.removePongShape(this);
+        pong.removePongShape(this);
         if (body != null) {
            body.getWorld().destroyBody(body);
         }

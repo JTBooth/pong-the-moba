@@ -16,6 +16,7 @@ import org.newdawn.slick.geom.Transform;
 
 import java.util.Arrays;
 
+import pong.Pong;
 import pong.Settings;
 import utils.Bytes;
 import utils.Debugger;
@@ -26,7 +27,7 @@ public class Paddle extends PongShape {
     private char color;
 
     public Paddle(){}
-    public Paddle(float x, float y, float length, char color, World world) {
+    public Paddle(float x, float y, float length, char color, World world, Pong pong) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
         bodyDef.type = BodyType.KINEMATIC;
@@ -44,6 +45,7 @@ public class Paddle extends PongShape {
         body.createFixture(fd);
         this.color = color;
         this.body = body;
+        this.pong = pong;
     }
 
     @Override

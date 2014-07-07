@@ -9,7 +9,7 @@ public class DisplayListener extends Listener {
 	private byte[] currentUpdate;
 	private PongClient pongClient;
 	private int[] relevantCharacters;
-	private long userId;
+	private String userId;
 
 	public DisplayListener(PongClient pongClient) {
 		this.pongClient = pongClient;

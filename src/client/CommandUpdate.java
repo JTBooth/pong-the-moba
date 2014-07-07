@@ -3,15 +3,15 @@ package client;
 public class CommandUpdate implements Comparable<CommandUpdate> {
     private int[] keys;
     private long timestamp;
-    private long playerId;
+    private String playerId;
 
     public CommandUpdate() {
         this.keys = new int[0];
-        this.playerId = 0;
+        this.playerId = "";
         this.timestamp = System.nanoTime();
     }
 
-    public CommandUpdate(int[] keys, long playerId) {
+    public CommandUpdate(int[] keys, String playerId) {
         this.keys = keys;
         this.playerId = playerId;
         this.timestamp = System.nanoTime();
@@ -32,7 +32,7 @@ public class CommandUpdate implements Comparable<CommandUpdate> {
         return timestamp;
     }
 
-    public long getPlayerId() {
+    public String getPlayerId() {
         return playerId;
     }
 
