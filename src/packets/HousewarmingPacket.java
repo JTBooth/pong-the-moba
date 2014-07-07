@@ -3,18 +3,18 @@ package packets;
 public class HousewarmingPacket {
     int[] relevantChars;
     long gameId;
-    String userId;
+    long userId;
 
     public HousewarmingPacket() {
     }
 
-    public HousewarmingPacket(int[] relevantChars, String userId, long gameId) {
+    public HousewarmingPacket(int[] relevantChars, long userId, long gameId) {
         this.relevantChars = relevantChars;
         this.userId = userId;
         this.gameId = gameId;
     }
 
-    public String getUserId() {
+    public long getUserId() {
         return userId;
     }
 

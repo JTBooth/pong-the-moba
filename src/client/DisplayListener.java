@@ -10,7 +10,6 @@ public class DisplayListener extends Listener {
 	private PongClient pongClient;
 	private int[] relevantCharacters;
     private boolean isConnected = false;
-	private String userId;
     private long gameId;
 
 	public DisplayListener(PongClient pongClient) {
@@ -36,7 +35,6 @@ public class DisplayListener extends Listener {
 			HousewarmingPacket housewarmingPacket = (HousewarmingPacket) packet;
 			pongClient.initialize(housewarmingPacket);
 			relevantCharacters = housewarmingPacket.getRelevantChars();
-			userId = housewarmingPacket.getUserId();
             gameId = housewarmingPacket.getGameId();
             isConnected = true;
 		}

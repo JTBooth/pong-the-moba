@@ -272,8 +272,8 @@ public class Pong extends BasicGame {
         return world;
     }
 
-    public Player getPlayer(String id){
-        return playerL.getId().equals(id)?playerL:playerR;
+    public Player getPlayer(long id){
+        return playerL.getId() == id?playerL:playerR;
     }
 
     public Ball getBall() {

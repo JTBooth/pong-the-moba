@@ -3,17 +3,17 @@ package client;
 public class CommandUpdate implements Comparable<CommandUpdate> {
     private int[] keys;
     private long timestamp;
-    private String playerId;
+    private long playerId;
     private long gameId;
 
     public CommandUpdate() {
         this.keys = new int[0];
-        this.playerId = "";
+        this.playerId = 0;
         this.gameId = 0;
         this.timestamp = System.nanoTime();
     }
 
-    public CommandUpdate(int[] keys, String playerId, long gameId) {
+    public CommandUpdate(int[] keys, long playerId, long gameId) {
         this.keys = keys;
         this.playerId = playerId;
         this.gameId = gameId;
@@ -39,7 +39,7 @@ public class CommandUpdate implements Comparable<CommandUpdate> {
         return timestamp;
     }
 
-    public String getPlayerId() {
+    public long getPlayerId() {
         return playerId;
     }
 

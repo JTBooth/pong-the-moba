@@ -20,7 +20,7 @@ public class PongClient extends Client {
     /**
      * Info Holders *
      */
-    String userId;
+    long userId;
     int[] relevantChars;
 
     public PongClient(PongDisplay pongDisplay) {

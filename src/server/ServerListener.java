@@ -92,9 +92,9 @@ public class ServerListener extends Listener {
         }
     }
 
-    private void sendHousewarmingPacket(Connection connection, long gameId){
+    private void sendHousewarmingPacket(Connection connection, long playerId, long gameId){
         /** Send Housewarming Packet **/
-        HousewarmingPacket hp = new HousewarmingPacket(acceptedKeys, connection.getRemoteAddressUDP().getAddress().toString(), gameId);
+        HousewarmingPacket hp = new HousewarmingPacket(acceptedKeys, playerId, gameId);
         connection.sendTCP(hp);
         connection.setTimeout(0);
     }
@@ -108,7 +108,6 @@ public class ServerListener extends Listener {
             Player player1;
             Player player2;
 
-            Pong pong;
             long gameId;
             long id1;
             long id2;
@@ -126,13 +125,13 @@ public class ServerListener extends Listener {
 
 
                 /** Add the players **/
-                player1 = new Player(p1, String.valueOf(id1));
-                player2 = new Player(p2, String.valueOf(id2));
+                player1 = new Player(p1, id1);
+                player2 = new Player(p2, id2);
 
                 debbie.i("Created Players with ids " + id1 + " " + id2);
 
                 /** Add to a pong game **/
-                pong = new Pong("Pong the MOBA", player1, player2, gameId, server);
+                Pong pong = new Pong("Pong the MOBA", player1, player2, gameId, server);
                 pong.addPlayer(player1);
                 pong.addPlayer(player2);
                 games.put(gameId, pong);
@@ -141,8 +140,8 @@ public class ServerListener extends Listener {
 
                 debbie.i("Created game with id " + gameId);
 
-                sendHousewarmingPacket(p1, gameId);
-                sendHousewarmingPacket(p2, gameId);
+                sendHousewarmingPacket(p1, id1, gameId);
+                sendHousewarmingPacket(p2, id2, gameId);
 
                 /** Add to game list **/
                 players.put(p1.getID(), gameId);

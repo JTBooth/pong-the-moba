@@ -12,10 +12,10 @@ public class Player {
     private Connection connection;
     private int who;
     private Paddle paddle;
-    private String id;
+    private long id;
     private CommandUpdate commands;
 
-    public Player(Connection connection, String id) {
+    public Player(Connection connection, long id) {
         this.connection = connection;
         this.id = id;
         commands = new CommandUpdate();
@@ -55,10 +55,10 @@ public class Player {
      * IDENTITY *
      */
     public boolean isPlayer(Player otherPlayer) {
-        return otherPlayer.getId().equals(id);
+        return otherPlayer.getId() == id;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 }
