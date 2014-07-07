@@ -30,7 +30,7 @@ import spell.Spellkeeper;
 import utils.Debugger;
 
 public class Pong extends BasicGame {
-    private Debugger debbie = new Debugger(Pong.class.getSimpleName(), Debugger.DEBUG | Debugger.INFO);
+    private Debugger debbie = new Debugger(Pong.class.getSimpleName(), Debugger.INFO);
 
     private PongServer server;
 
@@ -39,6 +39,7 @@ public class Pong extends BasicGame {
 
     int lastStepTime;
     long frame;
+    long gameId;
     private List<PongShape> shapeList;
     private Player playerL;
     private Player playerR;
@@ -51,10 +52,11 @@ public class Pong extends BasicGame {
      * Creates a Pong Game
      * @param title -  title of the Pong window
      */
-    public Pong(String title, Player playerL, Player playerR, PongServer server) {
+    public Pong(String title, Player playerL, Player playerR, long gameId, PongServer server) {
         super(title);
         /** Attach the server **/
         this.server = server;
+        this.gameId = gameId;
 
         /** Create a World **/
         this.world = new World( new Vec2(0, 0));
@@ -62,7 +64,9 @@ public class Pong extends BasicGame {
         /** Get Players **/
         this.playerL = playerL;
         this.playerR = playerR;
+    }
 
+    public void start(){
         resetGame();
         createGame();
     }

@@ -16,7 +16,7 @@ public class Debugger {
      * STATIC DEBUGGER *
      */
     public static Debugger debugger = new Debugger("SYSTEM", DEBUG | INFO | WARNING | ERROR) {{
-        enable();
+        disable();
     }};
     /**
      * TAG INDICATORS *

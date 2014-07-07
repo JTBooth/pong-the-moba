@@ -4,16 +4,19 @@ public class CommandUpdate implements Comparable<CommandUpdate> {
     private int[] keys;
     private long timestamp;
     private String playerId;
+    private long gameId;
 
     public CommandUpdate() {
         this.keys = new int[0];
         this.playerId = "";
+        this.gameId = 0;
         this.timestamp = System.nanoTime();
     }
 
-    public CommandUpdate(int[] keys, String playerId) {
+    public CommandUpdate(int[] keys, String playerId, long gameId) {
         this.keys = keys;
         this.playerId = playerId;
+        this.gameId = gameId;
         this.timestamp = System.nanoTime();
     }
 
@@ -26,6 +29,10 @@ public class CommandUpdate implements Comparable<CommandUpdate> {
         } else {
             return 1;
         }
+    }
+
+    public long getGameId() {
+        return gameId;
     }
 
     public long getTimestamp() {

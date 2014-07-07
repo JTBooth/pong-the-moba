@@ -7,8 +7,10 @@ import java.io.IOException;
 
 import packets.HousewarmingPacket;
 import packets.KryoRegisterer;
+import utils.Debugger;
 
 public class PongClient extends Client {
+    private static Debugger debbie = new Debugger(PongClient.class.getSimpleName(), Debugger.INFO);
     /**
      * Display Classes *
      */
@@ -37,8 +39,6 @@ public class PongClient extends Client {
 
         try {
             //connect(5000, "127.0.0.1", 54555, 54777);
-
-
             connect(5000, IP.testIp, 54555, 54777);
             setTimeout(0);
         } catch (IOException e) {
@@ -55,8 +55,9 @@ public class PongClient extends Client {
         return displayListener;
     }
 
-    public void submit(int[] keysPressed) {
-        CommandUpdate commandUpdate = new CommandUpdate(keysPressed, userId);
+    public void submit(int[] keysPressed, long gameId) {
+        debbie.i("Sending Update: " + userId + " " + gameId);
+        CommandUpdate commandUpdate = new CommandUpdate(keysPressed, userId, gameId);
         sendUDP(commandUpdate);
     }
 
@@ -64,5 +65,4 @@ public class PongClient extends Client {
         userId = hwPacket.getUserId();
         relevantChars = hwPacket.getRelevantChars();
     }
-
 }

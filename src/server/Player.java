@@ -15,9 +15,9 @@ public class Player {
     private String id;
     private CommandUpdate commands;
 
-    public Player(Connection connection) {
+    public Player(Connection connection, String id) {
         this.connection = connection;
-        this.id = connection.getRemoteAddressUDP().getAddress().toString();
+        this.id = id;
         commands = new CommandUpdate();
     }
 

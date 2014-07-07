@@ -10,12 +10,13 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
 import pong.Settings;
-import shapes.InfoBoard;
 import shapes.PongShape;
+import utils.Debugger;
 
 public class PongDisplay extends BasicGame {
+    private static Debugger debbie = new Debugger(PongDisplay.class.getSimpleName(), Debugger.INFO);
+
     private byte[] pieces;
-    private InfoBoard scoreboard;
     private PongClient client;
     private DisplayListener displayListener;
     private Font font;
@@ -32,20 +33,26 @@ public class PongDisplay extends BasicGame {
             app.setVSync(true);
             app.setAlwaysRender(true);
             app.setTargetFrameRate(Settings.fps);
+            while (!displayListener.isConnected()){
+                Thread.sleep(1000);
+                debbie.i("Waiting for other player to connect.");
+            }//Wait for both players to connect
             app.start();
         } catch (SlickException e) {
             // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-
         new PongDisplay();
     }
 
     @Override
     public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
+        debbie.i("Rendering");
         /** Set Typewriter **/
         graphics.setFont(font);
 
@@ -55,6 +62,7 @@ public class PongDisplay extends BasicGame {
 
     @Override
     public void init(GameContainer arg0) throws SlickException {
+        debbie.i("Initializing");
         font = new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 80), false);
     }
 
@@ -70,7 +78,7 @@ public class PongDisplay extends BasicGame {
                 keysPressed[i] = Keyboard.CHAR_NONE;
             }
         }
-        client.submit(keysPressed);
+        client.submit(keysPressed, displayListener.getGameId());
     }
 
 }

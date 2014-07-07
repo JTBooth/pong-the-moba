@@ -9,7 +9,9 @@ public class DisplayListener extends Listener {
 	private byte[] currentUpdate;
 	private PongClient pongClient;
 	private int[] relevantCharacters;
+    private boolean isConnected = false;
 	private String userId;
+    private long gameId;
 
 	public DisplayListener(PongClient pongClient) {
 		this.pongClient = pongClient;
@@ -35,6 +37,8 @@ public class DisplayListener extends Listener {
 			pongClient.initialize(housewarmingPacket);
 			relevantCharacters = housewarmingPacket.getRelevantChars();
 			userId = housewarmingPacket.getUserId();
+            gameId = housewarmingPacket.getGameId();
+            isConnected = true;
 		}
 	}
 
@@ -49,4 +53,12 @@ public class DisplayListener extends Listener {
 	public int[] getRelevantCharacters() {
 		return relevantCharacters;
 	}
+
+    public boolean isConnected(){
+        return isConnected;
+    }
+
+    public long getGameId() {
+        return gameId;
+    }
 }

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import client.CommandUpdate;
@@ -18,10 +19,9 @@ import utils.Debugger;
 
 public class ServerListener extends Listener {
     private static Debugger debbie = new Debugger(ServerListener.class.getSimpleName(), Debugger.INFO | Debugger.WARNING | Debugger.ERROR);
-
     private PongServer server;
-    private static Map<Long, Pong> games = new HashMap<Long, Pong>();
-    private static Map<Connection, Long> players = new HashMap<Connection, Long>();
+    private static Map<Long, Pong> games = new ConcurrentHashMap<Long, Pong>();
+    private static Map<Integer, Long> players = new HashMap<Integer, Long>();
     private volatile Queue<Connection> playerQueue = new LinkedBlockingQueue<Connection>();
 
 
@@ -34,12 +34,15 @@ public class ServerListener extends Listener {
         this.server = server;
         this.acceptedKeys = acceptedKeys;
         this.random = new Random();
+        debbie.disable();
+        debbie.i("Starting the connection listener");
         new Connect().start();
     }
 
     @Override
     public void connected(Connection connection) {
         super.connected(connection);
+        debbie.i("Connection discovered " + connection.getRemoteAddressUDP().getAddress().toString());
         synchronized (this){
             playerQueue.add(connection);
         }
@@ -53,9 +56,12 @@ public class ServerListener extends Listener {
 
     @Override
     public void received(Connection connection, Object packet) {
+        debbie.d("Received packet from connection " + connection.getRemoteAddressUDP().getAddress().toString());
         if (packet instanceof CommandUpdate) {
             CommandUpdate update = (CommandUpdate) packet;
-            Player receiver = getInstance(connection).getPlayer(update.getPlayerId());
+            debbie.i("Package: " + update.getGameId());
+            debbie.i("Current Games" + games.toString());
+            Player receiver = getInstance(update.getGameId()).getPlayer(update.getPlayerId());
             Log.info(receiver.getId() + ": " + Arrays.toString(update.getKeys()));
             receiver.setKeys(update);
         }
@@ -63,14 +69,15 @@ public class ServerListener extends Listener {
 
 
     /** Get Game Instance **/
-    public static Pong getInstance(Connection id){
-        return games.get(players.get(id));
+    private Pong getInstance(long id){
+        return games.get(id);
     }
 
     /** Get next connection **/
     private Connection getConnection() {
         Connection newConnection;
         while (true){
+            debbie.d("Waiting for connection");
             //Poll for a new connection
             newConnection = playerQueue.poll();
             if (newConnection != null){
@@ -85,9 +92,9 @@ public class ServerListener extends Listener {
         }
     }
 
-    private void sendHousewarmingPacket(Connection connection, String id){
+    private void sendHousewarmingPacket(Connection connection, long gameId){
         /** Send Housewarming Packet **/
-        HousewarmingPacket hp = new HousewarmingPacket(acceptedKeys, id);
+        HousewarmingPacket hp = new HousewarmingPacket(acceptedKeys, connection.getRemoteAddressUDP().getAddress().toString(), gameId);
         connection.sendTCP(hp);
         connection.setTimeout(0);
     }
@@ -102,31 +109,62 @@ public class ServerListener extends Listener {
             Player player2;
 
             Pong pong;
-            long id;
+            long gameId;
+            long id1;
+            long id2;
             while (isOpen){
+                /** Generate new Ids **/
+                gameId = random.nextLong();
+                id1 = random.nextLong();
+                id2 = random.nextLong();
+
                 /** Wait for both players to connect **/
                 p1 = getConnection();
                 p2 = getConnection();
 
-                /** Add the players **/
-                player1 = new Player(p1);
-                player2 = new Player(p2);
+                debbie.i("Players found!");
 
-                sendHousewarmingPacket(p1, player1.getId());
-                sendHousewarmingPacket(p2, player2.getId());
+
+                /** Add the players **/
+                player1 = new Player(p1, String.valueOf(id1));
+                player2 = new Player(p2, String.valueOf(id2));
+
+                debbie.i("Created Players with ids " + id1 + " " + id2);
 
                 /** Add to a pong game **/
-                pong = new Pong("Pong the MOBA", player1, player2, server);
+                pong = new Pong("Pong the MOBA", player1, player2, gameId, server);
                 pong.addPlayer(player1);
                 pong.addPlayer(player2);
-                id = random.nextLong();
-                games.put(id, pong);
+                games.put(gameId, pong);
+
+                new Game(pong).start();
+
+                debbie.i("Created game with id " + gameId);
+
+                sendHousewarmingPacket(p1, gameId);
+                sendHousewarmingPacket(p2, gameId);
 
                 /** Add to game list **/
-                players.put(p1, id);
-                players.put(p2, id);
+                players.put(p1.getID(), gameId);
+                players.put(p2.getID(), gameId);
+
+                debbie.i("Sending housewarming Packets ");
+
+
             }
         }
     }
 
+    private class Game extends Thread {
+        Pong pong;
+
+        public Game(Pong pong){
+            this.pong = pong;
+        }
+
+        @Override
+        public void run() {
+            pong.start();
+        }
+    }
 }

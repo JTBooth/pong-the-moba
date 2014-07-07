@@ -1,20 +1,17 @@
 package packets;
 
-import org.newdawn.slick.geom.Shape;
-
-import java.util.List;
-
 public class HousewarmingPacket {
     int[] relevantChars;
+    long gameId;
     String userId;
-    List<Shape> shapes;
 
     public HousewarmingPacket() {
     }
 
-    public HousewarmingPacket(int[] relevantChars, String userId) {
+    public HousewarmingPacket(int[] relevantChars, String userId, long gameId) {
         this.relevantChars = relevantChars;
         this.userId = userId;
+        this.gameId = gameId;
     }
 
     public String getUserId() {
@@ -23,5 +20,9 @@ public class HousewarmingPacket {
 
     public int[] getRelevantChars() {
         return relevantChars;
+    }
+
+    public long getGameId() {
+        return gameId;
     }
 }
