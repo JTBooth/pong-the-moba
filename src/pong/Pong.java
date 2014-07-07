@@ -77,7 +77,7 @@ public class Pong extends BasicGame {
         AppGameContainer app;
         try {
             app = new AppGameContainer(this);
-            app.setDisplayMode(Settings.windowSize[0], Settings.windowSize[1],
+            app.setDisplayMode(10, 10,
                     false);
             app.setVSync(true);
             app.setAlwaysRender(true);
