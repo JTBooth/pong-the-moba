@@ -71,8 +71,8 @@ public class Settings extends org.jbox2d.common.Settings{
     public static float paddleLength = 2f;
     public static float paddleWidth = 0.2f;
     public static float paddleDistance = .5f;
-    public static float paddleSpeed = 2f;
-    public static float maxPaddleRotateAngle = 0.5f;
+    public static float paddleSpeed = 4f;
+    public static float maxPaddleRotateAngle = 0.4f;
     public static float paddleSpringConstant = 2f;
     public static float paddleDampingConstant = .2f;
     public static int ticksPerManaGain = 60;

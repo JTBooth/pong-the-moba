@@ -226,7 +226,7 @@ public class Pong extends BasicGame {
     public Ball makeLaser(Player player) {
         // Laser Starting and Direction
         float x, y;
-        Vec2 direction = player.getPaddle().getShape().getNormals()[1];
+        Vec2 direction;
         float[] points = player.getPaddle().getPointsInPixels();
 
         // Set correct values based on player
@@ -234,11 +234,13 @@ public class Pong extends BasicGame {
             case Player.LEFT:
                 x = ((points[2] + points[4]) / 2);
                 y = ((points[3] + points[5]) / 2);
+                direction = player.getPaddle().getShape().getNormals()[1];
                 break;
             case Player.RIGHT:
             default:
                 x = ((points[0] + points[6]) / 2);
                 y = ((points[1] + points[7]) / 2);
+                direction = player.getPaddle().getShape().getNormals()[3];
                 break;
         }
 
