@@ -124,7 +124,7 @@ public class Pong extends BasicGame {
         this.spellkeeper = new Spellkeeper(this);
     }
 
-    @Override
+
     public void render(GameContainer arg0, Graphics graphics)
             throws SlickException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
