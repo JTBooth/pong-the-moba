@@ -11,6 +11,8 @@ import server.Player;
 import utils.Bytes;
 import utils.Debugger;
 
+import static utils.Bytes.uByte;
+
 /**
  * Created by sihrc on 6/28/14.
  */
@@ -160,7 +162,7 @@ public class InfoBoard extends PongShape{
 
         void setCurrentMana(byte currentMana) {
             this.currentMana=currentMana;
-            this.currentFraction = (float) (((double) currentMana)/((double)maxMana));
+            this.currentFraction = ((float)uByte(currentMana))/(uByte(maxMana));
         }
 
         void render(Graphics graphics) {
@@ -169,7 +171,7 @@ public class InfoBoard extends PongShape{
             int y = Settings.windowSize[1]/2 - height/2;
 
             Debugger.debugger.d("mana bar constructed with x: " + x + " y: " + y + " width: " + Settings.manaBarWidth + " height: " + height + " cf: " + currentFraction);
-            Rectangle rect = new Rectangle(x, Settings.windowSize[1]/2 - height/2, Settings.manaBarWidth, height);
+            Rectangle rect = new Rectangle(x, y, Settings.manaBarWidth, height);
             graphics.fill(rect);
         }
     }

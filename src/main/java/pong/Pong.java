@@ -1,5 +1,6 @@
 package pong;
 
+import media.Soundmaster;
 import org.jbox2d.collision.broadphase.DynamicTree;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
@@ -52,6 +53,7 @@ public class Pong extends BasicGame {
     private InfoBoard infoBoard;
     private GlobalEffects globalEffects;
     private ContactManager contactManager;
+    private Soundmaster soundmaster;
 
     /** Constructor
      * Creates a Pong Game
@@ -72,6 +74,9 @@ public class Pong extends BasicGame {
 
         /** Global Physics Effect Manager **/
         globalEffects = new GlobalEffects("drag");
+
+        /** Sound effects **/
+        soundmaster = new Soundmaster();
 
         /** Contact Manager **/
         contactManager = new ContactManager(world, new DynamicTree());
@@ -130,7 +135,7 @@ public class Pong extends BasicGame {
         shapeList.add(playerR.getPaddle());
         shapeList.add(ball);
 
-        world.setContactListener(new PaddleBall(playerL.getPaddle(), ball));
+        world.setContactListener(new PaddleBall(playerL.getPaddle(), ball, this));
 
         /** Contact Management **/
         playerL.getPaddle().getBody().shouldCollide(ball.getBody());
@@ -345,6 +350,10 @@ public class Pong extends BasicGame {
 
     public GlobalEffects getGlobalEffects() {
         return globalEffects;
+    }
+
+    public Soundmaster getSoundmaster() {
+        return soundmaster;
     }
 
     /******************************************

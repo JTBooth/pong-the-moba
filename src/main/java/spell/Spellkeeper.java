@@ -17,7 +17,7 @@ public class Spellkeeper {
     Pong pong;
     Spell[] p1spells;
     Spell[] p2spells;
-    byte[] mana;
+    int[] mana;
     Map<Integer, Integer> commandSpellMap;
     int i = 0;
 
@@ -37,7 +37,7 @@ public class Spellkeeper {
         commandSpellMap = new HashMap<Integer, Integer>();
         commandSpellMap.put(Keyboard.KEY_SPACE, 0);
         commandSpellMap.put(Keyboard.KEY_Q, 1);
-        mana = new byte[]{0, 0};
+        mana = new int[]{0, 0};
     }
 
     public boolean tryToCast(Player player, int key) {
@@ -66,10 +66,19 @@ public class Spellkeeper {
     }
 
     public void update() {
-        ++i;
+        i += 10;
         if (i % Settings.ticksPerManaGain == 0) {
-            mana[0] = uByte(mana[0]) == 255 ? mana[0] : (byte) (mana[0] + 1);
-            mana[0] = uByte(mana[1]) == 255 ? mana[1] : (byte) (mana[1] + 1);
+            Debugger.debugger.enable();
+            Debugger.debugger.d("m0 is " + Integer.toBinaryString(mana[0]));
+            Debugger.debugger.d("m1 is " + Integer.toBinaryString(mana[1]));
+            if (mana[0] < 255) {
+                Debugger.debugger.d("incrementing m0");
+                ++mana[0];
+            }
+            if (mana[1] < 255) {
+                Debugger.debugger.d("incrementing m1");
+                ++mana[1];
+            }
             i = 0;
         }
         for (Spell spell : p1spells) {
@@ -82,6 +91,6 @@ public class Spellkeeper {
                 spell.cooldownCounter -= 1;
             }
         }
-        pong.setMana(mana[0], mana[1]);
+        pong.setMana((byte) mana[0], (byte) mana[1]);
     }
 }
