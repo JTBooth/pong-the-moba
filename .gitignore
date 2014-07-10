@@ -39,3 +39,4 @@ src/client/IP.java
 
 .gradle/
 *.lock
+*IP.class

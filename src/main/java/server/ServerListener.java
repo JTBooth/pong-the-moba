@@ -123,10 +123,12 @@ public class ServerListener extends Listener {
 
                 debbie.i("Players found!");
 
-
                 /** Add the players **/
                 player1 = new Player(p1, id1);
                 player2 = new Player(p2, id2);
+
+                player1.setWho(Player.LEFT);
+                player2.setWho(Player.RIGHT);
 
                 debbie.i("Created Players with ids " + id1 + " " + id2);
 

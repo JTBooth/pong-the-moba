@@ -1,7 +1,8 @@
 package pong;
 
+import org.jbox2d.collision.broadphase.DynamicTree;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.*;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import pong.contact.PaddleBall;
 import server.Player;
 import server.PongServer;
 import shapes.Ball;
@@ -49,6 +51,7 @@ public class Pong extends BasicGame {
     private Ball ball;
     private InfoBoard infoBoard;
     private GlobalEffects globalEffects;
+    private ContactManager contactManager;
 
     /** Constructor
      * Creates a Pong Game
@@ -69,6 +72,9 @@ public class Pong extends BasicGame {
 
         /** Global Physics Effect Manager **/
         globalEffects = new GlobalEffects("drag");
+
+        /** Contact Manager **/
+        contactManager = new ContactManager(world, new DynamicTree());
     }
 
     public void start(){
@@ -123,6 +129,13 @@ public class Pong extends BasicGame {
         shapeList.add(playerL.getPaddle());
         shapeList.add(playerR.getPaddle());
         shapeList.add(ball);
+
+        world.setContactListener(new PaddleBall(playerL.getPaddle(), ball));
+
+        /** Contact Management **/
+        playerL.getPaddle().getBody().shouldCollide(ball.getBody());
+
+        //contactManager.addPair(playerR.getPaddle(), ball);
 
         /** Spell keeper for this game **/
         this.spellkeeper = new Spellkeeper(this);
@@ -240,12 +253,14 @@ public class Pong extends BasicGame {
                 x = ((points[2] + points[4]) / 2);
                 y = ((points[3] + points[5]) / 2);
                 direction = player.getPaddle().getShape().getNormals()[1];
+                debbie.i("PLAYER LEFT " + x + " " + y + " " + direction.x + " " + direction.y);
                 break;
             case Player.RIGHT:
             default:
                 x = ((points[0] + points[6]) / 2);
                 y = ((points[1] + points[7]) / 2);
                 direction = player.getPaddle().getShape().getNormals()[3];
+                debbie.i("PLAYER RIGHT " + x + " " + y + " " + direction.x + " " + direction.y);
                 break;
         }
 
