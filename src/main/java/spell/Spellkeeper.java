@@ -10,6 +10,8 @@ import utils.Settings;
 import server.Player;
 import utils.Debugger;
 
+import static utils.Bytes.uByte;
+
 public class Spellkeeper {
     Debugger debbie = new Debugger(Spellkeeper.class.getSimpleName(), Debugger.DEBUG | Debugger.INFO);
     Pong pong;
@@ -66,8 +68,8 @@ public class Spellkeeper {
     public void update() {
         ++i;
         if (i % Settings.ticksPerManaGain == 0) {
-            mana[0] += 1;
-            mana[1] += 1;
+            mana[0] = uByte(mana[0]) == 255 ? mana[0] : (byte) (mana[0] + 1);
+            mana[0] = uByte(mana[1]) == 255 ? mana[1] : (byte) (mana[1] + 1);
             i = 0;
         }
         for (Spell spell : p1spells) {

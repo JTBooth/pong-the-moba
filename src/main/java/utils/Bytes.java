@@ -42,7 +42,7 @@ public class Bytes {
         return (char) (((sizeByte[0]) << 8) | sizeByte[1]);
     }
 
-    private static int uByte(byte b) {
+    public static int uByte(byte b) {
         return b & 0x7f + (128*((b >> 7)&1));
     }
 
