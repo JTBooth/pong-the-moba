@@ -48,6 +48,7 @@ public class Pong extends BasicGame {
     private Spellkeeper spellkeeper;
     private Ball ball;
     private InfoBoard infoBoard;
+    private GlobalEffects globalEffects;
 
     /** Constructor
      * Creates a Pong Game
@@ -65,6 +66,9 @@ public class Pong extends BasicGame {
         /** Get Players **/
         this.playerL = playerL;
         this.playerR = playerR;
+
+        /** Global Physics Effect Manager **/
+        globalEffects = new GlobalEffects("drag");
     }
 
     public void start(){
@@ -158,6 +162,7 @@ public class Pong extends BasicGame {
             infoBoard.playerScored(Player.LEFT);
             resetBall(Player.LEFT);
         }
+        globalEffects.applyForces(shapeList);
         spellkeeper.update();
         tendDelayedEffects();
     }
@@ -321,6 +326,10 @@ public class Pong extends BasicGame {
 
     public Spellkeeper getSpellkeeper() {
         return spellkeeper;
+    }
+
+    public GlobalEffects getGlobalEffects() {
+        return globalEffects;
     }
 
     /******************************************
