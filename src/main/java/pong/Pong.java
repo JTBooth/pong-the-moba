@@ -1,9 +1,7 @@
 package pong;
 
-import media.Soundmaster;
-import org.jbox2d.collision.broadphase.DynamicTree;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.*;
+import org.jbox2d.dynamics.World;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -20,7 +18,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import pong.contact.PaddleBall;
+import media.SoundMaster;
+import pong.contact.PaddleBallPair;
+import pong.contact.PongContactListener;
 import server.Player;
 import server.PongServer;
 import shapes.Ball;
@@ -52,8 +52,8 @@ public class Pong extends BasicGame {
     private Ball ball;
     private InfoBoard infoBoard;
     private GlobalEffects globalEffects;
-    private ContactManager contactManager;
-    private Soundmaster soundmaster;
+    private SoundMaster soundMaster;
+    private PongContactListener contactListener;
 
     /** Constructor
      * Creates a Pong Game
@@ -76,10 +76,10 @@ public class Pong extends BasicGame {
         globalEffects = new GlobalEffects("drag");
 
         /** Sound effects **/
-        soundmaster = new Soundmaster();
+        soundMaster = new SoundMaster();
 
-        /** Contact Manager **/
-        contactManager = new ContactManager(world, new DynamicTree());
+        /** Contacts **/
+        contactListener = new PongContactListener();
     }
 
     public void start(){
@@ -135,7 +135,10 @@ public class Pong extends BasicGame {
         shapeList.add(playerR.getPaddle());
         shapeList.add(ball);
 
-        world.setContactListener(new PaddleBall(playerL.getPaddle(), ball, this));
+        /** Add Contact Listeners **/
+        contactListener.registerPair(new PaddleBallPair(playerL.getPaddle(), ball, this));
+        contactListener.registerPair(new PaddleBallPair(playerR.getPaddle(), ball, this));
+        world.setContactListener(contactListener);
 
         /** Contact Management **/
         playerL.getPaddle().getBody().shouldCollide(ball.getBody());
@@ -150,7 +153,7 @@ public class Pong extends BasicGame {
     public void render(GameContainer arg0, Graphics graphics)
             throws SlickException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        Debugger.debugger.d("Shape List " + shapeList.size());
+        debbie.d("Shape List " + shapeList.size());
         byte[] cereal;
         for (PongShape ps : shapeList){
             try {
@@ -352,8 +355,8 @@ public class Pong extends BasicGame {
         return globalEffects;
     }
 
-    public Soundmaster getSoundmaster() {
-        return soundmaster;
+    public SoundMaster getSoundMaster() {
+        return soundMaster;
     }
 
     /******************************************

@@ -21,6 +21,7 @@ import utils.Bytes;
 import utils.Debugger;
 
 public class Ball extends PongShape {
+    Debugger debbie = new Debugger(Ball.class.getSimpleName(), Debugger.DEBUG);
     private CircleShape shape;
     private char color;
     private float radius;
@@ -42,6 +43,7 @@ public class Ball extends PongShape {
         fd.friction = 1f;
         fd.restitution = 1.0f;
         fd.shape = shape;
+        fd.userData = getId();
         body.createFixture(fd);
         this.radius = r;
         this.body = body;
@@ -80,7 +82,7 @@ public class Ball extends PongShape {
         System.arraycopy(id, 0, serialized,pointer,id.length);
         pointer += 2;
 
-        byte[] rotation = Bytes.float2Byte2(getAngle(), MathUtils.TWOPI);                  // Rotation
+        byte[] rotation = Bytes.float2Byte2(getAngle(), MathUtils.TWOPI);                       // Rotation
         System.arraycopy(rotation, 0, serialized,pointer,rotation.length);
         pointer+=2;
 
@@ -98,7 +100,7 @@ public class Ball extends PongShape {
         byte[] color = Bytes.char2Bytes2(this.color);// Color
         System.arraycopy(color, 0, serialized, pointer, color.length);
 
-        Debugger.debugger.i("BALL Serialized byte array: " + Arrays.toString(serialized));
+        debbie.i("BALL Serialized byte array: " + Arrays.toString(serialized));
 
         return serialized;
     }

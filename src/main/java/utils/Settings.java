@@ -88,7 +88,6 @@ public class Settings extends org.jbox2d.common.Settings{
     public static void refreshSettings() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL url = classLoader.getResource("src/main/res/gameplaySettingsSpec");
-        Debugger.debugger.d(url.toString());
         File gameplaySettingsSpec = null;
         try {
             gameplaySettingsSpec = new File(url.toURI());

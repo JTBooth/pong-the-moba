@@ -40,6 +40,7 @@ public class Paddle extends PongShape {
         shape = polyShape;
 
         FixtureDef fd = new FixtureDef();
+        fd.userData = getId();
         fd.friction = 1f;
         fd.shape = polyShape;
         body.createFixture(fd);
@@ -78,7 +79,7 @@ public class Paddle extends PongShape {
         byte[] color = Bytes.char2Bytes2(this.color);// Color
         System.arraycopy(color, 0, serialized, pointer, color.length);
 
-        Debugger.debugger.i("PADDLE Serialized byte array: " + Arrays.toString(serialized));
+        debbie.i("PADDLE Serialized byte array: " + Arrays.toString(serialized));
         return serialized;
     }
 
@@ -112,7 +113,7 @@ public class Paddle extends PongShape {
         Polygon polygon = new Polygon(rect.getPoints());
         graphics.fill(polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(byteRotation, MathUtils.TWOPI), polygon.getCenterX(), polygon.getCenterY())));
 
-        Debugger.debugger.i("Rectangle Created " + Arrays.toString(rect.getPoints()));
+        debbie.i("Rectangle Created " + Arrays.toString(rect.getPoints()));
         return pointer;
     }
 

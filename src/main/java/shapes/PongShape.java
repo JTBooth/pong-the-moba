@@ -16,6 +16,7 @@ import utils.Debugger;
  * Created by sihrc on 7/4/14.
  */
 public abstract class PongShape {
+    static Debugger debbie = new Debugger(PongShape.class.getSimpleName(), Debugger.DEBUG);
     Body body;
     Pong pong;
     
@@ -45,10 +46,10 @@ public abstract class PongShape {
     public static void render(byte[] bytes, Graphics graphics){
         int pointer = 0;
         char shape;
-        Debugger.debugger.i("Entering while loop");
+        debbie.i("Entering while loop");
         while (pointer < bytes.length){
             shape = Bytes.twoBytes2Char(Arrays.copyOfRange(bytes, pointer, pointer += 2));
-            Debugger.debugger.i(ShapeRegistry.get(shape).getClass().getSimpleName());
+            debbie.i(ShapeRegistry.get(shape).getClass().getSimpleName());
             pointer = ShapeRegistry.get(shape).deserialize(bytes, pointer, graphics);
         }
     }
