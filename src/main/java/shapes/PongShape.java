@@ -8,6 +8,7 @@ import org.newdawn.slick.geom.Shape;
 
 import java.util.Arrays;
 
+import packets.Cereal;
 import pong.Pong;
 import utils.Bytes;
 import utils.Debugger;
@@ -15,26 +16,24 @@ import utils.Debugger;
 /**
  * Created by sihrc on 7/4/14.
  */
-public abstract class PongShape {
+public abstract class PongShape implements Cereal {
     Body body;
     Pong pong;
     
     /** Serialization **/
-    public byte[] serialize_(){
+    public byte[] serialize(){
         try {
             return this.serialize();
         } catch (IllegalArgumentException e) {
             return new byte[0];
         }
     }
-    public abstract byte[] serialize() throws IllegalArgumentException;
-    public abstract int deserialize(byte[] cereal, int pointer, Graphics graphics);
-    public abstract boolean visible();
+
 
     /** Absstract Get Methods **/
     public abstract org.jbox2d.collision.shapes.Shape getBoxShape();
     public abstract Shape getSlickShape();
-    public abstract char getId();
+
     public Fixture getFixture(){
         return body.getFixtureList();
     }
