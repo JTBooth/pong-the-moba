@@ -2,7 +2,7 @@ package pong;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-
+import org.jbox2d.dynamics.Fixture;
 import shapes.PongShape;
 import utils.Debugger;
 
@@ -10,7 +10,6 @@ import utils.Debugger;
  * Created by rbooth on 7/9/14.
  */
 public class SpeedLimitDrag extends GlobalEffect {
-    Debugger debbie = new Debugger(SpeedLimitDrag.class.getSimpleName(), Debugger.DEBUG);
     private float speedLimit;
     private float dragRatio;
 
@@ -32,5 +31,6 @@ public class SpeedLimitDrag extends GlobalEffect {
             body.applyForceToCenter(restorative);
 
         }
+        Debugger.debugger.disable();
     }
 }

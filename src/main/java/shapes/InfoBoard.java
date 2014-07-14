@@ -2,14 +2,14 @@ package shapes;
 
 import org.jbox2d.collision.shapes.Shape;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Rectangle;
 
 import java.util.Arrays;
 
+import org.newdawn.slick.geom.Rectangle;
+import utils.Settings;
 import server.Player;
 import utils.Bytes;
 import utils.Debugger;
-import utils.Settings;
 
 import static utils.Bytes.uByte;
 
@@ -17,7 +17,6 @@ import static utils.Bytes.uByte;
  * Created by sihrc on 6/28/14.
  */
 public class InfoBoard extends PongShape{
-    Debugger debbie = new Debugger(InfoBoard.class.getSimpleName(), Debugger.DEBUG);
     /**
      * SCORES *
      */
@@ -103,13 +102,13 @@ public class InfoBoard extends PongShape{
         //Right Mana
         serialized[pointer++] = rightMana.getCurrentMana();
 
-        debbie.i("INFOBOARD Serialized byte array: " + Arrays.toString(serialized));
+        Debugger.debugger.i("INFOBOARD Serialized byte array: " + Arrays.toString(serialized));
         return serialized;
     }
 
     @Override
     public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
-        debbie.i("INFOBOARD scores: " + String.valueOf((int) cereal[pointer]) + String.valueOf((int) cereal[pointer + 1]));
+        Debugger.debugger.i("INFOBOARD scores: " + String.valueOf((int) cereal[pointer]) + String.valueOf((int) cereal[pointer + 1]));
 
         //Draw left score
         graphics.setColor(Settings.colorMap.get('0'));
@@ -171,7 +170,7 @@ public class InfoBoard extends PongShape{
             int height = (int) (currentFraction*Settings.windowSize[1]);
             int y = Settings.windowSize[1]/2 - height/2;
 
-            debbie.d("mana bar constructed with x: " + x + " y: " + y + " width: " + Settings.manaBarWidth + " height: " + height + " cf: " + currentFraction);
+            Debugger.debugger.d("mana bar constructed with x: " + x + " y: " + y + " width: " + Settings.manaBarWidth + " height: " + height + " cf: " + currentFraction);
             Rectangle rect = new Rectangle(x, y, Settings.manaBarWidth, height);
             graphics.fill(rect);
         }

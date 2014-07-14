@@ -68,15 +68,15 @@ public class Spellkeeper {
     public void update() {
         i += 10;
         if (i % Settings.ticksPerManaGain == 0) {
-            debbie.enable();
-            debbie.d("m0 is " + Integer.toBinaryString(mana[0]));
-            debbie.d("m1 is " + Integer.toBinaryString(mana[1]));
+            Debugger.debugger.enable();
+            Debugger.debugger.d("m0 is " + Integer.toBinaryString(mana[0]));
+            Debugger.debugger.d("m1 is " + Integer.toBinaryString(mana[1]));
             if (mana[0] < 255) {
-                debbie.d("incrementing m0");
+                Debugger.debugger.d("incrementing m0");
                 ++mana[0];
             }
             if (mana[1] < 255) {
-                debbie.d("incrementing m1");
+                Debugger.debugger.d("incrementing m1");
                 ++mana[1];
             }
             i = 0;

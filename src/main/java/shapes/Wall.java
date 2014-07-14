@@ -43,7 +43,6 @@ public class Wall extends PongShape {
 		shape = polyShape;
 
 		FixtureDef fd = new FixtureDef();
-        fd.userData = getId();
 		fd.friction = 0f;
 		fd.shape = polyShape;
 		body.createFixture(fd);
@@ -88,7 +87,7 @@ public class Wall extends PongShape {
 		System.arraycopy(color, 0, serialized, pointer, color.length);
         pointer += 2;
 
-        debbie.i("WALL Serialized byte array: " + Arrays.toString(serialized));
+        Debugger.debugger.i("WALL Serialized byte array: " + Arrays.toString(serialized));
         return serialized;
 	}
 
@@ -115,7 +114,7 @@ public class Wall extends PongShape {
 		polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(
 				byteRotation, MathUtils.TWOPI)));
 
-        debbie.i("WALL points deserialized: " + Arrays.toString(polygon.getPoints()));
+        Debugger.debugger.i("WALL points deserialized: " + Arrays.toString(polygon.getPoints()));
         graphics.setColor(Settings.colorMap.get(color)); //TODO - Refactor Settings colormap to convert to bytes
         graphics.fill(polygon);
 		return pointer;

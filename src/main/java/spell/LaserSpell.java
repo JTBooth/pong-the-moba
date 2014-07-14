@@ -13,7 +13,7 @@ public class LaserSpell extends Spell {
         System.out.println("LaserSpell Called Cast \n\n");
         Ball laser = pong.makeLaser(player);
         pong.addShape(laser);
-        DestroyBall destroyBall = new DestroyBall(laser, 50);
+        DestroyBall destroyBall = new DestroyBall(laser, 30);
         pong.getDelayedEffects().add(destroyBall);
     }
 }
