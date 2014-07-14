@@ -10,4 +10,6 @@ public interface Cereal {
     public abstract int deserialize(byte[] cereal, int pointer, Graphics graphics);
     public abstract boolean visible();
     public abstract char getId();
+
+
 }

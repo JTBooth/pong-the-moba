@@ -9,6 +9,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
+import packets.Cerealizer;
 import utils.Settings;
 import shapes.PongShape;
 import utils.Debugger;
@@ -57,7 +58,7 @@ public class PongDisplay extends BasicGame {
         graphics.setFont(font);
 
         /** Render Game Pieces **/
-        PongShape.render(pieces, graphics);
+        Cerealizer.render(pieces, graphics);
     }
 
     @Override

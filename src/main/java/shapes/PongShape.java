@@ -21,13 +21,7 @@ public abstract class PongShape implements Cereal {
     Pong pong;
     
     /** Serialization **/
-    public byte[] serialize(){
-        try {
-            return this.serialize();
-        } catch (IllegalArgumentException e) {
-            return new byte[0];
-        }
-    }
+
 
 
     /** Absstract Get Methods **/
@@ -41,16 +35,7 @@ public abstract class PongShape implements Cereal {
         return body;
     }
 
-    public static void render(byte[] bytes, Graphics graphics){
-        int pointer = 0;
-        char shape;
-        Debugger.debugger.i("Entering while loop");
-        while (pointer < bytes.length){
-            shape = Bytes.twoBytes2Char(Arrays.copyOfRange(bytes, pointer, pointer += 2));
-            Debugger.debugger.i(ShapeRegistry.get(shape).getClass().getSimpleName());
-            pointer = ShapeRegistry.get(shape).deserialize(bytes, pointer, graphics);
-        }
-    }
+
 
     public float getAngle() {
         float angle = body.getAngle();

@@ -51,7 +51,7 @@ public class Ball extends PongShape {
 
     @Override
     public char getId() {
-        return ShapeRegistry.BALL;
+        return CerealRegistry.BALL;
     }
 
     public float getX() {

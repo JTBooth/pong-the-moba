@@ -54,7 +54,7 @@ public class Wall extends PongShape {
 
     @Override
     public char getId() {
-        return ShapeRegistry.WALL;
+        return CerealRegistry.WALL;
     }
 
 	@Override

@@ -1,11 +1,11 @@
 package shapes;
 
-import org.jbox2d.collision.shapes.Shape;
 import org.newdawn.slick.Graphics;
 
 import java.util.Arrays;
 
 import org.newdawn.slick.geom.Rectangle;
+import packets.Cereal;
 import utils.Settings;
 import server.Player;
 import utils.Bytes;
@@ -16,7 +16,7 @@ import static utils.Bytes.uByte;
 /**
  * Created by sihrc on 6/28/14.
  */
-public class InfoBoard extends PongShape{
+public class InfoBoard implements Cereal {
     /**
      * SCORES *
      */
@@ -76,7 +76,7 @@ public class InfoBoard extends PongShape{
 
     @Override
     public char getId() {
-        return ShapeRegistry.INFO_BOARD;
+        return CerealRegistry.INFO_BOARD;
     }
 
     @Override
@@ -132,16 +132,6 @@ public class InfoBoard extends PongShape{
     @Override
     public boolean visible() {
         return true;
-    }
-
-    @Override
-    public Shape getBoxShape() {
-        return null;
-    }
-
-    @Override
-    public org.newdawn.slick.geom.Shape getSlickShape() {
-        return null;
     }
 
     private class manaBar {

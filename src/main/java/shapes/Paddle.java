@@ -50,7 +50,7 @@ public class Paddle extends PongShape {
 
     @Override
     public char getId() {
-        return ShapeRegistry.PADDLE;
+        return CerealRegistry.PADDLE;
     }
 
     @Override

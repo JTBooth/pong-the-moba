@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import packets.Cereal;
 import pong.contact.PaddleBall;
 import server.Player;
 import server.PongServer;
@@ -45,6 +46,7 @@ public class Pong extends BasicGame {
     long frame;
     long gameId;
     private List<PongShape> shapeList;
+    private List<Cereal> cerealList;
     private Player playerL;
     private Player playerR;
     private World world;
@@ -109,6 +111,7 @@ public class Pong extends BasicGame {
     private void resetGame(){
         /** Initialize Game Pieces **/
         this.shapeList = new ArrayList<PongShape>();
+        this.cerealList = new ArrayList<Cereal>();
 
         /** Initiate Game InfoBoards*/
         this.infoBoard = new InfoBoard(Settings.winningScore);
@@ -130,10 +133,14 @@ public class Pong extends BasicGame {
         frame = 0;
 
         /** Add all game pieces **/
-        shapeList.add(infoBoard);
         shapeList.add(playerL.getPaddle());
         shapeList.add(playerR.getPaddle());
         shapeList.add(ball);
+
+        cerealList.add(infoBoard);
+        cerealList.add(playerL.getPaddle());
+        cerealList.add(playerR.getPaddle());
+        cerealList.add(ball);
 
         world.setContactListener(new PaddleBall(playerL.getPaddle(), ball, this));
 
@@ -154,7 +161,7 @@ public class Pong extends BasicGame {
         byte[] cereal;
         for (PongShape ps : shapeList){
             try {
-                cereal = ps.serialize_();
+                cereal = ps.serialize();
                 if (cereal.length > 0)
                     outputStream.write(cereal);
             } catch (IOException e) {
