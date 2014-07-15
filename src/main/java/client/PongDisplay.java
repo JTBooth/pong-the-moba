@@ -11,11 +11,10 @@ import org.newdawn.slick.TrueTypeFont;
 
 import packets.Cerealizer;
 import utils.Settings;
-import shapes.PongShape;
 import utils.Debugger;
 
 public class PongDisplay extends BasicGame {
-    private static Debugger debbie = new Debugger(PongDisplay.class.getSimpleName(), Debugger.INFO);
+    private static Debugger debbie = new Debugger(PongDisplay.class.getSimpleName());
 
     private byte[] pieces;
     private PongClient client;

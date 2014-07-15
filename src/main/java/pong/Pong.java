@@ -1,9 +1,7 @@
 package pong;
 
-import media.Soundmaster;
-import org.jbox2d.collision.broadphase.DynamicTree;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.*;
+import org.jbox2d.dynamics.World;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -20,22 +18,24 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import media.SoundMaster;
 import packets.Cereal;
 import pong.contact.PaddleBall;
 import server.Player;
 import server.PongServer;
 import shapes.Ball;
+import shapes.IllegalShapeException;
 import shapes.InfoBoard;
 import shapes.Laser;
 import shapes.Paddle;
 import shapes.PongShape;
 import shapes.Wall;
-import spell.Spellkeeper;
+import spell.SpellKeeper;
 import utils.Debugger;
 import utils.Settings;
 
 public class Pong extends BasicGame {
-    private Debugger debbie = new Debugger(Pong.class.getSimpleName(), Debugger.INFO);
+    private Debugger debbie = new Debugger(Pong.class.getSimpleName());
 
     private PongServer server;
 
@@ -50,12 +50,11 @@ public class Pong extends BasicGame {
     private Player playerL;
     private Player playerR;
     private World world;
-    private Spellkeeper spellkeeper;
+    private SpellKeeper spellKeeper;
     private Ball ball;
     private InfoBoard infoBoard;
     private GlobalEffects globalEffects;
-    private ContactManager contactManager;
-    private Soundmaster soundmaster;
+    private SoundMaster soundMaster;
 
     /** Constructor
      * Creates a Pong Game
@@ -78,10 +77,7 @@ public class Pong extends BasicGame {
         globalEffects = new GlobalEffects("drag");
 
         /** Sound effects **/
-        soundmaster = new Soundmaster();
-
-        /** Contact Manager **/
-        contactManager = new ContactManager(world, new DynamicTree());
+        soundMaster = new SoundMaster();
     }
 
     public void start(){
@@ -125,7 +121,7 @@ public class Pong extends BasicGame {
 
     @Override
     public void init(GameContainer arg0) throws SlickException {
-        /** Create Game Peices **/
+        /** Create Game Pieces **/
         makeWalls();
         makeBall((int)Settings.windowMeters[1], (int) Settings.windowMeters[0]);
         playerL.setPaddle(makePaddle(Player.LEFT));
@@ -146,18 +142,18 @@ public class Pong extends BasicGame {
 
         /** Contact Management **/
         playerL.getPaddle().getBody().shouldCollide(ball.getBody());
-
+        //TODO - Make sure these are not being used and remove them
         //contactManager.addPair(playerR.getPaddle(), ball);
 
         /** Spell keeper for this game **/
-        this.spellkeeper = new Spellkeeper(this);
+        this.spellKeeper = new SpellKeeper(this);
     }
 
 
     public void render(GameContainer arg0, Graphics graphics)
             throws SlickException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        Debugger.debugger.d("Shape List " + shapeList.size());
+        debbie.d("Shape List " + shapeList.size());
         byte[] cereal;
         for (PongShape ps : shapeList){
             try {
@@ -166,6 +162,8 @@ public class Pong extends BasicGame {
                     outputStream.write(cereal);
             } catch (IOException e) {
                 debbie.e(ps.getId() + " failed to write to bytearrayoutputstream " + e.getMessage());
+            } catch (IllegalShapeException e) {
+                e.printStackTrace();
             }
         }
         server.sendUpdate(outputStream.toByteArray());
@@ -188,7 +186,7 @@ public class Pong extends BasicGame {
             resetBall(Player.LEFT);
         }
         globalEffects.applyForces(shapeList);
-        spellkeeper.update();
+        spellKeeper.update();
         tendDelayedEffects();
     }
 
@@ -351,16 +349,16 @@ public class Pong extends BasicGame {
         return delayedEffects;
     }
 
-    public Spellkeeper getSpellkeeper() {
-        return spellkeeper;
+    public SpellKeeper getSpellKeeper() {
+        return spellKeeper;
     }
 
     public GlobalEffects getGlobalEffects() {
         return globalEffects;
     }
 
-    public Soundmaster getSoundmaster() {
-        return soundmaster;
+    public SoundMaster getSoundMaster() {
+        return soundMaster;
     }
 
     /******************************************
@@ -390,30 +388,6 @@ public class Pong extends BasicGame {
         infoBoard.setMana(leftMana, rightMana);
     }
 
-
-    private void rubberBandRotation(float isClockwise, Paddle paddle){
-        /** Getting current angle of body **/
-        float currentAngle = paddle.getBody().getAngle();
-        float currentVelocity = paddle.getBody().getAngularVelocity();
-        if (currentAngle > 180){
-            currentAngle -= 360;
-        }
-
-        /** Create initial force **/
-        float force = 0f;
-
-        /** Paddle Push **/
-        force += isClockwise * (Settings.maxPaddleRotateAngle * Settings.paddleSpringConstant);
-
-        /** Rubber Band **/
-        force += -currentAngle * (Settings.paddleSpringConstant);
-
-        /** Damper Force **/
-        force += -currentVelocity * Settings.paddleDampingConstant;
-
-        paddle.getBody().setAngularVelocity(currentVelocity + force);
-    }
-
     public void tendDelayedEffects() {
         for (DelayedEffect delayedEffect : delayedEffects) {
             delayedEffect.tick();
@@ -425,36 +399,35 @@ public class Pong extends BasicGame {
 
     public void execute(int[] keys, Player player) {
         debbie.d("Executing Player " + player.who());
-        float linearVelocity = 0;
-        float turnRequest = 0;
+        Paddle curPaddle = player.getPaddle();
 
         for (int key : keys) {
             switch (key) {
                 case Keyboard.KEY_DOWN: {
-                    linearVelocity += Settings.paddleSpeed;
+                    curPaddle.setYVelocity(Settings.paddleSpeed);
                     break;
                 }
 
                 case Keyboard.KEY_UP: {
-                    linearVelocity -= Settings.paddleSpeed;
+                    curPaddle.setYVelocity(-Settings.paddleSpeed);
                     break;
                 }
 
                 case Keyboard.KEY_RIGHT: {
-                    turnRequest += 1;
+                    curPaddle.rubberBandRotation(1);
                     break;
                 }
 
                 case Keyboard.KEY_LEFT: {
-                    turnRequest -= 1;
+                    curPaddle.rubberBandRotation(-1);
                     break;
                 }
                 case Keyboard.KEY_SPACE: {
-                    spellkeeper.tryToCast(player, Keyboard.KEY_SPACE);
+                    spellKeeper.tryToCast(player, Keyboard.KEY_SPACE);
                     break;
                 }
                 case Keyboard.KEY_Q: {
-                    spellkeeper.tryToCast(player, Keyboard.KEY_Q);
+                    spellKeeper.tryToCast(player, Keyboard.KEY_Q);
                     break;
                 }
                 case Keyboard.KEY_0: {
@@ -464,8 +437,8 @@ public class Pong extends BasicGame {
                 }
             }
         }
-        player.getPaddle().getBody().setLinearVelocity(new Vec2(0, linearVelocity));
-        rubberBandRotation(turnRequest, player.getPaddle());
+
+        curPaddle.execute();
     }
 
     /******************************************

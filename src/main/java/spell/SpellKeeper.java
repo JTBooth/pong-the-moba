@@ -10,10 +10,8 @@ import utils.Settings;
 import server.Player;
 import utils.Debugger;
 
-import static utils.Bytes.uByte;
-
-public class Spellkeeper {
-    Debugger debbie = new Debugger(Spellkeeper.class.getSimpleName(), Debugger.DEBUG | Debugger.INFO);
+public class SpellKeeper {
+    Debugger debbie = new Debugger(SpellKeeper.class.getSimpleName());
     Pong pong;
     Spell[] p1spells;
     Spell[] p2spells;
@@ -21,7 +19,7 @@ public class Spellkeeper {
     Map<Integer, Integer> commandSpellMap;
     int i = 0;
 
-    public Spellkeeper(Pong pong) {
+    public SpellKeeper(Pong pong) {
         this.pong = pong;
 
         p1spells = new Spell[]{
@@ -68,15 +66,11 @@ public class Spellkeeper {
     public void update() {
         i += 10;
         if (i % Settings.ticksPerManaGain == 0) {
-            Debugger.debugger.enable();
-            Debugger.debugger.d("m0 is " + Integer.toBinaryString(mana[0]));
-            Debugger.debugger.d("m1 is " + Integer.toBinaryString(mana[1]));
             if (mana[0] < 255) {
-                Debugger.debugger.d("incrementing m0");
                 ++mana[0];
             }
             if (mana[1] < 255) {
-                Debugger.debugger.d("incrementing m1");
+                debbie.d("incrementing m1");
                 ++mana[1];
             }
             i = 0;

@@ -21,6 +21,7 @@ import utils.Bytes;
 import utils.Debugger;
 
 public class Ball extends PongShape {
+    Debugger debbie = new Debugger(Ball.class.getSimpleName());
     private CircleShape shape;
     private char color;
     private float radius;
@@ -72,7 +73,7 @@ public class Ball extends PongShape {
 
 
     @Override
-    public byte[] serialize() throws IllegalArgumentException {
+    public byte[] serialize() throws IllegalShapeException {
         byte[] serialized = new byte[11];
         int pointer = 0;
 
@@ -98,7 +99,7 @@ public class Ball extends PongShape {
         byte[] color = Bytes.char2Bytes2(this.color);// Color
         System.arraycopy(color, 0, serialized, pointer, color.length);
 
-        Debugger.debugger.i("BALL Serialized byte array: " + Arrays.toString(serialized));
+        debbie.i("BALL Serialized byte array: " + Arrays.toString(serialized));
 
         return serialized;
     }

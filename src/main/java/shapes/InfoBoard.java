@@ -1,15 +1,15 @@
 package shapes;
 
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Rectangle;
 
 import java.util.Arrays;
 
-import org.newdawn.slick.geom.Rectangle;
 import packets.Cereal;
-import utils.Settings;
 import server.Player;
 import utils.Bytes;
 import utils.Debugger;
+import utils.Settings;
 
 import static utils.Bytes.uByte;
 
@@ -17,6 +17,7 @@ import static utils.Bytes.uByte;
  * Created by sihrc on 6/28/14.
  */
 public class InfoBoard implements Cereal {
+    Debugger debbie = new Debugger(InfoBoard.class.getSimpleName());
     /**
      * SCORES *
      */
@@ -102,13 +103,13 @@ public class InfoBoard implements Cereal {
         //Right Mana
         serialized[pointer++] = rightMana.getCurrentMana();
 
-        Debugger.debugger.i("INFOBOARD Serialized byte array: " + Arrays.toString(serialized));
+        debbie.i("INFOBOARD Serialized byte array: " + Arrays.toString(serialized));
         return serialized;
     }
 
     @Override
     public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
-        Debugger.debugger.i("INFOBOARD scores: " + String.valueOf((int) cereal[pointer]) + String.valueOf((int) cereal[pointer + 1]));
+        debbie.i("INFOBOARD scores: " + String.valueOf((int) cereal[pointer]) + String.valueOf((int) cereal[pointer + 1]));
 
         //Draw left score
         graphics.setColor(Settings.colorMap.get('0'));
@@ -160,7 +161,7 @@ public class InfoBoard implements Cereal {
             int height = (int) (currentFraction*Settings.windowSize[1]);
             int y = Settings.windowSize[1]/2 - height/2;
 
-            Debugger.debugger.d("mana bar constructed with x: " + x + " y: " + y + " width: " + Settings.manaBarWidth + " height: " + height + " cf: " + currentFraction);
+            debbie.d("mana bar constructed with x: " + x + " y: " + y + " width: " + Settings.manaBarWidth + " height: " + height + " cf: " + currentFraction);
             Rectangle rect = new Rectangle(x, y, Settings.manaBarWidth, height);
             graphics.fill(rect);
         }

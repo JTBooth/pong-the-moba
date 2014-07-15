@@ -22,9 +22,16 @@ import utils.Bytes;
 import utils.Debugger;
 
 public class Paddle extends PongShape {
+    Debugger debbie = new Debugger(Paddle.class.getSimpleName());
+
+    /** Shape Attributes **/
     private PolygonShape shape;
     private float length;
     private char color;
+
+    /** Physics Variables **/
+    private float yVelocity = 0f;
+    private int rotationReq = 0;
 
     public Paddle(){}
     public Paddle(float x, float y, float length, char color, World world, Pong pong) {
@@ -48,13 +55,65 @@ public class Paddle extends PongShape {
         this.pong = pong;
     }
 
+    /** Set the paddle's vertical velocity **/
+    public void setYVelocity(float v) {
+        yVelocity += v;
+    }
+
+    /** Perform rubber band rotation **/
+    public void rubberBandRotation(float isClockwise){
+        rotationReq += isClockwise;
+    }
+
+    /** Execute Paddle Changes **/
+    public void execute() {
+        /** Setting velocity **/
+        if (!(body.getPosition().y > Settings.windowMeters[1] - .01f && yVelocity > 0)
+                && !(body.getPosition().y < .01f && yVelocity < 0)) {
+            if (yVelocity != 0) {
+                debbie.d(yVelocity + " velocity desired with " + body.getPosition().y);
+            }
+            body.setLinearVelocity(new Vec2(0, yVelocity));
+        } else {
+            debbie.d("DENIED: " + yVelocity + " velocity desired with " + body.getPosition().y);
+            body.setLinearVelocity(new Vec2(0, 0));
+        }
+
+        yVelocity = 0;
+
+        /** Performing Rubber band **/
+        /** Getting current angle of body **/
+        float currentAngle = body.getAngle();
+        float currentVelocity = body.getAngularVelocity();
+        if (currentAngle > 180){
+            currentAngle -= 360;
+        }
+
+        /** Create initial force **/
+        float force = 0f;
+
+        /** Paddle Push **/
+        force += rotationReq * (Settings.maxPaddleRotateAngle * Settings.paddleSpringConstant);
+
+        /** Rubber Band **/
+        force += -currentAngle * (Settings.paddleSpringConstant);
+
+        /** Damper Force **/
+        force += -currentVelocity * Settings.paddleDampingConstant;
+
+        body.setAngularVelocity(currentVelocity + force);
+
+        rotationReq = 0;
+
+    }
+
     @Override
     public char getId() {
         return CerealRegistry.PADDLE;
     }
 
     @Override
-    public byte[] serialize() throws IllegalArgumentException{
+    public byte[] serialize() throws IllegalShapeException{
         byte[] serialized = new byte[9];
         int pointer = 0;
 
@@ -78,7 +137,7 @@ public class Paddle extends PongShape {
         byte[] color = Bytes.char2Bytes2(this.color);// Color
         System.arraycopy(color, 0, serialized, pointer, color.length);
 
-        Debugger.debugger.i("PADDLE Serialized byte array: " + Arrays.toString(serialized));
+        debbie.i("PADDLE Serialized byte array: " + Arrays.toString(serialized));
         return serialized;
     }
 
@@ -112,7 +171,7 @@ public class Paddle extends PongShape {
         Polygon polygon = new Polygon(rect.getPoints());
         graphics.fill(polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(byteRotation, MathUtils.TWOPI), polygon.getCenterX(), polygon.getCenterY())));
 
-        Debugger.debugger.i("Rectangle Created " + Arrays.toString(rect.getPoints()));
+        debbie.i("Rectangle Created " + Arrays.toString(rect.getPoints()));
         return pointer;
     }
 

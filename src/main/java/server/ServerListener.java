@@ -18,7 +18,7 @@ import pong.Pong;
 import utils.Debugger;
 
 public class ServerListener extends Listener {
-    private static Debugger debbie = new Debugger(ServerListener.class.getSimpleName(), Debugger.INFO | Debugger.WARNING | Debugger.ERROR);
+    private static Debugger debbie = new Debugger(ServerListener.class.getSimpleName());
     private PongServer server;
     private static Map<Long, Pong> games = new ConcurrentHashMap<Long, Pong>();
     private static Map<Integer, Long> players = new HashMap<Integer, Long>();
@@ -34,7 +34,6 @@ public class ServerListener extends Listener {
         this.server = server;
         this.acceptedKeys = acceptedKeys;
         this.random = new Random();
-        debbie.disable();
         debbie.i("Starting the connection listener");
         new Connect().start();
     }

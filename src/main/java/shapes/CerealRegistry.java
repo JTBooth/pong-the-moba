@@ -7,6 +7,8 @@ import utils.Debugger;
  * Created by sihrc on 7/5/14.
  */
 public class CerealRegistry {
+    static Debugger debbie = new Debugger(CerealRegistry.class.getSimpleName());
+
     final static public char BALL = '1';
     final static public char LASER = '2';
     final static public char PADDLE = '3';
@@ -26,7 +28,7 @@ public class CerealRegistry {
             case INFO_BOARD:
                 return new InfoBoard();
             default:
-                Debugger.debugger.e("CerealRegistry received null Id");
+                debbie.e("CerealRegistry received null Id");
                 return null;
         }
     }

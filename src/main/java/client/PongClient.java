@@ -10,7 +10,7 @@ import packets.KryoRegisterer;
 import utils.Debugger;
 
 public class PongClient extends Client {
-    private static Debugger debbie = new Debugger(PongClient.class.getSimpleName(), Debugger.INFO);
+    private static Debugger debbie = new Debugger(PongClient.class.getSimpleName());
     /**
      * Display Classes *
      */

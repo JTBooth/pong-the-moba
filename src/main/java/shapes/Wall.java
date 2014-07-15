@@ -22,6 +22,7 @@ import utils.Bytes;
 import utils.Debugger;
 
 public class Wall extends PongShape {
+    Debugger debbie = new Debugger(Wall.class.getSimpleName());
 	private Body body;
 	private PolygonShape shape;
 	private float height;
@@ -58,7 +59,7 @@ public class Wall extends PongShape {
     }
 
 	@Override
-	public byte[] serialize() throws IllegalArgumentException{
+	public byte[] serialize() throws IllegalShapeException{
 		if (!visible) {
 			return null;
 		}
@@ -87,7 +88,7 @@ public class Wall extends PongShape {
 		System.arraycopy(color, 0, serialized, pointer, color.length);
         pointer += 2;
 
-        Debugger.debugger.i("WALL Serialized byte array: " + Arrays.toString(serialized));
+        debbie.i("WALL Serialized byte array: " + Arrays.toString(serialized));
         return serialized;
 	}
 
@@ -114,7 +115,7 @@ public class Wall extends PongShape {
 		polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(
 				byteRotation, MathUtils.TWOPI)));
 
-        Debugger.debugger.i("WALL points deserialized: " + Arrays.toString(polygon.getPoints()));
+        debbie.i("WALL points deserialized: " + Arrays.toString(polygon.getPoints()));
         graphics.setColor(Settings.colorMap.get(color)); //TODO - Refactor Settings colormap to convert to bytes
         graphics.fill(polygon);
 		return pointer;

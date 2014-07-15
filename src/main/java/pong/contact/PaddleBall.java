@@ -16,7 +16,7 @@ import utils.Debugger;
 public class PaddleBall implements ContactListener {
     private final Pong pong;
     /** Debbie **/
-    Debugger debbie = new Debugger(PaddleBall.class.getSimpleName() + " contact", Debugger.INFO);
+    Debugger debbie = new Debugger(PaddleBall.class.getSimpleName() + " contact");
 
     /** Contact Body **/
     Paddle paddle;
@@ -31,7 +31,6 @@ public class PaddleBall implements ContactListener {
 
     @Override
     public void beginContact(Contact contact) {
-
         debbie.i("Contact");
     }
 
@@ -51,6 +50,6 @@ public class PaddleBall implements ContactListener {
         float impulse1 = impulse.normalImpulses[1];
         float imp = impulse0 > impulse1 ? impulse0 : impulse1;
         imp = imp > 1 ? 1 : imp;
-        pong.getSoundmaster().playBounce(imp);
+        pong.getSoundMaster().playBounce(imp);
     }
 }

@@ -4,20 +4,22 @@ import org.jbox2d.common.MathUtils;
 
 import java.util.Arrays;
 
+import shapes.IllegalShapeException;
+
 /**
  * Created by sihrc on 7/4/14.
  */
 public class Bytes {
-    public static byte float2Byte(float sizeFloat, float scale) throws IllegalArgumentException{
+    public static byte float2Byte(float sizeFloat, float scale) throws IllegalShapeException{
         if (sizeFloat < 0 || sizeFloat > scale){
-            throw new IllegalArgumentException();
+            throw new IllegalShapeException();
         }
         return (byte) ((int) (((256.0/scale)*sizeFloat - 128)-1));
     }
 
-    public static byte[] float2Byte2(float sizeFloat, float scale) throws IllegalArgumentException {
-        if (sizeFloat < 0 || sizeFloat > scale){
-            throw new IllegalArgumentException();
+    public static byte[] float2Byte2(float sizeFloat, float scale) throws IllegalShapeException {
+        if (sizeFloat < 0 || sizeFloat > scale * 1.1f){
+            throw new IllegalShapeException();
         }
         return char2Bytes2(((char) ((int) (((65536.0 / scale) * sizeFloat) - 1))));
     }
@@ -47,10 +49,14 @@ public class Bytes {
     }
 
     public static void main(String[] args){
-        test_float();
+        try {
+            test_float();
+        } catch (IllegalShapeException e) {
+            e.printStackTrace();
+        }
     }
 
-    private static void test_float(){
+    private static void test_float() throws IllegalShapeException{
         float a = 0.5f;
         System.out.println(a);
 

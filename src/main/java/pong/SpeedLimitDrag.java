@@ -2,9 +2,8 @@ package pong;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.Fixture;
+
 import shapes.PongShape;
-import utils.Debugger;
 
 /**
  * Created by rbooth on 7/9/14.
@@ -29,8 +28,6 @@ public class SpeedLimitDrag extends GlobalEffect {
             float ratio = abs/speedLimit;
             Vec2 restorative = new Vec2(-velocity.x * ratio * dragRatio, -velocity.y * ratio * dragRatio);
             body.applyForceToCenter(restorative);
-
         }
-        Debugger.debugger.disable();
     }
 }
