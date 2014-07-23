@@ -1,2 +1,2 @@
-rootProject.name = 'pong-the-moba'
-
+include ':pong'
+include ':jbox2d'
