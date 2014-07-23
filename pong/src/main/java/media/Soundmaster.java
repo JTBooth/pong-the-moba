@@ -15,7 +15,8 @@ public class SoundMaster {
     public SoundMaster() {
 
         try {
-            bounce = new Sound("src/main/resources/bounce_1.aif");
+            bounce = new Sound("pong/" +
+                    "src/main/resources/bounce_1.aif");
         } catch (SlickException e) {
             e.printStackTrace();
         }
