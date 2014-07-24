@@ -1,21 +1,23 @@
-package pong;
+package manager;
 
 import org.jbox2d.dynamics.BodyType;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import pong.GlobalEffect;
+import pong.DragEffect;
 import shapes.PongShape;
 
 /**
  * Created by rbooth on 7/9/14.
  */
-public class GlobalEffects extends ArrayList<GlobalEffect> {
+public class EffectManager extends ArrayList<GlobalEffect> {
 
-    public GlobalEffects(String option) {
+    public EffectManager(String option) {
         super();
         if ("drag".equals(option)) {
-            SpeedLimitDrag sld = new SpeedLimitDrag(10, 0.1f);
+            DragEffect sld = new DragEffect(10, 0.1f);
             this.add(sld);
         }
     }

@@ -8,11 +8,11 @@ import shapes.PongShape;
 /**
  * Created by rbooth on 7/9/14.
  */
-public class SpeedLimitDrag extends GlobalEffect {
+public class DragEffect extends GlobalEffect {
     private float speedLimit;
     private float dragRatio;
 
-    public SpeedLimitDrag(float speedLimit, float dragRatio) {
+    public DragEffect(float speedLimit, float dragRatio) {
         this.speedLimit = speedLimit;
         this.dragRatio = dragRatio;
     }

@@ -8,7 +8,7 @@ import org.jbox2d.common.Settings;
 import java.io.IOException;
 import java.util.Arrays;
 
-import packets.KryoRegisterer;
+import serialize.KryoRegisterer;
 import utils.Debugger;
 
 public class PongServer extends Server {

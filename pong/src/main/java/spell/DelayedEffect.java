@@ -1,4 +1,4 @@
-package pong;
+package spell;
 
 // Note that when ticksRemaining is zero, the object will no longer be ticked.
 public abstract class DelayedEffect {

@@ -4,7 +4,6 @@ import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.MathUtils;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
@@ -13,10 +12,12 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Transform;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import pong.Pong;
-import utils.Bytes;
+import serialize.Packet;
+import serialize.Pattern;
 import utils.Debugger;
 import utils.Settings;
 
@@ -24,7 +25,6 @@ public class Ball extends PongShape {
     Debugger debbie = new Debugger(Ball.class.getSimpleName());
     private CircleShape shape;
     private char color;
-    private float radius;
 
     public Ball() {
     }
@@ -34,7 +34,7 @@ public class Ball extends PongShape {
         bodyDef.position.set(x, y);
         bodyDef.type = BodyType.DYNAMIC;
 
-        Body body = world.createBody(bodyDef);
+        body = world.createBody(bodyDef);
         body.setBullet(isBullet);
         CircleShape circleShape = new CircleShape();
         circleShape.m_radius = r;
@@ -46,8 +46,6 @@ public class Ball extends PongShape {
         fd.restitution = 1.0f;
         fd.shape = shape;
         body.createFixture(fd);
-        this.radius = r;
-        this.body = body;
         this.color = color;
         this.pong = pong;
     }
@@ -69,66 +67,45 @@ public class Ball extends PongShape {
     }
 
     @Override
-    public byte[] serialize() throws IllegalShapeException {
-        byte[] serialized = new byte[11];
-        int pointer = 0;
-
-        byte[] id = Bytes.char2Bytes2(getId());
-        System.arraycopy(id, 0, serialized, pointer, id.length);
-        pointer += 2;
-
-        byte[] rotation = Bytes.float2Byte2(getAngle(), MathUtils.TWOPI);                  // Rotation
-        System.arraycopy(rotation, 0, serialized, pointer, rotation.length);
-        pointer += 2;
-
-        byte[] xposition = Bytes.float2Byte2(body.getPosition().x, Settings.windowMeters[0]);   // X position
-        System.arraycopy(xposition, 0, serialized, pointer, xposition.length);
-        pointer += 2;
-
-        byte[] yposition = Bytes.float2Byte2(body.getPosition().y, Settings.windowMeters[1]);   // Y position
-        System.arraycopy(yposition, 0, serialized, pointer, yposition.length);
-        pointer += 2;
-
-        byte radius = Bytes.float2Byte(shape.getRadius(), Settings.windowMeters[1] / 2f);       // Radius
-        serialized[pointer++] = radius;
-
-        byte[] color = Bytes.char2Bytes2(this.color);// Color
-        System.arraycopy(color, 0, serialized, pointer, color.length);
-
-        debbie.i("BALL Serialized byte array: " + Arrays.toString(serialized));
-
-        return serialized;
+    public List<Object> setSerialData() {
+        return new ArrayList<Object>(){{
+            add(getAngle());                                     //ROTATION
+            add(body.getPosition().x);                           // X
+            add(body.getPosition().y);                           // Y
+            add(shape.getRadius());                              // RADIUS
+            add(color);                                          //COLOR
+        }};
     }
 
     @Override
-    public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
-        byte[] rotation = Arrays.copyOfRange(cereal, pointer, pointer += 2);
-        byte[] xposition = Arrays.copyOfRange(cereal, pointer, pointer += 2);
-        byte[] yposition = Arrays.copyOfRange(cereal, pointer, pointer += 2);
-        byte radius = cereal[pointer++];
+    public List<Packet> getSerialPattern() {
+        return new ArrayList<Packet>(){{
+            add(new Packet(Pattern.FLOAT2B, MathUtils.TWOPI));                      //ROTATION
+            add(new Packet(Pattern.FLOAT2B, Settings.windowMeters[0]));   // X
+            add(new Packet(Pattern.FLOAT2B, Settings.windowMeters[1]));   // Y
+            add(new Packet(Pattern.FLOAT1B, Settings.windowMeters[1] / 2f)); // RADIUS
+            add(new Packet(Pattern.CHAR2B));                                          //COLOR
+        }};
+    }
 
-        graphics.setColor(Settings.colorMap.get(Bytes.twoBytes2Char(Arrays.copyOfRange(cereal, pointer, pointer += 2))));
+    @Override
+    public void extractData(List<Packet> data, Graphics graphics) {
+        graphics.setColor(Settings.colorMap.get((Character) data.get(4).data));
 
         Circle circle = new Circle(
-                Settings.m2p(Bytes.twoByte2Float(xposition, Settings.windowMeters[0])),
-                Settings.m2p(Bytes.twoByte2Float(yposition, Settings.windowMeters[1])),
-                Settings.m2p(Bytes.byte2Float(radius, Settings.windowMeters[1] / 2f))
+                Settings.m2p((Float) data.get(1).data),
+                Settings.m2p((Float) data.get(2).data),
+                Settings.m2p((Float) data.get(3).data)
         );
-        circle.transform(Transform.createRotateTransform(Bytes.twoByte2Float(rotation, MathUtils.TWOPI)));
+        circle.transform(Transform.createRotateTransform((Float) data.get(0).data));
         graphics.fill(circle);
-
-        return pointer;
     }
 
     @Override
-    public boolean visible() {
+    public boolean shouldSerialize() {
         return true;
     }
 
-    @Override
-    public char getId() {
-        return CerealRegistry.BALL;
-    }
 
     @Override
     public Shape getBoxShape() {

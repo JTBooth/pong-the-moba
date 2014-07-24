@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import client.CommandUpdate;
-import packets.HousewarmingPacket;
+import serialize.HousewarmingPacket;
 import pong.Pong;
 import utils.Debugger;
 

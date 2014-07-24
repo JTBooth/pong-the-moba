@@ -5,13 +5,13 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import org.newdawn.slick.geom.Shape;
 
-import packets.Cereal;
+import serialize.PongPacket;
 import pong.Pong;
 
 /**
  * Created by sihrc on 7/4/14.
  */
-public abstract class PongShape implements Cereal {
+public abstract class PongShape extends PongPacket {
     Body body;
     Pong pong;
 

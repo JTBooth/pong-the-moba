@@ -3,20 +3,22 @@ package shapes;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
-import packets.Cereal;
+import serialize.Packet;
+import serialize.Pattern;
+import serialize.PongPacket;
 import server.Player;
-import utils.Bytes;
 import utils.Debugger;
 import utils.Settings;
 
-import static utils.Bytes.uByte;
+import static serialize.Bytes.uByte;
 
 /**
  * Created by sihrc on 6/28/14.
  */
-public class InfoBoard implements Cereal {
+public class InfoBoard extends PongPacket {
     Debugger debbie = new Debugger(InfoBoard.class.getSimpleName());
     /**
      * SCORES *
@@ -82,63 +84,47 @@ public class InfoBoard implements Cereal {
     }
 
     @Override
-    public byte[] serialize() {
-        byte[] serialized = new byte[6];
-        int pointer = 0;
-
-        //Shape ID
-        byte[] id = Bytes.char2Bytes2(getId());
-        System.arraycopy(id, 0, serialized, pointer, id.length);
-        pointer += id.length;
-
-
-        //Left Score
-        serialized[pointer++] = left;
-
-        //Right Score
-        serialized[pointer++] = right;
-
-        //Left Mana
-        serialized[pointer++] = leftMana.getCurrentMana();
-
-        //Right Mana
-        serialized[pointer++] = rightMana.getCurrentMana();
-
-        debbie.i("INFOBOARD Serialized byte array: " + Arrays.toString(serialized));
-        return serialized;
+    public List<Object> setSerialData() {
+        return new ArrayList<Object>(){{
+            add(left);                      //LEFT
+            add(right);                     //RIGHT
+            add(leftMana.getCurrentMana()); //Left Mana
+            add(rightMana.getCurrentMana());//Right Mana
+        }};
     }
 
     @Override
-    public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
-        debbie.i("INFOBOARD scores: " + String.valueOf((int) cereal[pointer]) + String.valueOf((int) cereal[pointer + 1]));
+    public List<Packet> getSerialPattern() {
+        return new ArrayList<Packet>(){{
+            add(new Packet(Pattern.FLOAT1B)); //LEFT
+            add(new Packet(Pattern.FLOAT1B)); //RIGHT
+            add(new Packet(Pattern.BYTE)); //Left Mana
+            add(new Packet(Pattern.BYTE)); //Right Mana
+        }};
+    }
 
-        //Draw left score
+    @Override
+    public void extractData(List<Packet> data, Graphics graphics) {
+        int counter = 0;
         graphics.setColor(Settings.colorMap.get('0'));
-        graphics.drawString(String.valueOf((int) cereal[pointer++]), Settings.scorePositions[0], Settings.scorePositions[1]);
+        graphics.drawString(String.valueOf(data.get(counter++).data), Settings.scorePositions[0], Settings.scorePositions[1]);
 
         //Draw right score
         graphics.setColor(Settings.colorMap.get('2'));
-        graphics.drawString(String.valueOf((int) cereal[pointer++]), Settings.scorePositions[2], Settings.scorePositions[3]);
+        graphics.drawString(String.valueOf(data.get(counter++).data), Settings.scorePositions[2], Settings.scorePositions[3]);
 
         //Draw left mana
-        leftMana.setCurrentMana(cereal[pointer++]);
+        leftMana.setCurrentMana((Byte)data.get(counter++).data);
         leftMana.render(graphics);
 
         //Draw right mana
-        rightMana.setCurrentMana(cereal[pointer++]);
+        rightMana.setCurrentMana((Byte)data.get(counter++).data);
         rightMana.render(graphics);
-
-        return pointer;
     }
 
     @Override
-    public boolean visible() {
+    public boolean shouldSerialize() {
         return true;
-    }
-
-    @Override
-    public char getId() {
-        return CerealRegistry.INFO_BOARD;
     }
 
     private class manaBar {

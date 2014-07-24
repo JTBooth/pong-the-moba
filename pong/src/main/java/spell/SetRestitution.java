@@ -1,6 +1,5 @@
 package spell;
 
-import pong.DelayedEffect;
 import shapes.Paddle;
 
 public class SetRestitution extends DelayedEffect {

@@ -14,10 +14,13 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import pong.Pong;
-import utils.Bytes;
+import serialize.Packet;
+import serialize.Pattern;
 import utils.Debugger;
 import utils.Settings;
 
@@ -56,77 +59,53 @@ public class Wall extends PongShape {
     }
 
     @Override
-    public byte[] serialize() throws IllegalShapeException {
-        if (!visible) {
-            return null;
-        }
-        byte[] serialized = new byte[9];
-        int pointer = 0;
-
-        byte[] id = Bytes.char2Bytes2(getId());
-        System.arraycopy(id, 0, serialized, pointer, pointer += 2);
-
-        byte[] rotation = Bytes.float2Byte2(getAngle(), MathUtils.TWOPI); // Rotation
-        System.arraycopy(rotation, 0, serialized, pointer, rotation.length);
-        pointer += 2;
-
-        byte xposition = Bytes.float2Byte(body.getPosition().x,
-                Settings.windowMeters[0]); // X position
-        serialized[pointer++] = xposition;
-
-        byte yposition = Bytes.float2Byte(body.getPosition().y,
-                Settings.windowMeters[1]); // Y position
-        serialized[pointer++] = yposition;
-
-        byte length = Bytes.float2Byte(height, Settings.windowMeters[1]);// Length
-        serialized[pointer++] = length;
-
-        byte[] color = Bytes.char2Bytes2(this.color);// Color
-        System.arraycopy(color, 0, serialized, pointer, color.length);
-        pointer += 2;
-
-        debbie.i("WALL Serialized byte array: " + Arrays.toString(serialized));
-        return serialized;
+    public List<Object> setSerialData() {
+        return new ArrayList<Object>(){{
+            add(getAngle());                      //ROTATION
+            add(body.getPosition().x);            // X
+            add(body.getPosition().y);            // Y
+            add(height);                          // Length
+            add(color);                           //COLOR
+        }};
     }
 
     @Override
-    public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
-        byte[] byteRotation = Arrays.copyOfRange(cereal, pointer, pointer += 2);
-        byte byteX = cereal[pointer++];
-        byte byteY = cereal[pointer++];
-        byte byteHeight = cereal[pointer++];
-        byte[] byteColor = Arrays.copyOfRange(cereal, pointer, pointer += 2);
+    public List<Packet> getSerialPattern() {
+        return new ArrayList<Packet>(){{
+            add(new Packet(Pattern.FLOAT2B,  MathUtils.TWOPI));                      //ROTATION
+            add(new Packet(Pattern.FLOAT2B,  Settings.windowMeters[0]));             // X
+            add(new Packet(Pattern.FLOAT2B,  Settings.windowMeters[1]));             // Y
+            add(new Packet(Pattern.FLOAT1B,  Settings.windowMeters[1] / 2f));        // Length
+            add(new Packet(Pattern.CHAR2B));                                         // COLOR
+        }};
+    }
 
+    @Override
+    public void extractData(List<Packet> data, Graphics graphics) {
         /** Create a rectangle given position and size **/
-        Rectangle rect = new Rectangle(Settings.m2p(Bytes.byte2Float(byteX,
-                Settings.windowMeters[0])), Settings.m2p(Bytes.byte2Float(
-                byteY, Settings.windowMeters[1])), Settings.paddleWidth,
-                Settings.m2p(Bytes.byte2Float(byteHeight,
-                        Settings.windowMeters[1] / 2f)));
+        Rectangle rect =
+                new Rectangle(Settings.m2p((Float) data.get(1).data),
+                              Settings.m2p((Float) data.get(2).data),
+                              Settings.paddleWidth, //FIXME - well.. because.. lol
+                              Settings.m2p((Float) data.get(3).data));
 
         /** Get Color **/
-        this.color = Bytes.twoBytes2Char(byteColor);
+        this.color = (Character) data.get(4).data;
 
         /** Polygon to rotate **/
         Polygon polygon = new Polygon(rect.getPoints());
-        polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(
-                byteRotation, MathUtils.TWOPI)));
+        polygon.transform(Transform.createRotateTransform((Float) data.get(0).data));
 
         debbie.i("WALL points deserialized: " + Arrays.toString(polygon.getPoints()));
-        graphics.setColor(Settings.colorMap.get(color)); //TODO - Refactor Settings colormap to convert to bytes
+        graphics.setColor(Settings.colorMap.get(color));
         graphics.fill(polygon);
-        return pointer;
     }
 
     @Override
-    public boolean visible() {
+    public boolean shouldSerialize() {
         return visible;
     }
 
-    @Override
-    public char getId() {
-        return CerealRegistry.WALL;
-    }
 
     @Override
     public org.jbox2d.collision.shapes.Shape getBoxShape() {

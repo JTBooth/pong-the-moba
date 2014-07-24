@@ -18,20 +18,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import media.SoundMaster;
-import packets.Cereal;
+import manager.EffectManager;
+import manager.SoundManager;
+import manager.SpellManager;
+import serialize.PongPacket;
 import pong.contact.PaddleBall;
 import server.Player;
 import server.PongServer;
 import shapes.Ball;
-import shapes.IllegalShapeException;
 import shapes.InfoBoard;
 import shapes.Laser;
 import shapes.Paddle;
 import shapes.PongShape;
+import shapes.Registry;
 import shapes.Wall;
-import spell.SpellKeeper;
+import spell.DelayedEffect;
 import utils.Debugger;
+import utils.IllegalShapeException;
 import utils.Settings;
 
 public class Pong extends BasicGame {
@@ -42,15 +45,15 @@ public class Pong extends BasicGame {
     private PongServer server;
     private Set<DelayedEffect> delayedEffects = Collections.newSetFromMap(new ConcurrentHashMap<DelayedEffect, Boolean>());
     private List<PongShape> shapeList;
-    private List<Cereal> cerealList;
+    private List<PongPacket> pongPacketList;
     private Player playerL;
     private Player playerR;
     private World world;
-    private SpellKeeper spellKeeper;
+    private SpellManager spellManager;
     private Ball ball;
     private InfoBoard infoBoard;
-    private GlobalEffects globalEffects;
-    private SoundMaster soundMaster;
+    private EffectManager effectManager;
+    private SoundManager soundManager;
 
     /**
      * Constructor
@@ -72,10 +75,10 @@ public class Pong extends BasicGame {
         this.playerR = playerR;
 
         /** Global Physics Effect Manager **/
-        globalEffects = new GlobalEffects("drag");
+        effectManager = new EffectManager("drag");
 
         /** Sound effects **/
-        soundMaster = new SoundMaster();
+        soundManager = new SoundManager();
     }
 
     public void start() {
@@ -89,7 +92,7 @@ public class Pong extends BasicGame {
     private void resetGame() {
         /** Initialize Game Pieces **/
         this.shapeList = new ArrayList<PongShape>();
-        this.cerealList = new ArrayList<Cereal>();
+        this.pongPacketList = new ArrayList<PongPacket>();
 
         /** Initiate Game InfoBoards*/
         this.infoBoard = new InfoBoard(Settings.winningScore);
@@ -129,7 +132,7 @@ public class Pong extends BasicGame {
                 if (cereal.length > 0)
                     outputStream.write(cereal);
             } catch (IOException e) {
-                debbie.e(ps.getId() + " failed to write to bytearrayoutputstream " + e.getMessage());
+                debbie.e(Registry.getId(ps.getClass()) + " failed to write to bytearrayoutputstream " + e.getMessage());
             } catch (IllegalShapeException e) {
                 e.printStackTrace();
             }
@@ -165,10 +168,10 @@ public class Pong extends BasicGame {
         shapeList.add(playerR.getPaddle());
         shapeList.add(ball);
 
-        cerealList.add(infoBoard);
-        cerealList.add(playerL.getPaddle());
-        cerealList.add(playerR.getPaddle());
-        cerealList.add(ball);
+        pongPacketList.add(infoBoard);
+        pongPacketList.add(playerL.getPaddle());
+        pongPacketList.add(playerR.getPaddle());
+        pongPacketList.add(ball);
 
         world.setContactListener(new PaddleBall(playerL.getPaddle(), ball, this));
 
@@ -178,7 +181,7 @@ public class Pong extends BasicGame {
         //contactManager.addPair(playerR.getPaddle(), ball);
 
         /** Spell keeper for this game **/
-        this.spellKeeper = new SpellKeeper(this);
+        this.spellManager = new SpellManager(this);
     }
 
     @Override
@@ -197,8 +200,8 @@ public class Pong extends BasicGame {
             infoBoard.playerScored(Player.LEFT);
             resetBall(Player.LEFT);
         }
-        globalEffects.applyForces(shapeList);
-        spellKeeper.update();
+        effectManager.applyForces(shapeList);
+        spellManager.update();
         tendDelayedEffects();
     }
 
@@ -275,11 +278,11 @@ public class Pong extends BasicGame {
                     break;
                 }
                 case Keyboard.KEY_SPACE: {
-                    spellKeeper.tryToCast(player, Keyboard.KEY_SPACE);
+                    spellManager.tryToCast(player, Keyboard.KEY_SPACE);
                     break;
                 }
                 case Keyboard.KEY_Q: {
-                    spellKeeper.tryToCast(player, Keyboard.KEY_Q);
+                    spellManager.tryToCast(player, Keyboard.KEY_Q);
                     break;
                 }
                 case Keyboard.KEY_0: {
@@ -432,16 +435,16 @@ public class Pong extends BasicGame {
         return delayedEffects;
     }
 
-    public SpellKeeper getSpellKeeper() {
-        return spellKeeper;
+    public SpellManager getSpellManager() {
+        return spellManager;
     }
 
-    public GlobalEffects getGlobalEffects() {
-        return globalEffects;
+    public EffectManager getEffectManager() {
+        return effectManager;
     }
 
-    public SoundMaster getSoundMaster() {
-        return soundMaster;
+    public SoundManager getSoundManager() {
+        return soundManager;
     }
 
     public void setMana(byte leftMana, byte rightMana) {

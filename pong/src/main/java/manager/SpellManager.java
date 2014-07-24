@@ -1,4 +1,4 @@
-package spell;
+package manager;
 
 import org.lwjgl.input.Keyboard;
 
@@ -7,11 +7,14 @@ import java.util.Map;
 
 import pong.Pong;
 import server.Player;
+import spell.LaserSpell;
+import spell.RestitutionBoost;
+import spell.Spell;
 import utils.Debugger;
 import utils.Settings;
 
-public class SpellKeeper {
-    Debugger debbie = new Debugger(SpellKeeper.class.getSimpleName());
+public class SpellManager {
+    Debugger debbie = new Debugger(SpellManager.class.getSimpleName());
     Pong pong;
     Spell[] p1spells;
     Spell[] p2spells;
@@ -19,7 +22,7 @@ public class SpellKeeper {
     Map<Integer, Integer> commandSpellMap;
     int i = 0;
 
-    public SpellKeeper(Pong pong) {
+    public SpellManager(Pong pong) {
         this.pong = pong;
 
         p1spells = new Spell[]{
@@ -76,14 +79,10 @@ public class SpellKeeper {
             i = 0;
         }
         for (Spell spell : p1spells) {
-            if (spell.cooldownCounter > 0) {
-                spell.cooldownCounter -= 1;
-            }
+            spell.cooldown();
         }
         for (Spell spell : p2spells) {
-            if (spell.cooldownCounter > 0) {
-                spell.cooldownCounter -= 1;
-            }
+            spell.cooldown();
         }
         pong.setMana((byte) mana[0], (byte) mana[1]);
     }

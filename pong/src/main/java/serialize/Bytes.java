@@ -1,10 +1,10 @@
-package utils;
+package serialize;
 
 import org.jbox2d.common.MathUtils;
 
 import java.util.Arrays;
 
-import shapes.IllegalShapeException;
+import utils.IllegalShapeException;
 
 /**
  * Created by sihrc on 7/4/14.

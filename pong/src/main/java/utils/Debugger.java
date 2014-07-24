@@ -3,6 +3,8 @@ package utils;
 import java.util.Arrays;
 import java.util.List;
 
+import serialize.PongPacket;
+import shapes.Ball;
 import shapes.Paddle;
 
 /**
@@ -24,7 +26,10 @@ public class Debugger {
      * *
      */
     public final static List<String> enabled = Arrays.asList(
-            Paddle.class.getSimpleName()
+            Paddle.class.getSimpleName(),
+            Ball.class.getSimpleName(),
+            PongPacket.class.getSimpleName()
+            //Serializer.class.getSimpleName(),
     );
 
     /**

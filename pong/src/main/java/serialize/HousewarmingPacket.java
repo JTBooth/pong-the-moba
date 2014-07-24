@@ -1,4 +1,4 @@
-package packets;
+package serialize;
 
 public class HousewarmingPacket {
     int[] relevantChars;

@@ -1,4 +1,4 @@
-package shapes;
+package utils;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;

@@ -54,6 +54,6 @@ public class PaddleBall implements ContactListener {
         float impulse1 = impulse.normalImpulses[1];
         float imp = impulse0 > impulse1 ? impulse0 : impulse1;
         imp = imp > 1 ? 1 : imp;
-        pong.getSoundMaster().playBounce(imp);
+        pong.getSoundManager().playBounce(imp);
     }
 }

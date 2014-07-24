@@ -14,10 +14,13 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import pong.Pong;
-import utils.Bytes;
+import serialize.Packet;
+import serialize.Pattern;
 import utils.Debugger;
 import utils.Settings;
 
@@ -44,12 +47,12 @@ public class Paddle extends PongShape {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
         bodyDef.type = BodyType.KINEMATIC;
-        Body body = world.createBody(bodyDef);
+        body = world.createBody(bodyDef);
 
 
         PolygonShape polyShape = new PolygonShape();
         polyShape.setAsBox(Settings.paddleWidth / 2, length / 2);
-        this.length = length;
+        this.length = Settings.paddleLength;
         shape = polyShape;
 
         FixtureDef fd = new FixtureDef();
@@ -57,7 +60,6 @@ public class Paddle extends PongShape {
         fd.shape = polyShape;
         body.createFixture(fd);
         this.color = color;
-        this.body = body;
         this.pong = pong;
     }
 
@@ -120,47 +122,33 @@ public class Paddle extends PongShape {
     }
 
     @Override
-    public byte[] serialize() throws IllegalShapeException {
-        byte[] serialized = new byte[9];
-        int pointer = 0;
-
-        byte[] id = Bytes.char2Bytes2(getId());
-        System.arraycopy(id, 0, serialized, pointer, id.length);
-        pointer += 2;
-
-        byte[] rotation = Bytes.float2Byte2(getAngle(), MathUtils.TWOPI); // Rotation
-        System.arraycopy(rotation, 0, serialized, pointer, rotation.length);
-        pointer += 2;
-
-        byte xposition = Bytes.float2Byte(body.getPosition().x, Settings.windowMeters[0]);  // X position
-        serialized[pointer++] = xposition;
-
-        byte yposition = Bytes.float2Byte(body.getPosition().y, Settings.windowMeters[1]);  // Y position
-        serialized[pointer++] = yposition;
-
-        byte length = Bytes.float2Byte(this.length, Settings.windowMeters[1]);// Length
-        serialized[pointer++] = length;
-
-        byte[] color = Bytes.char2Bytes2(this.color);// Color
-        System.arraycopy(color, 0, serialized, pointer, color.length);
-
-        debbie.i("PADDLE Serialized byte array: " + Arrays.toString(serialized));
-        return serialized;
+    public List<Object> setSerialData() {
+        return new ArrayList<Object>(){{
+            add(getAngle());                      //ROTATION
+            add(body.getPosition().x);            // X
+            add(body.getPosition().y);            // Y
+            add(length);                          // Length
+            add(color);                           //COLOR
+        }};
     }
 
     @Override
-    public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
-        byte[] byteRotation = Arrays.copyOfRange(cereal, pointer, pointer += 2);
+    public List<Packet> getSerialPattern() {
+        return new ArrayList<Packet>(){{
+            add(new Packet(Pattern.FLOAT2B, MathUtils.TWOPI));                      //ROTATION
+            add(new Packet(Pattern.FLOAT2B,  Settings.windowMeters[0]));            // X
+            add(new Packet(Pattern.FLOAT2B,  Settings.windowMeters[1]));            // Y
+            add(new Packet(Pattern.FLOAT1B,  Settings.windowMeters[1]));       // Length
+            add(new Packet(Pattern.CHAR2B));                                        //COLOR
+        }};
+    }
 
-        byte byteX = cereal[pointer++];
-        byte byteY = cereal[pointer++];
-        byte byteHeight = cereal[pointer++];
-        byte[] byteColor = Arrays.copyOfRange(cereal, pointer, pointer += 2);
-
-        int x = Settings.m2p(Bytes.byte2Float(byteX, Settings.windowMeters[0]));
-        int y = Settings.m2p(Bytes.byte2Float(byteY, Settings.windowMeters[1]));
+    @Override
+    public void extractData(List<Packet> data, Graphics graphics) {
+        int x = Settings.m2p((Float) data.get(1).data);
+        int y = Settings.m2p((Float) data.get(2).data);
         int width = Settings.m2p(Settings.paddleWidth);
-        int length = Settings.m2p(Bytes.byte2Float(byteHeight, Settings.windowMeters[1]));
+        int length = Settings.m2p(Settings.paddleLength);
 
         /** Create a rectangle given position and size **/
         Rectangle rect = new Rectangle(
@@ -171,25 +159,24 @@ public class Paddle extends PongShape {
         );
 
         /** Get Color **/
-        this.color = Bytes.twoBytes2Char(byteColor);
+        this.color = (Character) data.get(4).data;
         graphics.setColor(Settings.colorMap.get(this.color));
 
         /** Polygon to rotate**/
         Polygon polygon = new Polygon(rect.getPoints());
-        graphics.fill(polygon.transform(Transform.createRotateTransform(Bytes.twoByte2Float(byteRotation, MathUtils.TWOPI), polygon.getCenterX(), polygon.getCenterY())));
+        graphics.fill(polygon.transform(Transform.createRotateTransform(
+                (Float) data.get(0).data,
+                polygon.getCenterX(),
+                polygon.getCenterY()
+        )));
 
-        debbie.i("Rectangle Created " + Arrays.toString(rect.getPoints()));
-        return pointer;
+        debbie.d(x + " x position, " + y + " y position, " + width + " width, " + length + " length");
+        debbie.d(Settings.colorMap.get(this.color) + " color");
     }
 
     @Override
-    public boolean visible() {
+    public boolean shouldSerialize() {
         return true;
-    }
-
-    @Override
-    public char getId() {
-        return CerealRegistry.PADDLE;
     }
 
     @Override

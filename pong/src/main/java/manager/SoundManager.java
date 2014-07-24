@@ -1,4 +1,4 @@
-package media;
+package manager;
 
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
@@ -8,11 +8,11 @@ import utils.Debugger;
 /**
  * Created by rbooth on 7/10/14.
  */
-public class SoundMaster {
-    Debugger debbie = new Debugger(SoundMaster.class.getSimpleName());
+public class SoundManager {
+    Debugger debbie = new Debugger(SoundManager.class.getSimpleName());
     private Sound bounce;
 
-    public SoundMaster() {
+    public SoundManager() {
 
         try {
             bounce = new Sound("pong/" +

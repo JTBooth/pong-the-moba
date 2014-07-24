@@ -20,6 +20,12 @@ public abstract class Spell {
         this.pong = pong;
     }
 
+    public void cooldown () {
+        if (cooldownCounter > 0) {
+            cooldownCounter -= 1;
+        }
+    }
+
     public abstract void cast();
 
     public int getCost() {

@@ -5,8 +5,8 @@ import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
 
-import packets.HousewarmingPacket;
-import packets.KryoRegisterer;
+import serialize.HousewarmingPacket;
+import serialize.KryoRegisterer;
 import utils.Debugger;
 
 public class PongClient extends Client {

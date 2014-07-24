@@ -3,7 +3,7 @@ package client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-import packets.HousewarmingPacket;
+import serialize.HousewarmingPacket;
 
 public class DisplayListener extends Listener {
     private byte[] currentUpdate;
