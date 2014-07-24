@@ -25,7 +25,7 @@ public class SoundMaster {
 
     public void playBounce(float speed) {
         debbie.i("contact at speed " + speed);
-        float volume = 1f - (1f/(speed+1f));
+        float volume = 1f - (1f / (speed + 1f));
         debbie.i("sound at volume " + volume);
         bounce.play(1f, volume);
     }

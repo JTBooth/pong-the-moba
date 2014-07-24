@@ -9,9 +9,10 @@ import shapes.IllegalShapeException;
  */
 public interface Cereal {
     public abstract byte[] serialize() throws IllegalShapeException;
+
     public abstract int deserialize(byte[] cereal, int pointer, Graphics graphics);
+
     public abstract boolean visible();
+
     public abstract char getId();
-
-
 }

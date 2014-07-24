@@ -35,16 +35,12 @@ import utils.Debugger;
 import utils.Settings;
 
 public class Pong extends BasicGame {
-    private Debugger debbie = new Debugger(Pong.class.getSimpleName());
-
-    private PongServer server;
-
-
-    private Set<DelayedEffect> delayedEffects = Collections.newSetFromMap(new ConcurrentHashMap<DelayedEffect, Boolean>());
-
     int lastStepTime;
     long frame;
     long gameId;
+    private Debugger debbie = new Debugger(Pong.class.getSimpleName());
+    private PongServer server;
+    private Set<DelayedEffect> delayedEffects = Collections.newSetFromMap(new ConcurrentHashMap<DelayedEffect, Boolean>());
     private List<PongShape> shapeList;
     private List<Cereal> cerealList;
     private Player playerL;
@@ -56,8 +52,10 @@ public class Pong extends BasicGame {
     private GlobalEffects globalEffects;
     private SoundMaster soundMaster;
 
-    /** Constructor
+    /**
+     * Constructor
      * Creates a Pong Game
+     *
      * @param title -  title of the Pong window
      */
     public Pong(String title, Player playerL, Player playerR, long gameId, PongServer server) {
@@ -67,7 +65,7 @@ public class Pong extends BasicGame {
         this.gameId = gameId;
 
         /** Create a World **/
-        this.world = new World( new Vec2(0, 0));
+        this.world = new World(new Vec2(0, 0));
 
         /** Get Players **/
         this.playerL = playerL;
@@ -80,12 +78,29 @@ public class Pong extends BasicGame {
         soundMaster = new SoundMaster();
     }
 
-    public void start(){
+    public void start() {
         resetGame();
         createGame();
     }
 
-    /** Starting the Game **/
+    /**
+     * Resetting the game *
+     */
+    private void resetGame() {
+        /** Initialize Game Pieces **/
+        this.shapeList = new ArrayList<PongShape>();
+        this.cerealList = new ArrayList<Cereal>();
+
+        /** Initiate Game InfoBoards*/
+        this.infoBoard = new InfoBoard(Settings.winningScore);
+
+        /** Initialize frame count **/
+        frame = 0;
+    }
+
+    /**
+     * Starting the Game *
+     */
     private void createGame() {
         /** Start the Game **/
         AppGameContainer app;
@@ -103,18 +118,35 @@ public class Pong extends BasicGame {
         }
     }
 
-    /** Resetting the game **/
-    private void resetGame(){
-        /** Initialize Game Pieces **/
-        this.shapeList = new ArrayList<PongShape>();
-        this.cerealList = new ArrayList<Cereal>();
-
-        /** Initiate Game InfoBoards*/
-        this.infoBoard = new InfoBoard(Settings.winningScore);
-
-        /** Initialize frame count **/
-        frame = 0;
+    public void render(GameContainer arg0, Graphics graphics)
+            throws SlickException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        debbie.d("Shape List " + shapeList.size());
+        byte[] cereal;
+        for (PongShape ps : shapeList) {
+            try {
+                cereal = ps.serialize();
+                if (cereal.length > 0)
+                    outputStream.write(cereal);
+            } catch (IOException e) {
+                debbie.e(ps.getId() + " failed to write to bytearrayoutputstream " + e.getMessage());
+            } catch (IllegalShapeException e) {
+                e.printStackTrace();
+            }
+        }
+        server.sendUpdate(outputStream.toByteArray());
     }
+
+    @Override
+    public boolean closeRequested() {
+        return true;
+    }
+
+    @Override
+    public String getTitle() {
+        return Settings.title;
+    }
+
     /**
      * Game Loop: init(), render() and update() *
      */
@@ -123,7 +155,7 @@ public class Pong extends BasicGame {
     public void init(GameContainer arg0) throws SlickException {
         /** Create Game Pieces **/
         makeWalls();
-        makeBall((int)Settings.windowMeters[1], (int) Settings.windowMeters[0]);
+        makeBall((int) Settings.windowMeters[1], (int) Settings.windowMeters[0]);
         playerL.setPaddle(makePaddle(Player.LEFT));
         playerR.setPaddle(makePaddle(Player.RIGHT));
         frame = 0;
@@ -149,26 +181,6 @@ public class Pong extends BasicGame {
         this.spellKeeper = new SpellKeeper(this);
     }
 
-
-    public void render(GameContainer arg0, Graphics graphics)
-            throws SlickException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        debbie.d("Shape List " + shapeList.size());
-        byte[] cereal;
-        for (PongShape ps : shapeList){
-            try {
-                cereal = ps.serialize();
-                if (cereal.length > 0)
-                    outputStream.write(cereal);
-            } catch (IOException e) {
-                debbie.e(ps.getId() + " failed to write to bytearrayoutputstream " + e.getMessage());
-            } catch (IllegalShapeException e) {
-                e.printStackTrace();
-            }
-        }
-        server.sendUpdate(outputStream.toByteArray());
-    }
-
     @Override
     public void update(GameContainer arg0, int arg1) throws SlickException {
         ++frame;
@@ -190,16 +202,6 @@ public class Pong extends BasicGame {
         tendDelayedEffects();
     }
 
-    @Override
-    public boolean closeRequested() {
-        return true;
-    }
-
-    @Override
-    public String getTitle() {
-        return Settings.title;
-    }
-
     /**
      * Utility functions, called ~1/game loop *
      */
@@ -213,157 +215,11 @@ public class Pong extends BasicGame {
         lastStepTime = (int) System.nanoTime() / 1000000;
     }
 
-    /******************************************
-     Methods that create or add  objects
-     *****************************************/
-
-    private void makeWalls() {
-        float width = Settings.windowMeters[0];
-        float height = Settings.windowMeters[1];
-
-        new Wall(width/2, height + 0.001f, 0.001f, width, 0f, false, (char) 0, getWorld(), this);
-        new Wall(width/2, 0      - 0.001f, 0.001f, width, 0f, false, (char) 0, getWorld(), this);
-    }
-
-    private Paddle makePaddle(int player) {
-        float x;
-        char color = 0;
-
-        switch (player) {
-            case Player.LEFT:
-                x = 0.5f;
-                color = '0';
-                break;
-            case Player.RIGHT:
-                x = Settings.windowMeters[0] - 0.5f;
-                color = '2';
-                break;
-            default:
-                x = 1f;
-        }
-        debbie.i("Making Paddle for player " + player);
-        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleLength, color, getWorld(), this);
-    }
-
-    private void makeBall(int height, int width) {
-        ball = new Ball(width / 2, height / 2, Settings.ballRadius, getWorld(),
-                true, '1', this);
-        ball.getBody().setLinearVelocity(new Vec2(-Settings.serveSpeed, 0));
-    }
-
-    public Ball makeLaser(Player player) {
-        // Laser Starting and Direction
-        float x, y;
-        Vec2 direction;
-        float[] points = player.getPaddle().getPointsInPixels();
-
-        // Set correct values based on player
-        switch (player.who()) {
-            case Player.LEFT:
-                x = ((points[2] + points[4]) / 2);
-                y = ((points[3] + points[5]) / 2);
-                direction = player.getPaddle().getShape().getNormals()[1];
-                debbie.i("PLAYER LEFT " + x + " " + y + " " + direction.x + " " + direction.y);
-                break;
-            case Player.RIGHT:
-            default:
-                x = ((points[0] + points[6]) / 2);
-                y = ((points[1] + points[7]) / 2);
-                direction = player.getPaddle().getShape().getNormals()[3];
-                debbie.i("PLAYER RIGHT " + x + " " + y + " " + direction.x + " " + direction.y);
-                break;
-        }
-
-        return new Laser(Settings.p2m((int) x), Settings.p2m((int) y), Settings.laserRadius, direction,
-                getWorld(), this);
-    }
-    
-    public void addPlayer(Player player) {
-        if (playerL == null) {
-            playerL = player;
-            playerL.setWho(Player.LEFT);
-        } else if (playerR == null) {
-            playerR = player;
-            playerR.setWho(Player.RIGHT);
-        } else {
-            Log.info("No room for player " + player.getId());
-            // No room for this player.
-            // TODO send them an apology
-            debbie.w("Not enough room for another player!");
-        }
-    }
-
-    public void addShape(PongShape ps) {
-        shapeList.add(ps);
-    }
-
-
-    /******************************************
-     Methods that get current objects
-     *****************************************/
-    public org.jbox2d.dynamics.World getWorld() {
-        return world;
-    }
-
-    public Player getPlayer(long id){
-        return playerL.getId() == id?playerL:playerR;
-    }
-
-    public Ball getBall() {
-        return ball;
-    }
-
-    public Debugger getDebbie() {
-        return debbie;
-    }
-
-    public InfoBoard getInfoBoard() {
-        return infoBoard;
-    }
-
-    public int getLastStepTime() {
-        return lastStepTime;
-    }
-
-    public List<PongShape> getShapeList() {
-        return shapeList;
-    }
-
-    public long getFrame() {
-        return frame;
-    }
-
-    public Player getPlayerL() {
-        return playerL;
-    }
-
-    public Player getPlayerR() {
-        return playerR;
-    }
-
-    public PongServer getServer() {
-        return server;
-    }
-
-    public Set<DelayedEffect> getDelayedEffects() {
-        return delayedEffects;
-    }
-
-    public SpellKeeper getSpellKeeper() {
-        return spellKeeper;
-    }
-
-    public GlobalEffects getGlobalEffects() {
-        return globalEffects;
-    }
-
-    public SoundMaster getSoundMaster() {
-        return soundMaster;
-    }
-
-    /******************************************
-     Methods that modify current objects
-     *****************************************/
+    /**
+     * ***************************************
+     * Methods that modify current objects
+     * ***************************************
+     */
     private void resetBall(int i) {
         Vec2 ballVelocity;
         switch (i) {
@@ -382,10 +238,6 @@ public class Pong extends BasicGame {
         ball.getBody().setAngularVelocity(0);
         ball.getBody().setLinearVelocity(ballVelocity);
         debbie.i("reset ball to (" + ball.getX() + ", " + ball.getY() + ")");
-    }
-
-    public void setMana(byte leftMana, byte rightMana) {
-        infoBoard.setMana(leftMana, rightMana);
     }
 
     public void tendDelayedEffects() {
@@ -441,9 +293,166 @@ public class Pong extends BasicGame {
         curPaddle.execute();
     }
 
-    /******************************************
-     Methods that remove current  objects
-     *****************************************/
+    /**
+     * ***************************************
+     * Methods that create or add  objects
+     * ***************************************
+     */
+
+    private void makeWalls() {
+        float width = Settings.windowMeters[0];
+        float height = Settings.windowMeters[1];
+
+        new Wall(width / 2, height + 0.001f, 0.001f, width, 0f, false, (char) 0, getWorld(), this);
+        new Wall(width / 2, 0 - 0.001f, 0.001f, width, 0f, false, (char) 0, getWorld(), this);
+    }
+
+    private void makeBall(int height, int width) {
+        ball = new Ball(width / 2, height / 2, Settings.ballRadius, getWorld(),
+                true, '1', this);
+        ball.getBody().setLinearVelocity(new Vec2(-Settings.serveSpeed, 0));
+    }
+
+    private Paddle makePaddle(int player) {
+        float x;
+        char color = 0;
+
+        switch (player) {
+            case Player.LEFT:
+                x = 0.5f;
+                color = '0';
+                break;
+            case Player.RIGHT:
+                x = Settings.windowMeters[0] - 0.5f;
+                color = '2';
+                break;
+            default:
+                x = 1f;
+        }
+        debbie.i("Making Paddle for player " + player);
+        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleLength, color, getWorld(), this);
+    }
+
+    /**
+     * ***************************************
+     * Methods that get current objects
+     * ***************************************
+     */
+    public org.jbox2d.dynamics.World getWorld() {
+        return world;
+    }
+
+    public Ball makeLaser(Player player) {
+        // Laser Starting and Direction
+        float x, y;
+        Vec2 direction;
+        float[] points = player.getPaddle().getPointsInPixels();
+
+        // Set correct values based on player
+        switch (player.who()) {
+            case Player.LEFT:
+                x = ((points[2] + points[4]) / 2);
+                y = ((points[3] + points[5]) / 2);
+                direction = player.getPaddle().getShape().getNormals()[1];
+                debbie.i("PLAYER LEFT " + x + " " + y + " " + direction.x + " " + direction.y);
+                break;
+            case Player.RIGHT:
+            default:
+                x = ((points[0] + points[6]) / 2);
+                y = ((points[1] + points[7]) / 2);
+                direction = player.getPaddle().getShape().getNormals()[3];
+                debbie.i("PLAYER RIGHT " + x + " " + y + " " + direction.x + " " + direction.y);
+                break;
+        }
+
+        return new Laser(Settings.p2m((int) x), Settings.p2m((int) y), Settings.laserRadius, direction,
+                getWorld(), this);
+    }
+
+    public void addPlayer(Player player) {
+        if (playerL == null) {
+            playerL = player;
+            playerL.setWho(Player.LEFT);
+        } else if (playerR == null) {
+            playerR = player;
+            playerR.setWho(Player.RIGHT);
+        } else {
+            Log.info("No room for player " + player.getId());
+            // No room for this player.
+            // TODO send them an apology
+            debbie.w("Not enough room for another player!");
+        }
+    }
+
+    public void addShape(PongShape ps) {
+        shapeList.add(ps);
+    }
+
+    public Player getPlayer(long id) {
+        return playerL.getId() == id ? playerL : playerR;
+    }
+
+    public Ball getBall() {
+        return ball;
+    }
+
+    public Debugger getDebbie() {
+        return debbie;
+    }
+
+    public InfoBoard getInfoBoard() {
+        return infoBoard;
+    }
+
+    public int getLastStepTime() {
+        return lastStepTime;
+    }
+
+    public List<PongShape> getShapeList() {
+        return shapeList;
+    }
+
+    public long getFrame() {
+        return frame;
+    }
+
+    public Player getPlayerL() {
+        return playerL;
+    }
+
+    public Player getPlayerR() {
+        return playerR;
+    }
+
+    public PongServer getServer() {
+        return server;
+    }
+
+    public Set<DelayedEffect> getDelayedEffects() {
+        return delayedEffects;
+    }
+
+    public SpellKeeper getSpellKeeper() {
+        return spellKeeper;
+    }
+
+    public GlobalEffects getGlobalEffects() {
+        return globalEffects;
+    }
+
+    public SoundMaster getSoundMaster() {
+        return soundMaster;
+    }
+
+    public void setMana(byte leftMana, byte rightMana) {
+        infoBoard.setMana(leftMana, rightMana);
+    }
+
+    /**
+     * ***************************************
+     * Methods that remove current  objects
+     * ***************************************
+     */
 
     public void removePongShape(PongShape ps) {
         shapeList.remove(ps);

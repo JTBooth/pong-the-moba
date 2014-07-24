@@ -25,23 +25,29 @@ public class InfoBoard implements Cereal {
     private byte right = 0;
     private int winningScore;
 
-    /** Mana **/
+    /**
+     * Mana *
+     */
     private manaBar leftMana = new manaBar(Settings.maxMana, 0);
     private manaBar rightMana = new manaBar(Settings.maxMana, Settings.windowSize[0] - Settings.manaBarWidth);
 
-    /** Players **/
+    /**
+     * Players *
+     */
     private String p1name = "Player 1";
     private String p2name = "Player 2";
 
     /**
      * Constructor *
      */
-    public InfoBoard(){}
+    public InfoBoard() {
+    }
 
 
     public InfoBoard(int winningScore) {
         this(winningScore, "PLAYER 1", "PLAYER 2");
     }
+
     public InfoBoard(int winningScore, String p1name, String p2name) {
         this.winningScore = winningScore;
         this.p1name = p1name;
@@ -62,8 +68,8 @@ public class InfoBoard implements Cereal {
         }
     }
 
-    public void playerScored(int player){
-        if (player == Player.LEFT){
+    public void playerScored(int player) {
+        if (player == Player.LEFT) {
             left++;
         } else {
             right++;
@@ -76,18 +82,13 @@ public class InfoBoard implements Cereal {
     }
 
     @Override
-    public char getId() {
-        return CerealRegistry.INFO_BOARD;
-    }
-
-    @Override
     public byte[] serialize() {
         byte[] serialized = new byte[6];
         int pointer = 0;
 
         //Shape ID
         byte[] id = Bytes.char2Bytes2(getId());
-        System.arraycopy(id, 0, serialized,pointer,id.length);
+        System.arraycopy(id, 0, serialized, pointer, id.length);
         pointer += id.length;
 
 
@@ -117,7 +118,7 @@ public class InfoBoard implements Cereal {
 
         //Draw right score
         graphics.setColor(Settings.colorMap.get('2'));
-        graphics.drawString(String.valueOf((int) cereal[pointer++]),Settings.scorePositions[2], Settings.scorePositions[3]);
+        graphics.drawString(String.valueOf((int) cereal[pointer++]), Settings.scorePositions[2], Settings.scorePositions[3]);
 
         //Draw left mana
         leftMana.setCurrentMana(cereal[pointer++]);
@@ -135,6 +136,11 @@ public class InfoBoard implements Cereal {
         return true;
     }
 
+    @Override
+    public char getId() {
+        return CerealRegistry.INFO_BOARD;
+    }
+
     private class manaBar {
         private byte maxMana;
         private byte currentMana;
@@ -142,9 +148,9 @@ public class InfoBoard implements Cereal {
         private int x;
 
         manaBar(byte maxMana, int x) {
-            this.maxMana=maxMana;
-            this.currentMana=0;
-            this.x=x;
+            this.maxMana = maxMana;
+            this.currentMana = 0;
+            this.x = x;
         }
 
         byte getCurrentMana() {
@@ -152,14 +158,14 @@ public class InfoBoard implements Cereal {
         }
 
         void setCurrentMana(byte currentMana) {
-            this.currentMana=currentMana;
-            this.currentFraction = ((float)uByte(currentMana))/(uByte(maxMana));
+            this.currentMana = currentMana;
+            this.currentFraction = ((float) uByte(currentMana)) / (uByte(maxMana));
         }
 
         void render(Graphics graphics) {
             graphics.setColor(Settings.colorMap.get('4'));
-            int height = (int) (currentFraction*Settings.windowSize[1]);
-            int y = Settings.windowSize[1]/2 - height/2;
+            int height = (int) (currentFraction * Settings.windowSize[1]);
+            int y = Settings.windowSize[1] / 2 - height / 2;
 
             debbie.d("mana bar constructed with x: " + x + " y: " + y + " width: " + Settings.manaBarWidth + " height: " + height + " cf: " + currentFraction);
             Rectangle rect = new Rectangle(x, y, Settings.manaBarWidth, height);

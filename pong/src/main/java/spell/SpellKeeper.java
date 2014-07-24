@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pong.Pong;
-import utils.Settings;
 import server.Player;
 import utils.Debugger;
+import utils.Settings;
 
 public class SpellKeeper {
     Debugger debbie = new Debugger(SpellKeeper.class.getSimpleName());
@@ -23,15 +23,15 @@ public class SpellKeeper {
         this.pong = pong;
 
         p1spells = new Spell[]{
-        		new LaserSpell(pong, pong.getPlayerL()),
-        		new RestitutionBoost("Restitution Boost", pong.getPlayerL(), pong),
-        		};
-        
+                new LaserSpell(pong, pong.getPlayerL()),
+                new RestitutionBoost("Restitution Boost", pong.getPlayerL(), pong),
+        };
+
         p2spells = new Spell[]{
-        		new LaserSpell(pong, pong.getPlayerR()),
-        		new RestitutionBoost("Restitution Boost", pong.getPlayerR(), pong)
-        		};
-        
+                new LaserSpell(pong, pong.getPlayerR()),
+                new RestitutionBoost("Restitution Boost", pong.getPlayerR(), pong)
+        };
+
         commandSpellMap = new HashMap<Integer, Integer>();
         commandSpellMap.put(Keyboard.KEY_SPACE, 0);
         commandSpellMap.put(Keyboard.KEY_Q, 1);

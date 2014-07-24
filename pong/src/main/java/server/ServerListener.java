@@ -19,11 +19,10 @@ import utils.Debugger;
 
 public class ServerListener extends Listener {
     private static Debugger debbie = new Debugger(ServerListener.class.getSimpleName());
-    private PongServer server;
     private static Map<Long, Pong> games = new ConcurrentHashMap<Long, Pong>();
     private static Map<Integer, Long> players = new HashMap<Integer, Long>();
+    private PongServer server;
     private volatile Queue<Connection> playerQueue = new LinkedBlockingQueue<Connection>();
-
 
 
     private int[] acceptedKeys;
@@ -42,7 +41,7 @@ public class ServerListener extends Listener {
     public void connected(Connection connection) {
         super.connected(connection);
         debbie.i("Connection discovered " + connection.getRemoteAddressUDP().getAddress().toString());
-        synchronized (this){
+        synchronized (this) {
             playerQueue.add(connection);
         }
     }
@@ -67,19 +66,23 @@ public class ServerListener extends Listener {
     }
 
 
-    /** Get Game Instance **/
-    private Pong getInstance(long id){
+    /**
+     * Get Game Instance *
+     */
+    private Pong getInstance(long id) {
         return games.get(id);
     }
 
-    /** Get next connection **/
+    /**
+     * Get next connection *
+     */
     private Connection getConnection() {
         Connection newConnection;
-        while (true){
+        while (true) {
             debbie.d("Waiting for connection");
             //Poll for a new connection
             newConnection = playerQueue.poll();
-            if (newConnection != null){
+            if (newConnection != null) {
                 return newConnection;
             }
             //Sleep for a bit
@@ -91,14 +94,14 @@ public class ServerListener extends Listener {
         }
     }
 
-    private void sendHousewarmingPacket(Connection connection, long playerId, long gameId){
+    private void sendHousewarmingPacket(Connection connection, long playerId, long gameId) {
         /** Send Housewarming Packet **/
         HousewarmingPacket hp = new HousewarmingPacket(acceptedKeys, playerId, gameId);
         connection.sendTCP(hp);
         connection.setTimeout(0);
     }
 
-    private class Connect extends Thread{
+    private class Connect extends Thread {
         @Override
         public void run() {
             Connection p1;
@@ -110,7 +113,7 @@ public class ServerListener extends Listener {
             long gameId;
             long id1;
             long id2;
-            while (isOpen){
+            while (isOpen) {
                 /** Generate new Ids **/
                 gameId = random.nextLong();
                 id1 = random.nextLong();
@@ -158,7 +161,7 @@ public class ServerListener extends Listener {
     private class Game extends Thread {
         Pong pong;
 
-        public Game(Pong pong){
+        public Game(Pong pong) {
             this.pong = pong;
         }
 

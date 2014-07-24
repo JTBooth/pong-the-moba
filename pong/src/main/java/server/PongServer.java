@@ -13,7 +13,8 @@ import utils.Debugger;
 
 public class PongServer extends Server {
     private static Debugger debbie = new Debugger(PongServer.class.getSimpleName());
-    public static void main (String[] args){
+
+    public static void main(String[] args) {
         /** Setup Server Physics Engine Settings **/
         setupEngine();
 

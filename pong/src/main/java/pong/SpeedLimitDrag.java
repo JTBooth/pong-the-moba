@@ -13,8 +13,8 @@ public class SpeedLimitDrag extends GlobalEffect {
     private float dragRatio;
 
     public SpeedLimitDrag(float speedLimit, float dragRatio) {
-        this.speedLimit=speedLimit;
-        this.dragRatio=dragRatio;
+        this.speedLimit = speedLimit;
+        this.dragRatio = dragRatio;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class SpeedLimitDrag extends GlobalEffect {
 
         float diff = abs - speedLimit;
         if (diff > 0f) {
-            float ratio = abs/speedLimit;
+            float ratio = abs / speedLimit;
             Vec2 restorative = new Vec2(-velocity.x * ratio * dragRatio, -velocity.y * ratio * dragRatio);
             body.applyForceToCenter(restorative);
         }

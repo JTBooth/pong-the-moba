@@ -10,8 +10,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
 import packets.Cerealizer;
-import utils.Settings;
 import utils.Debugger;
+import utils.Settings;
 
 public class PongDisplay extends BasicGame {
     private static Debugger debbie = new Debugger(PongDisplay.class.getSimpleName());
@@ -33,7 +33,7 @@ public class PongDisplay extends BasicGame {
             app.setVSync(true);
             app.setAlwaysRender(true);
             app.setTargetFrameRate(Settings.fps);
-            while (!displayListener.isConnected()){
+            while (!displayListener.isConnected()) {
                 Thread.sleep(1000);
                 debbie.i("Waiting for other player to connect.");
             }//Wait for both players to connect

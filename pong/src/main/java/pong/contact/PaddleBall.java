@@ -15,18 +15,22 @@ import utils.Debugger;
  */
 public class PaddleBall implements ContactListener {
     private final Pong pong;
-    /** Debbie **/
+    /**
+     * Debbie *
+     */
     Debugger debbie = new Debugger(PaddleBall.class.getSimpleName() + " contact");
 
-    /** Contact Body **/
+    /**
+     * Contact Body *
+     */
     Paddle paddle;
     Ball ball;
 
-    public PaddleBall(Paddle paddle, Ball ball, Pong pong){
+    public PaddleBall(Paddle paddle, Ball ball, Pong pong) {
         super();
         this.paddle = paddle;
         this.ball = ball;
-        this.pong=pong;
+        this.pong = pong;
     }
 
     @Override

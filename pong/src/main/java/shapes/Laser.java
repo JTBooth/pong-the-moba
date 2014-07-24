@@ -15,7 +15,9 @@ public class Laser extends Ball {
     /**
      * Constructor *
      */
-    public Laser(){}
+    public Laser() {
+    }
+
     public Laser(float x, float y, float r, Vec2 direction, World world, Pong pong) {
         super(x, y, r, world, true, '3', pong);
         this.direction = direction;

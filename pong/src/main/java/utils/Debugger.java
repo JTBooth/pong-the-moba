@@ -14,15 +14,15 @@ public class Debugger {
      * FILTERS *
      */
     public final static int DEBUG = 1;
+    public final static int global = DEBUG; // | INFO | WARNING | ERROR;
     public final static int INFO = 1 << 1;
     public final static int WARNING = 1 << 2;
     public final static int ERROR = 1 << 3;
-    public final static int global = DEBUG; // | INFO | WARNING | ERROR;
-
-
-    /** Allowed classes
+    /**
+     * Allowed classes
      * ADD CLASSES FOR LOGGING
-     * **/
+     * *
+     */
     public final static List<String> enabled = Arrays.asList(
             Paddle.class.getSimpleName()
     );
@@ -54,6 +54,14 @@ public class Debugger {
         log(message, DEBUG_TAG, DEBUG);
     }
 
+    /**
+     * General Log *
+     */
+    private void log(String message, String type, int filter) {
+        if ((filter & global) > 0 && enabled.contains(tag))
+            System.out.println(tag + type + message);
+    }
+
     public void i(String message) { //Info
         log(message, INFO_TAG, INFO);
     }
@@ -64,14 +72,6 @@ public class Debugger {
 
     public void e(String message) { //Error
         log(message, ERROR_TAG, ERROR);
-    }
-
-    /**
-     * General Log *
-     */
-    private void log(String message, String type, int filter) {
-        if ((filter & global) > 0 && enabled.contains(tag))
-            System.out.println(tag + type + message);
     }
 
 }

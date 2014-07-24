@@ -31,12 +31,12 @@ public class CommandUpdate implements Comparable<CommandUpdate> {
         }
     }
 
-    public long getGameId() {
-        return gameId;
-    }
-
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public long getGameId() {
+        return gameId;
     }
 
     public long getPlayerId() {

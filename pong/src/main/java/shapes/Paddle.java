@@ -17,29 +17,35 @@ import org.newdawn.slick.geom.Transform;
 import java.util.Arrays;
 
 import pong.Pong;
-import utils.Settings;
 import utils.Bytes;
 import utils.Debugger;
+import utils.Settings;
 
 public class Paddle extends PongShape {
     Debugger debbie = new Debugger(Paddle.class.getSimpleName());
 
-    /** Shape Attributes **/
+    /**
+     * Shape Attributes *
+     */
     private PolygonShape shape;
     private float length;
     private char color;
 
-    /** Physics Variables **/
+    /**
+     * Physics Variables *
+     */
     private float yVelocity = 0f;
     private int rotationReq = 0;
 
-    public Paddle(){}
+    public Paddle() {
+    }
+
     public Paddle(float x, float y, float length, char color, World world, Pong pong) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
         bodyDef.type = BodyType.KINEMATIC;
         Body body = world.createBody(bodyDef);
-        
+
 
         PolygonShape polyShape = new PolygonShape();
         polyShape.setAsBox(Settings.paddleWidth / 2, length / 2);
@@ -55,17 +61,23 @@ public class Paddle extends PongShape {
         this.pong = pong;
     }
 
-    /** Set the paddle's vertical velocity **/
+    /**
+     * Set the paddle's vertical velocity *
+     */
     public void setYVelocity(float v) {
         yVelocity += v;
     }
 
-    /** Perform rubber band rotation **/
-    public void rubberBandRotation(float isClockwise){
+    /**
+     * Perform rubber band rotation *
+     */
+    public void rubberBandRotation(float isClockwise) {
         rotationReq += isClockwise;
     }
 
-    /** Execute Paddle Changes **/
+    /**
+     * Execute Paddle Changes *
+     */
     public void execute() {
         /** Setting velocity **/
         if (!(body.getPosition().y > Settings.windowMeters[1] - .01f && yVelocity > 0)
@@ -85,7 +97,7 @@ public class Paddle extends PongShape {
         /** Getting current angle of body **/
         float currentAngle = body.getAngle();
         float currentVelocity = body.getAngularVelocity();
-        if (currentAngle > 180){
+        if (currentAngle > 180) {
             currentAngle -= 360;
         }
 
@@ -108,21 +120,16 @@ public class Paddle extends PongShape {
     }
 
     @Override
-    public char getId() {
-        return CerealRegistry.PADDLE;
-    }
-
-    @Override
-    public byte[] serialize() throws IllegalShapeException{
+    public byte[] serialize() throws IllegalShapeException {
         byte[] serialized = new byte[9];
         int pointer = 0;
 
         byte[] id = Bytes.char2Bytes2(getId());
-        System.arraycopy(id, 0, serialized, pointer,id.length);
+        System.arraycopy(id, 0, serialized, pointer, id.length);
         pointer += 2;
 
         byte[] rotation = Bytes.float2Byte2(getAngle(), MathUtils.TWOPI); // Rotation
-        System.arraycopy(rotation, 0, serialized,pointer, rotation.length);
+        System.arraycopy(rotation, 0, serialized, pointer, rotation.length);
         pointer += 2;
 
         byte xposition = Bytes.float2Byte(body.getPosition().x, Settings.windowMeters[0]);  // X position
@@ -157,8 +164,8 @@ public class Paddle extends PongShape {
 
         /** Create a rectangle given position and size **/
         Rectangle rect = new Rectangle(
-                x - width/2,
-                y - length/2,
+                x - width / 2,
+                y - length / 2,
                 width,
                 length
         );
@@ -173,6 +180,16 @@ public class Paddle extends PongShape {
 
         debbie.i("Rectangle Created " + Arrays.toString(rect.getPoints()));
         return pointer;
+    }
+
+    @Override
+    public boolean visible() {
+        return true;
+    }
+
+    @Override
+    public char getId() {
+        return CerealRegistry.PADDLE;
     }
 
     @Override
@@ -203,13 +220,7 @@ public class Paddle extends PongShape {
 
     }
 
-
     public PolygonShape getShape() {
         return shape;
     }
-
-	@Override
-	public boolean visible() {
-		return true;
-	}
 }

@@ -13,12 +13,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 
-public class Settings extends org.jbox2d.common.Settings{
+public class Settings extends org.jbox2d.common.Settings {
     /**
      * System Settings *
      */
     public static final int fps = 60;
-    public static final float timeStep =1f/((float) fps);
+    public static final float timeStep = 1f / ((float) fps);
     public static final int velocityIterations = 10;
     public static final int positionIterations = 10;
     public static final int winningScore = 5; // unused
@@ -29,7 +29,7 @@ public class Settings extends org.jbox2d.common.Settings{
                     Keyboard.KEY_UP,
                     Keyboard.KEY_DOWN,    // movement
                     Keyboard.KEY_SPACE,   // casts laser
-                    Keyboard.KEY_Q,		  // casts restitution boost
+                    Keyboard.KEY_Q,          // casts restitution boost
                     Keyboard.KEY_0        // resets game with new settings
             };
     public static final int minFramesBeforeReset = 180;
@@ -48,8 +48,8 @@ public class Settings extends org.jbox2d.common.Settings{
     /**
      * Colors *
      */
-    public static final HashMap<Character, Color>  colorMap = new HashMap<Character, Color>() {{
-    	put(Character.MAX_VALUE, null); // do not render this
+    public static final HashMap<Character, Color> colorMap = new HashMap<Character, Color>() {{
+        put(Character.MAX_VALUE, null); // do not render this
         put('0', new Color(255, 0, 0)); //red, p1
         put('1', new Color(0, 255, 0)); //green, ball
         put('2', new Color(0, 0, 255)); //blue, p2
@@ -77,13 +77,13 @@ public class Settings extends org.jbox2d.common.Settings{
     public static float paddleDampingConstant = .2f;
     public static int ticksPerManaGain = 60;
     public static byte maxMana = 100;
-    
+
     /*
      * Serialization Settings
      */
     public static byte SCALABLE_CIRCLE = 0;
-    public static byte SCALABLE_BASIC_PADDLE=1;
-    
+    public static byte SCALABLE_BASIC_PADDLE = 1;
+
 
     public static void refreshSettings() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

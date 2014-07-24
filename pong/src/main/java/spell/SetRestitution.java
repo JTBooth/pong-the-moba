@@ -4,25 +4,25 @@ import pong.DelayedEffect;
 import shapes.Paddle;
 
 public class SetRestitution extends DelayedEffect {
-	Paddle paddle;
-	float restitution;
-	
-	public SetRestitution(Paddle paddle, float restitution, int timeout) {
-		super(timeout);
-		this.paddle=paddle;
-		this.restitution=restitution;
-	}
+    Paddle paddle;
+    float restitution;
 
-	@Override
-	public boolean timeToAct() {
-		
-		return ticksRemaining==0;
-	}
+    public SetRestitution(Paddle paddle, float restitution, int timeout) {
+        super(timeout);
+        this.paddle = paddle;
+        this.restitution = restitution;
+    }
 
-	@Override
-	public void takeAction() {
-		paddle.getFixture().setRestitution(restitution);
-		
-	}
+    @Override
+    public boolean timeToAct() {
+
+        return ticksRemaining == 0;
+    }
+
+    @Override
+    public void takeAction() {
+        paddle.getFixture().setRestitution(restitution);
+
+    }
 
 }

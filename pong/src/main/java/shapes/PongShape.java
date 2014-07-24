@@ -15,17 +15,20 @@ public abstract class PongShape implements Cereal {
     Body body;
     Pong pong;
 
-    /** Absstract Get Methods **/
+    /**
+     * Absstract Get Methods *
+     */
     public abstract org.jbox2d.collision.shapes.Shape getBoxShape();
+
     public abstract Shape getSlickShape();
 
-    public Fixture getFixture(){
+    public Fixture getFixture() {
         return body.getFixtureList();
     }
+
     public Body getBody() {
         return body;
     }
-
 
 
     public float getAngle() {
@@ -37,11 +40,13 @@ public abstract class PongShape implements Cereal {
         return angle;
     }
 
-    /** Remove from world **/
+    /**
+     * Remove from world *
+     */
     public void destroy() {
         pong.removePongShape(this);
         if (body != null) {
-           body.getWorld().destroyBody(body);
+            body.getWorld().destroyBody(body);
         }
     }
 }

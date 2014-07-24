@@ -16,9 +16,9 @@ import org.newdawn.slick.geom.Transform;
 import java.util.Arrays;
 
 import pong.Pong;
-import utils.Settings;
 import utils.Bytes;
 import utils.Debugger;
+import utils.Settings;
 
 public class Ball extends PongShape {
     Debugger debbie = new Debugger(Ball.class.getSimpleName());
@@ -26,7 +26,9 @@ public class Ball extends PongShape {
     private char color;
     private float radius;
 
-    public Ball(){}
+    public Ball() {
+    }
+
     public Ball(float x, float y, float r, World world, boolean isBullet, char color, Pong pong) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
@@ -50,11 +52,6 @@ public class Ball extends PongShape {
         this.pong = pong;
     }
 
-    @Override
-    public char getId() {
-        return CerealRegistry.BALL;
-    }
-
     public float getX() {
         return Settings.m2p(body.getPosition().x);
     }
@@ -71,26 +68,25 @@ public class Ball extends PongShape {
         return color;
     }
 
-
     @Override
     public byte[] serialize() throws IllegalShapeException {
         byte[] serialized = new byte[11];
         int pointer = 0;
 
         byte[] id = Bytes.char2Bytes2(getId());
-        System.arraycopy(id, 0, serialized,pointer,id.length);
+        System.arraycopy(id, 0, serialized, pointer, id.length);
         pointer += 2;
 
         byte[] rotation = Bytes.float2Byte2(getAngle(), MathUtils.TWOPI);                  // Rotation
-        System.arraycopy(rotation, 0, serialized,pointer,rotation.length);
-        pointer+=2;
+        System.arraycopy(rotation, 0, serialized, pointer, rotation.length);
+        pointer += 2;
 
         byte[] xposition = Bytes.float2Byte2(body.getPosition().x, Settings.windowMeters[0]);   // X position
         System.arraycopy(xposition, 0, serialized, pointer, xposition.length);
         pointer += 2;
 
         byte[] yposition = Bytes.float2Byte2(body.getPosition().y, Settings.windowMeters[1]);   // Y position
-        System.arraycopy(yposition, 0, serialized,pointer,yposition.length);
+        System.arraycopy(yposition, 0, serialized, pointer, yposition.length);
         pointer += 2;
 
         byte radius = Bytes.float2Byte(shape.getRadius(), Settings.windowMeters[1] / 2f);       // Radius
@@ -106,9 +102,9 @@ public class Ball extends PongShape {
 
     @Override
     public int deserialize(byte[] cereal, int pointer, Graphics graphics) {
-        byte[] rotation = Arrays.copyOfRange(cereal, pointer, pointer+=2);
-        byte[] xposition = Arrays.copyOfRange(cereal, pointer, pointer+=2);
-        byte[] yposition = Arrays.copyOfRange(cereal, pointer, pointer+=2);
+        byte[] rotation = Arrays.copyOfRange(cereal, pointer, pointer += 2);
+        byte[] xposition = Arrays.copyOfRange(cereal, pointer, pointer += 2);
+        byte[] yposition = Arrays.copyOfRange(cereal, pointer, pointer += 2);
         byte radius = cereal[pointer++];
 
         graphics.setColor(Settings.colorMap.get(Bytes.twoBytes2Char(Arrays.copyOfRange(cereal, pointer, pointer += 2))));
@@ -116,12 +112,22 @@ public class Ball extends PongShape {
         Circle circle = new Circle(
                 Settings.m2p(Bytes.twoByte2Float(xposition, Settings.windowMeters[0])),
                 Settings.m2p(Bytes.twoByte2Float(yposition, Settings.windowMeters[1])),
-                Settings.m2p(Bytes.byte2Float(radius, Settings.windowMeters[1]/2f))
+                Settings.m2p(Bytes.byte2Float(radius, Settings.windowMeters[1] / 2f))
         );
         circle.transform(Transform.createRotateTransform(Bytes.twoByte2Float(rotation, MathUtils.TWOPI)));
         graphics.fill(circle);
 
         return pointer;
+    }
+
+    @Override
+    public boolean visible() {
+        return true;
+    }
+
+    @Override
+    public char getId() {
+        return CerealRegistry.BALL;
     }
 
     @Override
@@ -137,9 +143,4 @@ public class Ball extends PongShape {
     public void setPosition(float x, float y) {
         body.setTransform(new Vec2(x, y), 0);
     }
-
-	@Override
-	public boolean visible() {
-		return true;
-	}
 }

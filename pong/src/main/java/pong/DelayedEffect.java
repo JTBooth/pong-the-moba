@@ -5,9 +5,9 @@ public abstract class DelayedEffect {
     public int ticksRemaining;
 
     public DelayedEffect(int timeout) {
-    	this.ticksRemaining=timeout;
+        this.ticksRemaining = timeout;
     }
-    
+
     public void tick() {
         if (ticksRemaining > 0) {
             ticksRemaining -= 1;
