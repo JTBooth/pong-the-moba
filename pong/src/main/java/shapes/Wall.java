@@ -2,16 +2,12 @@ package shapes;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.MathUtils;
-import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 
 import java.util.ArrayList;
@@ -26,36 +22,32 @@ import utils.Settings;
 
 public class Wall extends PongShape {
     Debugger debbie = new Debugger(Wall.class.getSimpleName());
-    private Body body;
-    private PolygonShape shape;
+
+    PolygonShape shape;
+
     private float height;
-    private char color;
     private boolean visible;
 
-    public Wall() {
+    public Wall() {}
+
+    public Wall(float x, float y, float height, float width,
+                boolean visible, char color, World world, Pong pong) {
+        super(x,y,false, color, world, pong);
+
+        shape = new PolygonShape();
+        shape.setAsBox(width / 2, height / 2);
+
+        fd.friction = 0f;
+        fd.shape = shape;
+        body.createFixture(fd);
+
+        this.height = height;
+        this.visible = visible;
     }
 
-    public Wall(float x, float y, float height, float width, float angle,
-                boolean visible, char color, World world, Pong pong) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(x, y);
-        bodyDef.type = BodyType.KINEMATIC;
-        bodyDef.angle = angle;
-        Body body = world.createBody(bodyDef);
-
-        PolygonShape polyShape = new PolygonShape();
-        polyShape.setAsBox(width / 2, height / 2);
-        this.height = height;
-        shape = polyShape;
-
-        FixtureDef fd = new FixtureDef();
-        fd.friction = 0f;
-        fd.shape = polyShape;
-        body.createFixture(fd);
-        this.color = color;
-        this.body = body;
-        this.visible = visible;
-        this.pong = pong;
+    @Override
+    public BodyType setBodyType() {
+        return BodyType.KINEMATIC;
     }
 
     @Override
@@ -106,38 +98,7 @@ public class Wall extends PongShape {
         return visible;
     }
 
-
-    @Override
-    public org.jbox2d.collision.shapes.Shape getBoxShape() {
-        return null;
-    }
-
-    @Override
-    public Shape getSlickShape() {
-        return null;
-    }
-
     public Body getBody() {
         return body;
     }
-
-    public float[] getPointsInPixels() {
-        Vec2 center = body.getPosition();
-        Vec2[] points = Arrays.copyOf(shape.getVertices(), 4);
-        shape.setAsBox(Settings.paddleWidth / 2, height / 2, new Vec2(0, 0),
-                body.getAngle());
-        float[] ret = new float[points.length * 2];
-        int j = 0;
-        for (int i = 0; i < points.length; ++i, j += 2) {
-            ret[j] = Settings.m2p((points[i].x + center.x));
-            ret[j + 1] = Settings.m2p((points[i].y + center.y));
-        }
-        return ret;
-
-    }
-
-    public PolygonShape getShape() {
-        return shape;
-    }
-
 }

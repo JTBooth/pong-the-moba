@@ -1,58 +1,42 @@
 package spell;
 
+import pong.Player;
 import pong.Pong;
-import server.Player;
 
 public abstract class Spell {
-    int cost;
-    int cooldownCounter;
-    int cooldown;
-    String name;
-    Player player;
     Pong pong;
+    Player player;
 
-    public Spell(String name, int cost, int cooldown, Player player, Pong pong) {
-        this.name = name;
-        this.setCost(cost);
-        this.setCooldown(cooldown);
-        this.setCooldownCounter(0);
+    int cooldownCounter;
+    int cost;
+    int cooldown;
+
+    public Spell(){}
+
+    public void setup(Pong pong, Player player) {
         this.player = player;
         this.pong = pong;
+        this.cooldownCounter = 0;
+        this.cost = setCost();
+        this.cooldown = setCoolDown();
     }
 
-    public void cooldown () {
+    public void cast() {
+        if (player.mana > cost && cooldownCounter == 0) {
+            applyEffects();
+            player.mana -= cost;
+            cooldownCounter += cooldown;
+        }
+    }
+
+    public void coolDown() {
         if (cooldownCounter > 0) {
             cooldownCounter -= 1;
         }
     }
 
-    public abstract void cast();
-
-    public int getCost() {
-        return cost;
-    }
-
-    public void setCost(int cost) {
-        this.cost = cost;
-    }
-
-    public int getCooldownCounter() {
-        return cooldownCounter;
-    }
-
-    public void setCooldownCounter(int cooldownCounter) {
-        this.cooldownCounter = cooldownCounter;
-    }
-
-    public int getCooldown() {
-        return cooldown;
-    }
-
-    public void setCooldown(int cooldown) {
-        this.cooldown = cooldown;
-    }
-
-    public String getName() {
-        return name;
-    }
+    /** What does the spell do **/
+    public abstract void applyEffects();
+    public abstract int setCost();
+    public abstract int setCoolDown();
 }

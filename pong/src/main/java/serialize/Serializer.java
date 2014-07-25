@@ -4,7 +4,7 @@ import org.newdawn.slick.Graphics;
 
 import java.util.Arrays;
 
-import shapes.Registry;
+import utils.Registry;
 import utils.IllegalShapeException;
 import utils.Debugger;
 

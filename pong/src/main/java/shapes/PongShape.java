@@ -2,35 +2,59 @@ package shapes;
 
 import org.jbox2d.common.MathUtils;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
-import org.newdawn.slick.geom.Shape;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
 
-import serialize.PongPacket;
 import pong.Pong;
+import serialize.PongPacket;
+import utils.Debugger;
+import utils.Registry;
 
 /**
  * Created by sihrc on 7/4/14.
  */
 public abstract class PongShape extends PongPacket {
-    Body body;
+    private Debugger debbie = new Debugger(PongShape.class.getSimpleName());
+
+    World world;
     Pong pong;
+    Body body;
+    FixtureDef fd;
+    char color;
+
+    public PongShape(){}
+    public PongShape(float x, float y, boolean isBullet, char color, World world, Pong pong) {
+        this.world = world;
+        this.pong = pong;
+        this.color = color;
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.position.set(x, y);
+        bodyDef.type = setBodyType();
+
+        body = world.createBody(bodyDef);
+        body.setBullet(isBullet);
+
+        fd = new FixtureDef();
+        debbie.i(this.getClass().getSimpleName());
+        fd.userData = Registry.getPacketId(this.getClass());
+    }
 
     /**
-     * Absstract Get Methods *
+     * Get Methods *
      */
-    public abstract org.jbox2d.collision.shapes.Shape getBoxShape();
-
-    public abstract Shape getSlickShape();
-
     public Fixture getFixture() {
         return body.getFixtureList();
     }
-
     public Body getBody() {
         return body;
     }
-
-
+    public BodyType setBodyType() {
+        return BodyType.DYNAMIC;
+    }
     public float getAngle() {
         float angle = body.getAngle();
         angle = angle % MathUtils.TWOPI;

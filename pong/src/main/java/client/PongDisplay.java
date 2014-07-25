@@ -52,7 +52,6 @@ public class PongDisplay extends BasicGame {
 
     @Override
     public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
-        debbie.i("Rendering");
         /** Set Typewriter **/
         graphics.setFont(font);
 
