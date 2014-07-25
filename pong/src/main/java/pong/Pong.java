@@ -14,25 +14,27 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import manager.EffectManager;
 import manager.SoundManager;
 import manager.SpellManager;
+import pong.contact.PaddleBallPair;
+import pong.contact.PongContactListener;
 import serialize.PongPacket;
-import pong.contact.PaddleBall;
-import server.Player;
 import server.PongServer;
 import shapes.Ball;
 import shapes.InfoBoard;
 import shapes.Laser;
 import shapes.Paddle;
 import shapes.PongShape;
-import shapes.Registry;
+import utils.Registry;
 import shapes.Wall;
-import spell.DelayedEffect;
+import spell.DelayedSpell;
 import utils.Debugger;
 import utils.IllegalShapeException;
 import utils.Settings;
@@ -43,11 +45,11 @@ public class Pong extends BasicGame {
     long gameId;
     private Debugger debbie = new Debugger(Pong.class.getSimpleName());
     private PongServer server;
-    private Set<DelayedEffect> delayedEffects = Collections.newSetFromMap(new ConcurrentHashMap<DelayedEffect, Boolean>());
+    private Set<DelayedSpell> delayedEffects = Collections.newSetFromMap(new ConcurrentHashMap<DelayedSpell, Boolean>());
     private List<PongShape> shapeList;
     private List<PongPacket> pongPacketList;
-    private Player playerL;
-    private Player playerR;
+    private Map<Integer, Player> players;
+    private Map<Long, Integer> remoteToLocal;
     private World world;
     private SpellManager spellManager;
     private Ball ball;
@@ -66,13 +68,15 @@ public class Pong extends BasicGame {
         /** Attach the server **/
         this.server = server;
         this.gameId = gameId;
+        this.remoteToLocal = new HashMap<Long, Integer>();
 
         /** Create a World **/
         this.world = new World(new Vec2(0, 0));
 
         /** Get Players **/
-        this.playerL = playerL;
-        this.playerR = playerR;
+        this.players = new HashMap<Integer, Player>();
+        addPlayer(playerL);
+        addPlayer(playerR);
 
         /** Global Physics Effect Manager **/
         effectManager = new EffectManager("drag");
@@ -132,7 +136,7 @@ public class Pong extends BasicGame {
                 if (cereal.length > 0)
                     outputStream.write(cereal);
             } catch (IOException e) {
-                debbie.e(Registry.getId(ps.getClass()) + " failed to write to bytearrayoutputstream " + e.getMessage());
+                debbie.e(Registry.getPacketId(ps.getClass()) + " failed to write to bytearrayoutputstream " + e.getMessage());
             } catch (IllegalShapeException e) {
                 e.printStackTrace();
             }
@@ -159,26 +163,26 @@ public class Pong extends BasicGame {
         /** Create Game Pieces **/
         makeWalls();
         makeBall((int) Settings.windowMeters[1], (int) Settings.windowMeters[0]);
-        playerL.setPaddle(makePaddle(Player.LEFT));
-        playerR.setPaddle(makePaddle(Player.RIGHT));
+        makePaddle(Player.LEFT);
+        makePaddle(Player.RIGHT);
         frame = 0;
 
-        /** Add all game pieces **/
-        shapeList.add(playerL.getPaddle());
-        shapeList.add(playerR.getPaddle());
+        PongContactListener contactListener = new PongContactListener();
+
+
+        /** Loop through players **/
+        for (Player player : players.values()) {
+            shapeList.add(player.getPaddle());
+            contactListener.registerPair(new PaddleBallPair(player.getPaddle(), ball, this));
+        }
+
         shapeList.add(ball);
 
         pongPacketList.add(infoBoard);
-        pongPacketList.add(playerL.getPaddle());
-        pongPacketList.add(playerR.getPaddle());
-        pongPacketList.add(ball);
+        pongPacketList.addAll(shapeList);
 
-        world.setContactListener(new PaddleBall(playerL.getPaddle(), ball, this));
-
-        /** Contact Management **/
-        playerL.getPaddle().getBody().shouldCollide(ball.getBody());
-        //TODO - Make sure these are not being used and remove them
-        //contactManager.addPair(playerR.getPaddle(), ball);
+        /** Set Contact Listener**/
+        world.setContactListener(contactListener);
 
         /** Spell keeper for this game **/
         this.spellManager = new SpellManager(this);
@@ -188,11 +192,9 @@ public class Pong extends BasicGame {
     public void update(GameContainer arg0, int arg1) throws SlickException {
         ++frame;
 
-        int[] p1keys = playerL.getKeys();
-        int[] p2keys = playerR.getKeys();
+        step();
 
-        step(p1keys, p2keys);
-
+        /** Check for Score **/
         if (ball.getX() < 0) {
             infoBoard.playerScored(Player.RIGHT);
             resetBall(Player.RIGHT);
@@ -200,7 +202,11 @@ public class Pong extends BasicGame {
             infoBoard.playerScored(Player.LEFT);
             resetBall(Player.LEFT);
         }
+
+        /** Apply Global Effects **/
         effectManager.applyForces(shapeList);
+
+        /** Update Spells **/
         spellManager.update();
         tendDelayedEffects();
     }
@@ -209,9 +215,10 @@ public class Pong extends BasicGame {
      * Utility functions, called ~1/game loop *
      */
 
-    public void step(int[] p1keys, int[] p2keys) {
-        execute(p1keys, playerL);
-        execute(p2keys, playerR);
+    public void step() {
+        for (Player player : players.values()) {
+            execute(player);
+        }
 
         world.step(Settings.timeStep, Settings.velocityIterations, Settings.positionIterations);
 
@@ -244,7 +251,7 @@ public class Pong extends BasicGame {
     }
 
     public void tendDelayedEffects() {
-        for (DelayedEffect delayedEffect : delayedEffects) {
+        for (DelayedSpell delayedEffect : delayedEffects) {
             delayedEffect.tick();
             if (delayedEffect.ticksRemaining <= 0) {
                 delayedEffects.remove(delayedEffect);
@@ -252,11 +259,11 @@ public class Pong extends BasicGame {
         }
     }
 
-    public void execute(int[] keys, Player player) {
+    public void execute(Player player) {
         debbie.d("Executing Player " + player.who());
         Paddle curPaddle = player.getPaddle();
 
-        for (int key : keys) {
+        for (int key : player.getKeys()) {
             switch (key) {
                 case Keyboard.KEY_DOWN: {
                     curPaddle.setYVelocity(Settings.paddleSpeed);
@@ -278,11 +285,11 @@ public class Pong extends BasicGame {
                     break;
                 }
                 case Keyboard.KEY_SPACE: {
-                    spellManager.tryToCast(player, Keyboard.KEY_SPACE);
+                    spellManager.castSpell(player, Keyboard.KEY_SPACE);
                     break;
                 }
                 case Keyboard.KEY_Q: {
-                    spellManager.tryToCast(player, Keyboard.KEY_Q);
+                    spellManager.castSpell(player, Keyboard.KEY_Q);
                     break;
                 }
                 case Keyboard.KEY_0: {
@@ -306,8 +313,8 @@ public class Pong extends BasicGame {
         float width = Settings.windowMeters[0];
         float height = Settings.windowMeters[1];
 
-        new Wall(width / 2, height + 0.001f, 0.001f, width, 0f, false, (char) 0, getWorld(), this);
-        new Wall(width / 2, 0 - 0.001f, 0.001f, width, 0f, false, (char) 0, getWorld(), this);
+        new Wall(width / 2, height + 0.001f, 0.001f, width, false, (char) 0, getWorld(), this);
+        new Wall(width / 2, 0 - 0.001f, 0.001f, width, false, (char) 0, getWorld(), this);
     }
 
     private void makeBall(int height, int width) {
@@ -316,7 +323,7 @@ public class Pong extends BasicGame {
         ball.getBody().setLinearVelocity(new Vec2(-Settings.serveSpeed, 0));
     }
 
-    private Paddle makePaddle(int player) {
+    private void makePaddle(int player) {
         float x;
         char color = 0;
 
@@ -333,7 +340,7 @@ public class Pong extends BasicGame {
                 x = 1f;
         }
         debbie.i("Making Paddle for player " + player);
-        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleLength, color, getWorld(), this);
+        players.get(player).setPaddle(new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleLength, color, getWorld(), this));
     }
 
     /**
@@ -373,74 +380,42 @@ public class Pong extends BasicGame {
     }
 
     public void addPlayer(Player player) {
-        if (playerL == null) {
-            playerL = player;
-            playerL.setWho(Player.LEFT);
-        } else if (playerR == null) {
-            playerR = player;
-            playerR.setWho(Player.RIGHT);
-        } else {
-            Log.info("No room for player " + player.getId());
-            // No room for this player.
-            // TODO send them an apology
-            debbie.w("Not enough room for another player!");
+        for (int i = 0; i < Player.TOTAL; i++) {
+            if (!players.containsKey(i)) {
+                player.setPong(this);
+                players.put(i, player);
+                debbie.i("Added player ID " + player.getId() + " as " + i);
+                remoteToLocal.put(player.getId(), i);
+                player.setWho(i);
+                return;
+            }
         }
+
+        Log.info("No room for player " + player.getId());
+        // No room for this player.
+        // TODO send them an apology
+        debbie.w("Not enough room for another player!");
     }
 
     public void addShape(PongShape ps) {
         shapeList.add(ps);
     }
 
-    public Player getPlayer(long id) {
-        return playerL.getId() == id ? playerL : playerR;
-    }
-
-    public Ball getBall() {
-        return ball;
-    }
 
     public Debugger getDebbie() {
         return debbie;
     }
 
-    public InfoBoard getInfoBoard() {
-        return infoBoard;
+    public Map<Integer, Player> getPlayers() {
+        return players;
     }
 
-    public int getLastStepTime() {
-        return lastStepTime;
+    public Player getPlayer(int player) {
+        return players.get(player);
     }
 
-    public List<PongShape> getShapeList() {
-        return shapeList;
-    }
-
-    public long getFrame() {
-        return frame;
-    }
-
-    public Player getPlayerL() {
-        return playerL;
-    }
-
-    public Player getPlayerR() {
-        return playerR;
-    }
-
-    public PongServer getServer() {
-        return server;
-    }
-
-    public Set<DelayedEffect> getDelayedEffects() {
+    public Set<DelayedSpell> getDelayedEffects() {
         return delayedEffects;
-    }
-
-    public SpellManager getSpellManager() {
-        return spellManager;
-    }
-
-    public EffectManager getEffectManager() {
-        return effectManager;
     }
 
     public SoundManager getSoundManager() {
@@ -449,6 +424,11 @@ public class Pong extends BasicGame {
 
     public void setMana(byte leftMana, byte rightMana) {
         infoBoard.setMana(leftMana, rightMana);
+    }
+
+    public Player getConnectedPlayer(long id) {
+        debbie.i(remoteToLocal.toString());
+        return getPlayer(remoteToLocal.get(id));
     }
 
     /**

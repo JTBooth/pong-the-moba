@@ -9,7 +9,7 @@ import java.util.List;
 import serialize.Packet;
 import serialize.Pattern;
 import serialize.PongPacket;
-import server.Player;
+import pong.Player;
 import utils.Debugger;
 import utils.Settings;
 

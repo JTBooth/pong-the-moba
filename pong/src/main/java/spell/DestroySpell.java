@@ -2,7 +2,7 @@ package spell;
 
 import shapes.PongShape;
 
-public class DestroySpell extends DelayedEffect {
+public class DestroySpell extends DelayedSpell {
     PongShape shape;
 
     public DestroySpell(PongShape pongShape, int timeout) {

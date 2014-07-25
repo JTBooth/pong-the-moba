@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import client.CommandUpdate;
+import pong.Player;
 import serialize.HousewarmingPacket;
 import pong.Pong;
 import utils.Debugger;
@@ -59,7 +60,7 @@ public class ServerListener extends Listener {
             CommandUpdate update = (CommandUpdate) packet;
             debbie.i("Package: " + update.getGameId());
             debbie.i("Current Games" + games.toString());
-            Player receiver = getInstance(update.getGameId()).getPlayer(update.getPlayerId());
+            Player receiver = getInstance(update.getGameId()).getConnectedPlayer(update.getPlayerId());
             Log.info(receiver.getId() + ": " + Arrays.toString(update.getKeys()));
             receiver.setKeys(update);
         }
@@ -126,8 +127,8 @@ public class ServerListener extends Listener {
                 debbie.i("Players found!");
 
                 /** Add the players **/
-                player1 = new Player(p1, id1);
-                player2 = new Player(p2, id2);
+                player1 = new Player(id1);
+                player2 = new Player(id2);
 
                 player1.setWho(Player.LEFT);
                 player2.setWho(Player.RIGHT);
@@ -136,8 +137,6 @@ public class ServerListener extends Listener {
 
                 /** Add to a pong game **/
                 Pong pong = new Pong("Pong the MOBA", player1, player2, gameId, server);
-                pong.addPlayer(player1);
-                pong.addPlayer(player2);
                 games.put(gameId, pong);
 
                 new Game(pong).start();

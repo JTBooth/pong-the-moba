@@ -6,7 +6,7 @@ import org.newdawn.slick.Graphics;
 import java.util.Arrays;
 import java.util.List;
 
-import shapes.Registry;
+import utils.Registry;
 import utils.Debugger;
 import utils.IllegalShapeException;
 
@@ -65,7 +65,7 @@ public abstract class PongPacket {
         byte[] serialized = new byte[getBytePatternCount()];
         int pointer = 0;
 
-        byte[] id = Bytes.char2Bytes2(Registry.getId(this.getClass()));
+        byte[] id = Bytes.char2Bytes2(Registry.getPacketId(this.getClass()));
         System.arraycopy(id, 0, serialized, pointer, id.length);
         pointer += id.length;
 
@@ -150,7 +150,9 @@ public abstract class PongPacket {
     public abstract void extractData(List<Packet> data, Graphics graphics);
 
     /**
-     * Serialize
+     * Serialize?
      */
-    public abstract boolean shouldSerialize();
+    public boolean shouldSerialize() {
+        return true;
+    }
 }

@@ -4,14 +4,10 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.MathUtils;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyDef;
-import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Transform;
 
 import java.util.ArrayList;
@@ -27,12 +23,11 @@ import utils.Settings;
 public class Paddle extends PongShape {
     Debugger debbie = new Debugger(Paddle.class.getSimpleName());
 
+    PolygonShape shape;
     /**
      * Shape Attributes *
      */
-    private PolygonShape shape;
     private float length;
-    private char color;
 
     /**
      * Physics Variables *
@@ -40,27 +35,18 @@ public class Paddle extends PongShape {
     private float yVelocity = 0f;
     private int rotationReq = 0;
 
-    public Paddle() {
-    }
+    public Paddle() {}
 
     public Paddle(float x, float y, float length, char color, World world, Pong pong) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(x, y);
-        bodyDef.type = BodyType.KINEMATIC;
-        body = world.createBody(bodyDef);
+        super(x, y, false, color, world, pong);
+        shape = new PolygonShape();
+        shape.setAsBox(Settings.paddleWidth / 2, length / 2);
 
-
-        PolygonShape polyShape = new PolygonShape();
-        polyShape.setAsBox(Settings.paddleWidth / 2, length / 2);
-        this.length = Settings.paddleLength;
-        shape = polyShape;
-
-        FixtureDef fd = new FixtureDef();
         fd.friction = 1f;
-        fd.shape = polyShape;
+        fd.shape = shape;
         body.createFixture(fd);
-        this.color = color;
-        this.pong = pong;
+
+        this.length = Settings.paddleLength;
     }
 
     /**
@@ -177,16 +163,6 @@ public class Paddle extends PongShape {
     @Override
     public boolean shouldSerialize() {
         return true;
-    }
-
-    @Override
-    public org.jbox2d.collision.shapes.Shape getBoxShape() {
-        return null;
-    }
-
-    @Override
-    public Shape getSlickShape() {
-        return null;
     }
 
     public Body getBody() {
