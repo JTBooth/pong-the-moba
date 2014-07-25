@@ -176,10 +176,11 @@ public class Pong extends BasicGame {
 
         /** Loop through players **/
         for (Player player : players.values()) {
-            shapeList.add(player.getPaddle());
+            addShape(player.getPaddle());
             contactListener.registerPair(new PaddleBallPair(player.getPaddle(), ball, this));
         }
-        shapeList.add(ball);
+        
+        addShape(ball);
 
         nonPhysicsList.add(infoBoard);
         /** Set Contact Listener**/
@@ -403,6 +404,7 @@ public class Pong extends BasicGame {
     }
 
     public void addShape(PongShape ps) {
+        //TODO - add default contact for every shape - maybe coded in the Shape Class itself. (template for contacts)
         shapeList.add(ps);
     }
 
