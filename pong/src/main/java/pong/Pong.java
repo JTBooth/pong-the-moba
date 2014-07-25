@@ -218,6 +218,7 @@ public class Pong extends BasicGame {
     public void step() {
         for (Player player : players.values()) {
             execute(player);
+            player.step(frame);
         }
 
         world.step(Settings.timeStep, Settings.velocityIterations, Settings.positionIterations);

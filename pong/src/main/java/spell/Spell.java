@@ -17,8 +17,8 @@ public abstract class Spell {
         this.player = player;
         this.pong = pong;
         this.cooldownCounter = 0;
-        setCost();
-        setCoolDown();
+        this.cost = setCost();
+        this.cooldown = setCoolDown();
     }
 
     public void cast() {

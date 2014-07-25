@@ -1,9 +1,6 @@
 package spell;
 
-import pong.Player;
-
 public class RestitutionBoost extends Spell {
-    Player player;
 
     @Override
     public void applyEffects() {

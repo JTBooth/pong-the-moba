@@ -28,11 +28,10 @@ public class Player {
         this.id = id;
         this.mana = 0;
         commands = new CommandUpdate();
-        initializeSpells();
     }
 
     /** Step **/
-    public void step(int tick) {
+    public void step(long tick) {
         if (tick % Settings.ticksPerManaGain == 0 && mana < Settings.maxMana) {
             mana += 1;
         }
@@ -95,6 +94,7 @@ public class Player {
 
     public void setPong(Pong pong) {
         this.pong = pong;
+        initializeSpells();
     }
 
     /**
