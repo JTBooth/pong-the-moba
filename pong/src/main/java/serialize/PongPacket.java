@@ -91,7 +91,7 @@ public abstract class PongPacket {
 
                 case BYTE:
                     serialized[pointer++] = (Byte) packet.data;
-
+                    break;
                 default:
                     break;
             }

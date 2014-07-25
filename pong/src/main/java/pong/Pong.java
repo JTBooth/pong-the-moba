@@ -47,7 +47,7 @@ public class Pong extends BasicGame {
     private PongServer server;
     private Set<DelayedSpell> delayedEffects = Collections.newSetFromMap(new ConcurrentHashMap<DelayedSpell, Boolean>());
     private List<PongShape> shapeList;
-    private List<PongPacket> pongPacketList;
+    private List<PongPacket> nonPhysicsList;
     private Map<Integer, Player> players;
     private Map<Long, Integer> remoteToLocal;
     private World world;
@@ -96,7 +96,7 @@ public class Pong extends BasicGame {
     private void resetGame() {
         /** Initialize Game Pieces **/
         this.shapeList = new ArrayList<PongShape>();
-        this.pongPacketList = new ArrayList<PongPacket>();
+        this.nonPhysicsList = new ArrayList<PongPacket>();
 
         /** Initiate Game InfoBoards*/
         this.infoBoard = new InfoBoard(Settings.winningScore);
@@ -128,20 +128,24 @@ public class Pong extends BasicGame {
     public void render(GameContainer arg0, Graphics graphics)
             throws SlickException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        debbie.d("Shape List " + shapeList.size());
-        byte[] cereal;
-        for (PongShape ps : shapeList) {
-            try {
-                cereal = ps.serialize();
-                if (cereal.length > 0)
-                    outputStream.write(cereal);
-            } catch (IOException e) {
-                debbie.e(Registry.getPacketId(ps.getClass()) + " failed to write to bytearrayoutputstream " + e.getMessage());
-            } catch (IllegalShapeException e) {
-                e.printStackTrace();
-            }
+        for (PongPacket ps : nonPhysicsList) {
+            buildArray(outputStream, ps);
+        }
+
+        for (PongPacket ps: shapeList) {
+            buildArray(outputStream, ps);
         }
         server.sendUpdate(outputStream.toByteArray());
+    }
+
+    public void buildArray(ByteArrayOutputStream outputStream, PongPacket ps) {
+        try {
+            outputStream.write(ps.serialize());
+        } catch (IOException e) {
+            debbie.e(Registry.getPacketId(ps.getClass()) + " failed to write to bytearrayoutputstream " + e.getMessage());
+        } catch (IllegalShapeException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -175,12 +179,9 @@ public class Pong extends BasicGame {
             shapeList.add(player.getPaddle());
             contactListener.registerPair(new PaddleBallPair(player.getPaddle(), ball, this));
         }
-
         shapeList.add(ball);
 
-        pongPacketList.add(infoBoard);
-        pongPacketList.addAll(shapeList);
-
+        nonPhysicsList.add(infoBoard);
         /** Set Contact Listener**/
         world.setContactListener(contactListener);
 
@@ -220,6 +221,7 @@ public class Pong extends BasicGame {
             execute(player);
             player.step(frame);
         }
+        infoBoard.setMana(players.get(Player.LEFT).mana, players.get(Player.RIGHT).mana);
 
         world.step(Settings.timeStep, Settings.velocityIterations, Settings.positionIterations);
 
@@ -376,8 +378,10 @@ public class Pong extends BasicGame {
                 break;
         }
 
-        return new Laser(Settings.p2m((int) x), Settings.p2m((int) y), Settings.laserRadius, direction,
+        Laser laser = new Laser(Settings.p2m((int) x), Settings.p2m((int) y), Settings.laserRadius, direction,
                 getWorld(), this);
+
+        return laser;
     }
 
     public void addPlayer(Player player) {

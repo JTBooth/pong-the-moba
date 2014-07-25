@@ -22,7 +22,7 @@ public class Player {
 
     private CommandUpdate commands;
     private Map<Integer, Spell> spells;
-    public int mana;
+    public byte mana;
 
     public Player(long id) {
         this.id = id;
