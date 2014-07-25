@@ -46,7 +46,7 @@ public class Registry {
     /**
      * Generate IDs for Packets
      */
-    private static final Map<Character, Class<? extends PongPacket>> registry = new HashMap<Character, Class<? extends PongPacket>>() {{
+    public static final Map<Character, Class<? extends PongPacket>> packets = new HashMap<Character, Class<? extends PongPacket>>() {{
         /** Char Limit **/
         assert classes.size() < 255;
 
@@ -67,7 +67,7 @@ public class Registry {
      */
     public static PongPacket getPacket(char key) {
         try {
-            return registry.get(key).newInstance();
+            return packets.get(key).newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
