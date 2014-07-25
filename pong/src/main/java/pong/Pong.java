@@ -1,5 +1,6 @@
 package pong;
 
+import client.resources.SpriteSheetMap;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 import org.lwjgl.input.Keyboard;
@@ -54,6 +55,7 @@ public class Pong extends BasicGame {
     private InfoBoard infoBoard;
     private EffectManager effectManager;
     private SoundManager soundManager;
+
 
     /**
      * Constructor
@@ -318,22 +320,22 @@ public class Pong extends BasicGame {
 
     private Paddle makePaddle(int player) {
         float x;
-        char color = 0;
+        byte spriteSheetId = 0;
 
         switch (player) {
             case Player.LEFT:
                 x = 0.5f;
-                color = '0';
+                spriteSheetId = SpriteSheetMap.RED_PADDLE;
                 break;
             case Player.RIGHT:
                 x = Settings.windowMeters[0] - 0.5f;
-                color = '2';
+                spriteSheetId = SpriteSheetMap.BLUE_PADDLE;
                 break;
             default:
                 x = 1f;
         }
         debbie.i("Making Paddle for player " + player);
-        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleLength, color, getWorld(), this);
+        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleLength, spriteSheetId, getWorld(), this);
     }
 
     /**
