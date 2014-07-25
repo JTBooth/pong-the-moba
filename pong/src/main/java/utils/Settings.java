@@ -64,7 +64,7 @@ public class Settings extends org.jbox2d.common.Settings {
     /**
      * Gameplay Settings *
      */
-    public static float ballRadius = 0.2f;
+    public static float ballRadius = 0.25f;
     public static float laserDensity = 1000f;
     public static float laserVelocity = 11f;
     public static float serveSpeed = 3f;

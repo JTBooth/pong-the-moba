@@ -17,7 +17,7 @@ public class EffectManager extends ArrayList<GlobalEffect> {
     public EffectManager(String option) {
         super();
         if ("drag".equals(option)) {
-            DragEffect sld = new DragEffect(10, 0.1f);
+            DragEffect sld = new DragEffect(10f, 0.1f);
             this.add(sld);
         }
     }

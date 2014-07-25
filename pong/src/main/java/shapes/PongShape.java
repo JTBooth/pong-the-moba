@@ -53,7 +53,7 @@ public abstract class PongShape extends PongPacket {
         return body;
     }
     public BodyType setBodyType() {
-        return BodyType.DYNAMIC;
+        return BodyType.KINEMATIC;
     }
     public float getAngle() {
         float angle = body.getAngle();

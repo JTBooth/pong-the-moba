@@ -3,7 +3,6 @@ package shapes;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.MathUtils;
 import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.World;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Polygon;
@@ -43,11 +42,6 @@ public class Wall extends PongShape {
 
         this.height = height;
         this.visible = visible;
-    }
-
-    @Override
-    public BodyType setBodyType() {
-        return BodyType.KINEMATIC;
     }
 
     @Override
