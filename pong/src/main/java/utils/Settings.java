@@ -4,13 +4,6 @@ package utils;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
 
 public class Settings extends org.jbox2d.common.Settings {
@@ -64,7 +57,7 @@ public class Settings extends org.jbox2d.common.Settings {
     /**
      * Gameplay Settings *
      */
-    public static float ballRadius = 0.25f;
+    final public static float ballRadius = 0.2f;
     public static float laserDensity = 1000f;
     public static float laserVelocity = 11f;
     public static float serveSpeed = 3f;
@@ -85,39 +78,39 @@ public class Settings extends org.jbox2d.common.Settings {
     public static byte SCALABLE_BASIC_PADDLE = 1;
 
 
-    public static void refreshSettings() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL url = classLoader.getResource("src/main/res/gameplaySettingsSpec");
-        File gameplaySettingsSpec = null;
-        try {
-            gameplaySettingsSpec = new File(url.toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        if (gameplaySettingsSpec == null)
-            return;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(gameplaySettingsSpec));
-            Settings.ballRadius = Float.parseFloat(br.readLine().split(" ")[0]);
-            Settings.laserDensity = Float.parseFloat(br.readLine().split(" ")[0]);
-            Settings.laserVelocity = Float.parseFloat(br.readLine().split(" ")[0]);
-            Settings.serveSpeed = Float.parseFloat(br.readLine().split(" ")[0]);
-            Settings.paddleLength = Float.parseFloat(br.readLine().split(" ")[0]);
-            Settings.paddleSpeed = Float.parseFloat(br.readLine().split(" ")[0]);
-            Settings.maxPaddleRotateAngle = Float.parseFloat(br.readLine().split(" ")[0]);
-            Settings.maxMana = Byte.parseByte(br.readLine().split(" ")[0]);
-            br.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NumberFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+//    public static void refreshSettings() {
+//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//        URL url = classLoader.getResource("src/main/res/gameplaySettingsSpec");
+//        File gameplaySettingsSpec = null;
+//        try {
+//            gameplaySettingsSpec = new File(url.toURI());
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        if (gameplaySettingsSpec == null)
+//            return;
+//        try {
+//            BufferedReader br = new BufferedReader(new FileReader(gameplaySettingsSpec));
+//            Settings.ballRadius = Float.parseFloat(br.readLine().split(" ")[0]);
+//            Settings.laserDensity = Float.parseFloat(br.readLine().split(" ")[0]);
+//            Settings.laserVelocity = Float.parseFloat(br.readLine().split(" ")[0]);
+//            Settings.serveSpeed = Float.parseFloat(br.readLine().split(" ")[0]);
+//            Settings.paddleLength = Float.parseFloat(br.readLine().split(" ")[0]);
+//            Settings.paddleSpeed = Float.parseFloat(br.readLine().split(" ")[0]);
+//            Settings.maxPaddleRotateAngle = Float.parseFloat(br.readLine().split(" ")[0]);
+//            Settings.maxMana = Byte.parseByte(br.readLine().split(" ")[0]);
+//            br.close();
+//        } catch (FileNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (NumberFormatException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//    }
 
     public static int m2p(float meter) {
         return (int) (meter * PTM_RATIO);

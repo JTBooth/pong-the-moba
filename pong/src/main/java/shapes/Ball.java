@@ -65,7 +65,7 @@ public class Ball extends PongShape {
             add(new Packet(Pattern.FLOAT2B, MathUtils.TWOPI));                      //ROTATION
             add(new Packet(Pattern.FLOAT2B, Settings.windowMeters[0]));             // X
             add(new Packet(Pattern.FLOAT2B, Settings.windowMeters[1]));             // Y
-            add(new Packet(Pattern.FLOAT1B, Settings.windowMeters[1] / 2f));        // RADIUS
+            add(new Packet(Pattern.FLOAT2B, Settings.windowMeters[1] / 2f));        // RADIUS
             add(new Packet(Pattern.CHAR2B));                                        //COLOR
         }};
     }
@@ -78,7 +78,6 @@ public class Ball extends PongShape {
     @Override
     public void extractData(List<Packet> data, Graphics graphics) {
         graphics.setColor(Settings.colorMap.get((Character) data.get(4).data));
-
         circle.setCenterX(Settings.m2p((Float) data.get(1).data));
         circle.setCenterY(Settings.m2p((Float) data.get(2).data));
         circle.setRadius(Settings.m2p((Float) data.get(3).data));
