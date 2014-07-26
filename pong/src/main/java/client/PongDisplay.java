@@ -99,8 +99,11 @@ public class PongDisplay extends BasicGame {
     private void initializePackets() {
         packetTemplate = new HashMap<Character, PongPacket>();
         try {
+            PongPacket packet;
             for (Map.Entry<Character, Class<? extends PongPacket>> entry : Registry.packets.entrySet()) {
-                packetTemplate.put(entry.getKey(), entry.getValue().newInstance());
+                packet = entry.getValue().newInstance();
+                packet.setup();
+                packetTemplate.put(entry.getKey(), packet);
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();

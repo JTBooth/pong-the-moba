@@ -49,22 +49,27 @@ public class PongContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
         checking(contact);
-        currentPair.beginContactI(contact);
+        if (matched)
+            currentPair.beginContactI(contact);
     }
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
-        currentPair.preSolveII(contact, oldManifold);
+        if (matched)
+            currentPair.preSolveII(contact, oldManifold);
     }
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
-        currentPair.postSolveIII(contact, impulse);
+        if (matched)
+            currentPair.postSolveIII(contact, impulse);
     }
 
     @Override
     public void endContact(Contact contact) {
-        currentPair.endContactIV(contact);
-        matched = false;
+        if (matched) {
+            currentPair.endContactIV(contact);
+            matched = false;
+        }
     }
 }
