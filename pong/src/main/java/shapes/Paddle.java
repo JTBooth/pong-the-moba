@@ -1,22 +1,14 @@
 package shapes;
 
-import client.resources.SpriteSheetMap;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.MathUtils;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyDef;
-import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Shape;
-import org.newdawn.slick.geom.Transform;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,18 +18,20 @@ import pong.Pong;
 import serialize.Packet;
 import serialize.Pattern;
 import utils.Debugger;
+import utils.Registry;
 import utils.Settings;
 
 public class Paddle extends PongShape {
     Debugger debbie = new Debugger(Paddle.class.getSimpleName());
 
+    PolygonShape shape;
     /**
      * Shape Attributes *
      */
-    private PolygonShape shape;
     private float length;
     private byte spriteSheetId;
     private byte spriteSheetFrame;
+
 
     /**
      * Physics Variables *
@@ -45,29 +39,22 @@ public class Paddle extends PongShape {
     private float yVelocity = 0f;
     private int rotationReq = 0;
 
-    public Paddle() {
-    }
+    public Paddle() {}
+
 
     public Paddle(float x, float y, float length, byte spriteSheetId, World world, Pong pong) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(x, y);
-        bodyDef.type = BodyType.KINEMATIC;
-        body = world.createBody(bodyDef);
+        super(x, y, false, '0', world, pong);
+
+        shape = new PolygonShape();
+        shape.setAsBox(Settings.paddleWidth / 2f, length / 2f);
 
 
-        PolygonShape polyShape = new PolygonShape();
-        polyShape.setAsBox(Settings.paddleWidth / 2, length / 2);
-        this.length = Settings.paddleLength;
-        shape = polyShape;
-
-        FixtureDef fd = new FixtureDef();
         fd.friction = 1f;
-        fd.shape = polyShape;
+        fd.shape = shape;
         body.createFixture(fd);
 
         this.spriteSheetId=spriteSheetId;
         this.spriteSheetFrame=(byte)0;
-        this.pong = pong;
     }
 
     /**
@@ -157,7 +144,7 @@ public class Paddle extends PongShape {
         int x = Settings.m2p((Float) data.get(1).data);
         int y = Settings.m2p((Float) data.get(2).data);
         int width = Settings.m2p(Settings.paddleWidth);
-        int length = Settings.m2p(Settings.paddleLength);
+        int length =  Settings.m2p((Float) data.get(3).data);
 
         /** Create a rectangle given position and size **/
         Rectangle rect = new Rectangle(
@@ -167,12 +154,11 @@ public class Paddle extends PongShape {
                 length
         );
 
-        /** Get Color **/
+        /** Get SpriteSheet **/
         SpriteSheet ss = Registry.getSpriteSheet((Byte) data.get(4).data);
         Image im = ss.getSprite((Byte) data.get(5).data,0);
         im.setRotation((360.0f/MathUtils.TWOPI)*((Float)(data.get(0).data)));
         im.draw(rect.getX(), rect.getY());
-
 
         debbie.d(x + " x position, " + y + " y position, " + width + " width, " + length + " length");
     }
@@ -180,16 +166,6 @@ public class Paddle extends PongShape {
     @Override
     public boolean shouldSerialize() {
         return true;
-    }
-
-    @Override
-    public org.jbox2d.collision.shapes.Shape getBoxShape() {
-        return null;
-    }
-
-    @Override
-    public Shape getSlickShape() {
-        return null;
     }
 
     public Body getBody() {

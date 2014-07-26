@@ -1,10 +1,10 @@
 package spell;
 
 // Note that when ticksRemaining is zero, the object will no longer be ticked.
-public abstract class DelayedEffect {
+public abstract class DelayedSpell {
     public int ticksRemaining;
 
-    public DelayedEffect(int timeout) {
+    public DelayedSpell(int timeout) {
         this.ticksRemaining = timeout;
     }
 

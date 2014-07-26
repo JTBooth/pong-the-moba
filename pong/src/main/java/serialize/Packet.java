@@ -25,4 +25,9 @@ public class Packet {
     public Packet(Pattern pattern){
         this(pattern, null, 0);
     }
+
+    @Override
+    public String toString() {
+        return "[" + scale + " scale " + pattern + " pattern " + data + " data]";
+    }
 }

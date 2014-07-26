@@ -3,9 +3,7 @@ package utils;
 import java.util.Arrays;
 import java.util.List;
 
-import serialize.PongPacket;
-import shapes.Ball;
-import shapes.Paddle;
+import shapes.InfoBoard;
 
 /**
  * Created by chris on 6/28/14.
@@ -16,21 +14,26 @@ public class Debugger {
      * FILTERS *
      */
     public final static int DEBUG = 1;
-    public final static int global = DEBUG; // | INFO | WARNING | ERROR;
     public final static int INFO = 1 << 1;
     public final static int WARNING = 1 << 2;
     public final static int ERROR = 1 << 3;
+
+    public final static int global = ERROR; // | INFO | WARNING | ERROR;
+
     /**
      * Allowed classes
      * ADD CLASSES FOR LOGGING
      * *
      */
     public final static List<String> enabled = Arrays.asList(
-            Paddle.class.getSimpleName(),
-            Ball.class.getSimpleName(),
-            PongPacket.class.getSimpleName()
-            //Serializer.class.getSimpleName(),
-    );
+//            Pong.class.getSimpleName()
+//            PongShape.class.getSimpleName()
+//            Paddle.class.getSimpleName()
+//            Ball.class.getSimpleName()
+//            PongPacket.class.getSimpleName()
+//            Serializer.class.getSimpleName(),
+            InfoBoard.class.getSimpleName()
+   );
 
     /**
      * TAG INDICATORS *

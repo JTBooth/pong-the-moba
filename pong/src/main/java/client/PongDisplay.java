@@ -9,13 +9,20 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
-import serialize.Serializer;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import serialize.Bytes;
+import serialize.PongPacket;
 import utils.Debugger;
+import utils.Registry;
 import utils.Settings;
 
 public class PongDisplay extends BasicGame {
     private static Debugger debbie = new Debugger(PongDisplay.class.getSimpleName());
 
+    private Map<Character, PongPacket> packetTemplate;
     private byte[] pieces;
     private PongClient client;
     private DisplayListener displayListener;
@@ -52,17 +59,25 @@ public class PongDisplay extends BasicGame {
 
     @Override
     public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
-        debbie.i("Rendering");
         /** Set Typewriter **/
         graphics.setFont(font);
 
         /** Render Game Pieces **/
-        Serializer.render(pieces, graphics);
+        int pointer = 0;
+        char id;
+
+        debbie.d("Entering while loop");
+        while (pointer < pieces.length) {
+            id = Bytes.twoBytes2Char(Arrays.copyOfRange(pieces, pointer, pointer += 2));
+            debbie.d("rendering " + Registry.getPacket(id).getClass().getSimpleName());
+            pointer = packetTemplate.get(id).deserialize(pieces, pointer, graphics);
+        }
     }
 
     @Override
     public void init(GameContainer arg0) throws SlickException {
         debbie.i("Initializing");
+        initializePackets();
         font = new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 80), false);
     }
 
@@ -81,4 +96,16 @@ public class PongDisplay extends BasicGame {
         client.submit(keysPressed, displayListener.getGameId());
     }
 
+    private void initializePackets() {
+        packetTemplate = new HashMap<Character, PongPacket>();
+        try {
+            for (Map.Entry<Character, Class<? extends PongPacket>> entry : Registry.packets.entrySet()) {
+                packetTemplate.put(entry.getKey(), entry.getValue().newInstance());
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+    }
 }
