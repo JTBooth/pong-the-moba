@@ -55,6 +55,7 @@ public class Paddle extends PongShape {
 
         this.spriteSheetId=spriteSheetId;
         this.spriteSheetFrame=(byte)0;
+        this.length = length;
     }
 
     /**
@@ -159,8 +160,7 @@ public class Paddle extends PongShape {
         Image im = ss.getSprite((Byte) data.get(5).data,0);
         im.setRotation((360.0f/MathUtils.TWOPI)*((Float)(data.get(0).data)));
         im.draw(rect.getX(), rect.getY());
-
-        debbie.d(x + " x position, " + y + " y position, " + width + " width, " + length + " length");
+        debbie.e(x + " x position, " + y + " y position, " + width + " width, " + length + " length");
     }
 
     @Override

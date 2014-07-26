@@ -3,7 +3,7 @@ package utils;
 import java.util.Arrays;
 import java.util.List;
 
-import shapes.InfoBoard;
+import shapes.Paddle;
 
 /**
  * Created by chris on 6/28/14.
@@ -28,11 +28,11 @@ public class Debugger {
     public final static List<String> enabled = Arrays.asList(
 //            Pong.class.getSimpleName()
 //            PongShape.class.getSimpleName()
-//            Paddle.class.getSimpleName()
+            Paddle.class.getSimpleName()
 //            Ball.class.getSimpleName()
 //            PongPacket.class.getSimpleName()
 //            Serializer.class.getSimpleName(),
-            InfoBoard.class.getSimpleName()
+//            InfoBoard.class.getSimpleName()
    );
 
     /**
