@@ -6,6 +6,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 import pong.Pong;
 import shapes.PongShape;
+import sounds.BounceSound;
 import utils.Debugger;
 
 /**
@@ -44,7 +45,7 @@ public class PaddleBallPair extends ContactPair {
         float impulse1 = impulse.normalImpulses[1];
         float imp = impulse0 > impulse1 ? impulse0 : impulse1;
         imp = imp > 1 ? 1 : imp;
-        pong.getSoundManager().playBounce(imp);
+        pong.addNonPersistent(new BounceSound(imp));
     }
 
     @Override

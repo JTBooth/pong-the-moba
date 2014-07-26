@@ -15,6 +15,7 @@ import shapes.InfoBoard;
 import shapes.Laser;
 import shapes.Paddle;
 import shapes.Wall;
+import sounds.BounceSound;
 import spell.LaserSpell;
 import spell.RestitutionBoost;
 import spell.Spell;
@@ -25,29 +26,22 @@ import spell.Spell;
 public class Registry {
     static Debugger debbie = new Debugger(Registry.class.getSimpleName());
 
-    /**
-     * Registered Packets
-     */
-    private static final List<Class<? extends PongPacket>> classes = new ArrayList<Class<? extends PongPacket>>() {{
+    /***********************************************************************
+     * * * * * * * * ** * * * * * * Packets * * * * * * * * * * * * * * * **
+     ***********************************************************************/
+    //Sounds
+    final public static String SOUND_PATH = "pong/src/main/resources/";
+
+    //Registered Packets
+    public static final List<Class<? extends PongPacket>> classes = new ArrayList<Class<? extends PongPacket>>() {{
         add(Ball.class);
         add(Laser.class);
         add(Paddle.class);
         add(Wall.class);
         add(InfoBoard.class);
+        add(BounceSound.class);
     }};
-
-    /**
-     * Registered Spells
-     */
-    public static final Map<Integer, Class<? extends Spell>> spells = new HashMap<Integer, Class<? extends Spell>>(){{
-       put(Keyboard.KEY_SPACE, LaserSpell.class);
-       put(Keyboard.KEY_Q, RestitutionBoost.class);
-    }};
-
-
-    /**
-     * Generate IDs for Packets
-     */
+    //Packet IDs
     public static final Map<Character, Class<? extends PongPacket>> packets = new HashMap<Character, Class<? extends PongPacket>>() {{
         /** Char Limit **/
         assert classes.size() < 255;
@@ -57,16 +51,12 @@ public class Registry {
         }
     }};
 
-    /**
-     * Get ID for PongPacket *
-     */
+    //Get Packet ID
     public static char getPacketId(Class<? extends PongPacket> packet) {
         return (char) classes.indexOf(packet);
     }
 
-    /**
-     * Get PongPacket *
-     */
+    //Get Packet
     public static PongPacket getPacket(char key) {
         try {
             return packets.get(key).newInstance();
@@ -78,7 +68,17 @@ public class Registry {
         return null;
     }
 
-    /** Sprite Sheet Map **/
+    /***********************************************************************
+     * * * * * * * * ** * * * * * * Spells * * * * * * * * * * * * * * * * *
+     ***********************************************************************/
+    public static final Map<Integer, Class<? extends Spell>> spells = new HashMap<Integer, Class<? extends Spell>>(){{
+        put(Keyboard.KEY_SPACE, LaserSpell.class);
+        put(Keyboard.KEY_Q, RestitutionBoost.class);
+    }};
+
+    /***********************************************************************
+     * * * * * * * * ** * * * Sprite Sheet Map * * * * * * * * * * * * * * *
+     ***********************************************************************/
 
     public static final SpriteSheetMap spriteSheetMap = new SpriteSheetMap();
 

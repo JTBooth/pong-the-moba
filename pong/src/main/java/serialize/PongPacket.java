@@ -1,14 +1,13 @@
 package serialize;
 
-import org.jbox2d.common.MathUtils;
 import org.newdawn.slick.Graphics;
 
 import java.util.Arrays;
 import java.util.List;
 
-import utils.Registry;
 import utils.Debugger;
 import utils.IllegalShapeException;
+import utils.Registry;
 
 /**
  * Created by rbooth on 7/13/14.
@@ -80,7 +79,7 @@ public abstract class PongPacket {
                     break;
 
                 case FLOAT1B:
-                    serialized[pointer++] = Bytes.float2Byte((Float) packet.data, MathUtils.TWOPI);
+                    serialized[pointer++] = Bytes.float2Byte((Float) packet.data, packet.scale);
                     break;
 
                 case CHAR2B:
@@ -156,4 +155,9 @@ public abstract class PongPacket {
     public boolean shouldSerialize() {
         return true;
     }
+
+    /**
+     * Client side setup
+     */
+    public void setup(){}
 }
