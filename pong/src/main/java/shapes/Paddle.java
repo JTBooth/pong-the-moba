@@ -6,9 +6,9 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Polygon;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Transform;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +18,7 @@ import pong.Pong;
 import serialize.Packet;
 import serialize.Pattern;
 import utils.Debugger;
+import utils.Registry;
 import utils.Settings;
 
 public class Paddle extends PongShape {
@@ -28,6 +29,9 @@ public class Paddle extends PongShape {
      * Shape Attributes *
      */
     private float length;
+    private byte spriteSheetId;
+    private byte spriteSheetFrame;
+
 
     /**
      * Physics Variables *
@@ -37,16 +41,21 @@ public class Paddle extends PongShape {
 
     public Paddle() {}
 
-    public Paddle(float x, float y, float length, char color, World world, Pong pong) {
-        super(x, y, false, color, world, pong);
+
+    public Paddle(float x, float y, float length, byte spriteSheetId, World world, Pong pong) {
+        super(x, y, false, '0', world, pong);
+
         shape = new PolygonShape();
         shape.setAsBox(Settings.paddleWidth / 2f, length / 2f);
+
 
         fd.friction = 1f;
         fd.shape = shape;
         body.createFixture(fd);
 
-        this.length = Settings.paddleLength;
+        this.spriteSheetId=spriteSheetId;
+        this.spriteSheetFrame=(byte)0;
+        this.length = length;
     }
 
     /**
@@ -114,7 +123,8 @@ public class Paddle extends PongShape {
             add(body.getPosition().x);            // X
             add(body.getPosition().y);            // Y
             add(length);                          // Length
-            add(color);                           //COLOR
+            add(spriteSheetId);                   // SpriteSheetID
+            add(spriteSheetFrame);                // SpriteSheetFrame
         }};
     }
 
@@ -125,7 +135,8 @@ public class Paddle extends PongShape {
             add(new Packet(Pattern.FLOAT2B,  Settings.windowMeters[0]));            // X
             add(new Packet(Pattern.FLOAT2B,  Settings.windowMeters[1]));            // Y
             add(new Packet(Pattern.FLOAT1B,  Settings.windowMeters[1]));            // Length
-            add(new Packet(Pattern.CHAR2B));                                        //COLOR
+            add(new Packet(Pattern.BYTE));                                          // Spritesheet ID
+            add(new Packet(Pattern.BYTE));                                          // Spritesheet frame
         }};
     }
 
@@ -144,20 +155,12 @@ public class Paddle extends PongShape {
                 length
         );
 
-        /** Get Color **/
-        this.color = (Character) data.get(4).data;
-        graphics.setColor(Settings.colorMap.get(this.color));
-
-        /** Polygon to rotate**/
-        Polygon polygon = new Polygon(rect.getPoints());
-        graphics.fill(polygon.transform(Transform.createRotateTransform(
-                (Float) data.get(0).data,
-                polygon.getCenterX(),
-                polygon.getCenterY()
-        )));
-
-        debbie.i(data.get(1).data + " x position, " + data.get(2).data+ " y position, " + width + " width, " + length + " length");
-        debbie.i(Settings.colorMap.get(this.color) + " color");
+        /** Get SpriteSheet **/
+        SpriteSheet ss = Registry.getSpriteSheet((Byte) data.get(4).data);
+        Image im = ss.getSprite((Byte) data.get(5).data,0);
+        im.setRotation((360.0f/MathUtils.TWOPI)*((Float)(data.get(0).data)));
+        im.draw(rect.getX(), rect.getY());
+        debbie.e(x + " x position, " + y + " y position, " + width + " width, " + length + " length");
     }
 
     @Override
@@ -181,6 +184,14 @@ public class Paddle extends PongShape {
         }
         return ret;
 
+    }
+
+    public void setSpriteSheetFrame(byte spriteSheetFrame) {
+        this.spriteSheetFrame=spriteSheetFrame;
+    }
+
+    public byte getSpriteSheetFrame() {
+        return spriteSheetFrame;
     }
 
     public PolygonShape getShape() {

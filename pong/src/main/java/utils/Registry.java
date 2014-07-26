@@ -1,12 +1,14 @@
 package utils;
 
 import org.lwjgl.input.Keyboard;
+import org.newdawn.slick.SpriteSheet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import client.resources.SpriteSheetMap;
 import serialize.PongPacket;
 import shapes.Ball;
 import shapes.InfoBoard;
@@ -74,5 +76,13 @@ public class Registry {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /** Sprite Sheet Map **/
+
+    public static final SpriteSheetMap spriteSheetMap = new SpriteSheetMap();
+
+    public static SpriteSheet getSpriteSheet(byte spriteSheetId) {
+        return spriteSheetMap.get(spriteSheetId);
     }
 }

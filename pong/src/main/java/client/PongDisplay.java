@@ -31,7 +31,6 @@ public class PongDisplay extends BasicGame {
     public PongDisplay() {
         super("pongDisp");
         pieces = new byte[0];
-        initializePackets();
         client = new PongClient(this);
         displayListener = client.getDisplayListener();
         AppGameContainer app;
@@ -78,6 +77,7 @@ public class PongDisplay extends BasicGame {
     @Override
     public void init(GameContainer arg0) throws SlickException {
         debbie.i("Initializing");
+        initializePackets();
         font = new TrueTypeFont(new java.awt.Font("Verdana", java.awt.Font.BOLD, 80), false);
     }
 

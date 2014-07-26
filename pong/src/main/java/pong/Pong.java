@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import client.resources.SpriteSheetMap;
 import manager.EffectManager;
 import manager.SoundManager;
 import manager.SpellManager;
@@ -32,11 +33,11 @@ import shapes.InfoBoard;
 import shapes.Laser;
 import shapes.Paddle;
 import shapes.PongShape;
-import utils.Registry;
 import shapes.Wall;
 import spell.DelayedSpell;
 import utils.Debugger;
 import utils.IllegalShapeException;
+import utils.Registry;
 import utils.Settings;
 
 public class Pong extends BasicGame {
@@ -56,6 +57,7 @@ public class Pong extends BasicGame {
     private InfoBoard infoBoard;
     private EffectManager effectManager;
     private SoundManager soundManager;
+
 
     /**
      * Constructor
@@ -176,6 +178,7 @@ public class Pong extends BasicGame {
 
         /** Loop through players **/
         for (Player player : players.values()) {
+            player.setPong(this);
             addShape(player.getPaddle());
             contactListener.registerPair(new PaddleBallPair(player.getPaddle(), ball, this));
         }
@@ -329,22 +332,22 @@ public class Pong extends BasicGame {
 
     private void makePaddle(int player) {
         float x;
-        char color = 0;
+        byte spriteSheetId = 0;
 
         switch (player) {
             case Player.LEFT:
                 x = 0.5f;
-                color = '0';
+                spriteSheetId = SpriteSheetMap.RED_PADDLE;
                 break;
             case Player.RIGHT:
                 x = Settings.windowMeters[0] - 0.5f;
-                color = '2';
+                spriteSheetId = SpriteSheetMap.BLUE_PADDLE;
                 break;
             default:
                 x = 1f;
         }
         debbie.i("Making Paddle for player " + player);
-        players.get(player).setPaddle(new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleLength, color, getWorld(), this));
+        getPlayer(player).setPaddle(new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleLength, spriteSheetId, getWorld(), this));
     }
 
     /**
@@ -388,7 +391,6 @@ public class Pong extends BasicGame {
     public void addPlayer(Player player) {
         for (int i = 0; i < Player.TOTAL; i++) {
             if (!players.containsKey(i)) {
-                player.setPong(this);
                 players.put(i, player);
                 debbie.i("Added player ID " + player.getId() + " as " + i);
                 remoteToLocal.put(player.getId(), i);
