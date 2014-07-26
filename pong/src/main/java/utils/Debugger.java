@@ -3,7 +3,7 @@ package utils;
 import java.util.Arrays;
 import java.util.List;
 
-import pong.Pong;
+import shapes.InfoBoard;
 
 /**
  * Created by chris on 6/28/14.
@@ -18,7 +18,7 @@ public class Debugger {
     public final static int WARNING = 1 << 2;
     public final static int ERROR = 1 << 3;
 
-    public final static int global = INFO; // | INFO | WARNING | ERROR;
+    public final static int global = ERROR; // | INFO | WARNING | ERROR;
 
     /**
      * Allowed classes
@@ -26,13 +26,14 @@ public class Debugger {
      * *
      */
     public final static List<String> enabled = Arrays.asList(
-            Pong.class.getSimpleName()
+//            Pong.class.getSimpleName()
 //            PongShape.class.getSimpleName()
-//            Paddle.class.getSimpleName(),
-//            Ball.class.getSimpleName(),
+//            Paddle.class.getSimpleName()
+//            Ball.class.getSimpleName()
 //            PongPacket.class.getSimpleName()
 //            Serializer.class.getSimpleName(),
-    );
+            InfoBoard.class.getSimpleName()
+   );
 
     /**
      * TAG INDICATORS *

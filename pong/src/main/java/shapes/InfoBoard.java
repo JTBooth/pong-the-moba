@@ -30,8 +30,8 @@ public class InfoBoard extends PongPacket {
     /**
      * Mana *
      */
-    private manaBar leftMana = new manaBar(Settings.maxMana, 0);
-    private manaBar rightMana = new manaBar(Settings.maxMana, Settings.windowSize[0] - Settings.manaBarWidth);
+    private ManaBar leftMana = new ManaBar(Settings.maxMana, 0);
+    private ManaBar rightMana = new ManaBar(Settings.maxMana, Settings.windowSize[0] - Settings.manaBarWidth);
 
     /**
      * Players *
@@ -85,6 +85,7 @@ public class InfoBoard extends PongPacket {
 
     @Override
     public List<Object> setSerialData() {
+        debbie.e(leftMana.getCurrentMana() + "");
         return new ArrayList<Object>(){{
             add(left);                      //LEFT
             add(right);                     //RIGHT
@@ -96,12 +97,13 @@ public class InfoBoard extends PongPacket {
     @Override
     public List<Packet> getSerialPattern() {
         return new ArrayList<Packet>(){{
-            add(new Packet(Pattern.FLOAT1B)); //LEFT
-            add(new Packet(Pattern.FLOAT1B)); //RIGHT
+            add(new Packet(Pattern.BYTE)); //LEFT
+            add(new Packet(Pattern.BYTE)); //RIGHT
             add(new Packet(Pattern.BYTE)); //Left Mana
             add(new Packet(Pattern.BYTE)); //Right Mana
         }};
     }
+
 
     @Override
     public void extractData(List<Packet> data, Graphics graphics) {
@@ -114,6 +116,8 @@ public class InfoBoard extends PongPacket {
         graphics.drawString(String.valueOf(data.get(counter++).data), Settings.scorePositions[2], Settings.scorePositions[3]);
 
         //Draw left mana
+        debbie.e("READING " + data.get(counter) + " MANA");
+
         leftMana.setCurrentMana((Byte)data.get(counter++).data);
         leftMana.render(graphics);
 
@@ -127,13 +131,13 @@ public class InfoBoard extends PongPacket {
         return true;
     }
 
-    private class manaBar {
+    private class ManaBar {
         private byte maxMana;
         private byte currentMana;
         private float currentFraction;
         private int x;
 
-        manaBar(byte maxMana, int x) {
+        ManaBar(byte maxMana, int x) {
             this.maxMana = maxMana;
             this.currentMana = 0;
             this.x = x;
@@ -155,6 +159,7 @@ public class InfoBoard extends PongPacket {
 
             debbie.d("mana bar constructed with x: " + x + " y: " + y + " width: " + Settings.manaBarWidth + " height: " + height + " cf: " + currentFraction);
             Rectangle rect = new Rectangle(x, y, Settings.manaBarWidth, height);
+            debbie.e("FILLING " + currentMana + " MANA");
             graphics.fill(rect);
         }
     }

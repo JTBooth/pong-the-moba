@@ -7,5 +7,5 @@ public enum Pattern {
     FLOAT1B,
     FLOAT2B,
     CHAR2B,
-    BYTE
+    BYTE;
 }

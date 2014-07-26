@@ -69,6 +69,8 @@ public abstract class PongPacket {
         System.arraycopy(id, 0, serialized, pointer, id.length);
         pointer += id.length;
 
+        debbie.i(setData().toString());
+
         for (Packet packet : setData()) {
             switch (packet.pattern) {
                 case FLOAT2B:
@@ -89,13 +91,12 @@ public abstract class PongPacket {
 
                 case BYTE:
                     serialized[pointer++] = (Byte) packet.data;
-
+                    break;
                 default:
                     break;
             }
         }
 
-        debbie.i("PADDLE Serialized byte array: " + Arrays.toString(serialized));
         return serialized;
     }
 

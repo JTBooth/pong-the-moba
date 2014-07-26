@@ -1,9 +1,5 @@
 package serialize;
 
-import org.jbox2d.common.MathUtils;
-
-import java.util.Arrays;
-
 import utils.IllegalShapeException;
 
 /**
@@ -23,25 +19,6 @@ public class Bytes {
 
     public static char twoBytes2Char(byte[] sizeByte) {
         return (char) (((sizeByte[0]) << 8) | sizeByte[1]);
-    }
-
-    public static void main(String[] args) {
-        try {
-            test_float();
-        } catch (IllegalShapeException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void test_float() throws IllegalShapeException {
-        float a = 0.5f;
-        System.out.println(a);
-
-        byte res[] = float2Byte2(a, MathUtils.TWOPI);
-        System.out.println(Arrays.toString(res));
-
-        float b = twoByte2Float(res, MathUtils.TWOPI);
-        System.out.println(b);
     }
 
     public static byte[] float2Byte2(float sizeFloat, float scale) throws IllegalShapeException {

@@ -40,7 +40,7 @@ public class Paddle extends PongShape {
     public Paddle(float x, float y, float length, char color, World world, Pong pong) {
         super(x, y, false, color, world, pong);
         shape = new PolygonShape();
-        shape.setAsBox(Settings.paddleWidth / 2, length / 2);
+        shape.setAsBox(Settings.paddleWidth / 2f, length / 2f);
 
         fd.friction = 1f;
         fd.shape = shape;
@@ -124,7 +124,7 @@ public class Paddle extends PongShape {
             add(new Packet(Pattern.FLOAT2B, MathUtils.TWOPI));                      //ROTATION
             add(new Packet(Pattern.FLOAT2B,  Settings.windowMeters[0]));            // X
             add(new Packet(Pattern.FLOAT2B,  Settings.windowMeters[1]));            // Y
-            add(new Packet(Pattern.FLOAT1B,  Settings.windowMeters[1]));       // Length
+            add(new Packet(Pattern.FLOAT1B,  Settings.windowMeters[1]));            // Length
             add(new Packet(Pattern.CHAR2B));                                        //COLOR
         }};
     }
@@ -134,7 +134,7 @@ public class Paddle extends PongShape {
         int x = Settings.m2p((Float) data.get(1).data);
         int y = Settings.m2p((Float) data.get(2).data);
         int width = Settings.m2p(Settings.paddleWidth);
-        int length = Settings.m2p(Settings.paddleLength);
+        int length =  Settings.m2p((Float) data.get(3).data);
 
         /** Create a rectangle given position and size **/
         Rectangle rect = new Rectangle(
@@ -156,8 +156,8 @@ public class Paddle extends PongShape {
                 polygon.getCenterY()
         )));
 
-        debbie.d(x + " x position, " + y + " y position, " + width + " width, " + length + " length");
-        debbie.d(Settings.colorMap.get(this.color) + " color");
+        debbie.i(data.get(1).data + " x position, " + data.get(2).data+ " y position, " + width + " width, " + length + " length");
+        debbie.i(Settings.colorMap.get(this.color) + " color");
     }
 
     @Override
