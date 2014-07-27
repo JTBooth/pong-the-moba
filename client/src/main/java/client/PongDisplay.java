@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import serialize.Bytes;
+import serialization.Bytes;
 import serialize.PongPacket;
 import utils.Debugger;
 import utils.Registry;

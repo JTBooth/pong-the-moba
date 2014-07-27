@@ -5,6 +5,7 @@ import org.newdawn.slick.Graphics;
 import java.util.Arrays;
 import java.util.List;
 
+import serialization.Bytes;
 import utils.Debugger;
 
 /**

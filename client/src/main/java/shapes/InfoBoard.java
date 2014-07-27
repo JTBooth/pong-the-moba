@@ -12,7 +12,8 @@ import serialize.PongPacket;
 import utils.Debugger;
 import utils.Settings;
 
-import static serialize.Bytes.uByte;
+import static serialization.Bytes.uByte;
+
 
 /**
  * Created by sihrc on 6/28/14.

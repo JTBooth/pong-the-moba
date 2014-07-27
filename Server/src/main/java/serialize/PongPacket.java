@@ -2,8 +2,9 @@ package serialize;
 
 import java.util.List;
 
-import utils.Debugger;
 import pongutils.IllegalShapeException;
+import serialization.Bytes;
+import utils.Debugger;
 import utils.Registry;
 
 /**
