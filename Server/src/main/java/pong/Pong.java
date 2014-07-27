@@ -127,7 +127,7 @@ public class Pong {
                 e.printStackTrace();
             }
 
-            if (players.isEmpty()) {
+            if (players.size() < Settings.REQUIRED_PLAYERS) {
                 Thread.currentThread().interrupt();
                 break;
             }

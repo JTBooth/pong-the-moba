@@ -10,6 +10,7 @@ public class Settings extends pongutils.Settings {
     public static final int velocityIterations = 10;
     public static final int positionIterations = 10;
     public static final int winningScore = 5; // unused
+    public static final int REQUIRED_PLAYERS = 2;
 
     public static final int minFramesBeforeReset = 180;
     public static final double PTM_RATIO = 100.0;
