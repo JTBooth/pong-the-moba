@@ -1,6 +1,6 @@
 package serialize;
 
-import utils.IllegalShapeException;
+import pongutils.IllegalShapeException;
 
 /**
  * Created by sihrc on 7/4/14.

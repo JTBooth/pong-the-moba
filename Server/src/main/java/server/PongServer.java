@@ -8,11 +8,12 @@ import org.jbox2d.common.Settings;
 import java.io.IOException;
 import java.util.Arrays;
 
-import serialize.KryoRegisterer;
+import serialization.KryoRegisterer;
 import utils.Debugger;
 
 public class PongServer extends Server {
     private static Debugger debbie = new Debugger(PongServer.class.getSimpleName());
+    private static ServerListener serverListener;
 
     public static void main(String[] args) {
         /** Setup Server Physics Engine Settings **/
@@ -24,12 +25,13 @@ public class PongServer extends Server {
         try {
             debbie.i("Attaching Server Listener");
             PongServer server = new PongServer();
-            server.addListener(new ServerListener(server, utils.Settings.relevantChars));
+            serverListener = new ServerListener(server, utils.Settings.relevantChars);
+            server.addListener(serverListener);
 
             debbie.i("Binding to port");
             server.bind(54555, 54777);
 
-            /** Packet Serialization via Kryo **/
+            /** Packet serialization via Kryo **/
             server.registerClasses();
 
             debbie.i("Listening");
@@ -50,11 +52,14 @@ public class PongServer extends Server {
         KryoRegisterer.register(getKryo());
     }
 
-    public void sendUpdate(byte[] renderList) {
-        debbie.d("Sending Update " + Arrays.toString(renderList));
+    public void sendUpdate(Integer[] connections, byte[] renderList) {
+        debbie.i("Sending Update " + Arrays.toString(renderList));
         if (renderList.length < 1) {
             System.out.println("renderList is empty");
         }
-        sendToAllUDP(renderList);
+
+        for (int connection: connections) {
+            sendToUDP(connection, renderList);
+        }
     }
 }

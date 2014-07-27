@@ -1,14 +1,13 @@
 package client;
 
 import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
 
-import serialize.CommandUpdate;
-import serialize.HousewarmingPacket;
-import serialize.KryoRegisterer;
 import utils.Debugger;
+import serialization.CommandUpdate;
+import serialization.HousewarmingPacket;
+import serialization.KryoRegisterer;
 
 public class PongClient extends Client {
     private static Debugger debbie = new Debugger(PongClient.class.getSimpleName());
@@ -21,7 +20,6 @@ public class PongClient extends Client {
     /**
      * Info Holders *
      */
-    long userId;
     int[] relevantChars;
 
     public PongClient(PongDisplay pongDisplay) {
@@ -32,10 +30,8 @@ public class PongClient extends Client {
         this.pongDisplay = pongDisplay;
         displayListener = new DisplayListener(this);
 
-
         /** Start the server **/
         addListener(displayListener);
-        Log.set(Log.LEVEL_ERROR);
         new Thread(this).start();
 
         try {
@@ -56,14 +52,12 @@ public class PongClient extends Client {
         return displayListener;
     }
 
-    public void submit(int[] keysPressed, long gameId) {
-        debbie.i("Sending Update: " + userId + " " + gameId);
-        CommandUpdate commandUpdate = new CommandUpdate(keysPressed, userId, gameId);
+    public void submit(int[] keysPressed) {
+        CommandUpdate commandUpdate = new CommandUpdate(keysPressed);
         sendUDP(commandUpdate);
     }
 
     public void initialize(HousewarmingPacket hwPacket) {
-        userId = hwPacket.getUserId();
         relevantChars = hwPacket.getRelevantChars();
     }
 }

@@ -15,7 +15,7 @@ import utils.Debugger;
 import utils.Settings;
 
 public class Wall extends PongShape {
-    Debugger debbie = new Debugger(Wall.class.getSimpleName());
+    Debugger debbie = new Debugger(shapes.Wall.class.getSimpleName());
 
     PolygonShape shape;
 

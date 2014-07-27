@@ -3,14 +3,14 @@ package client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-import serialize.HousewarmingPacket;
+import serialization.HousewarmingPacket;
+
 
 public class DisplayListener extends Listener {
     private byte[] currentUpdate;
     private PongClient pongClient;
     private int[] relevantCharacters;
     private boolean isConnected = false;
-    private long gameId;
 
     public DisplayListener(PongClient pongClient) {
         this.pongClient = pongClient;
@@ -35,7 +35,6 @@ public class DisplayListener extends Listener {
             HousewarmingPacket housewarmingPacket = (HousewarmingPacket) packet;
             pongClient.initialize(housewarmingPacket);
             relevantCharacters = housewarmingPacket.getRelevantChars();
-            gameId = housewarmingPacket.getGameId();
             isConnected = true;
         }
     }
@@ -54,9 +53,5 @@ public class DisplayListener extends Listener {
 
     public boolean isConnected() {
         return isConnected;
-    }
-
-    public long getGameId() {
-        return gameId;
     }
 }

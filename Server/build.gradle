@@ -13,6 +13,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'com.esotericsoftware:kryonet:2.+'
     compile project(':jbox2d')
+    compile project(':Pong')
 }
 
 task wrapper(type: Wrapper) {

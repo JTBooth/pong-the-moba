@@ -3,7 +3,7 @@ package serialize;
 import java.util.List;
 
 import utils.Debugger;
-import utils.IllegalShapeException;
+import pongutils.IllegalShapeException;
 import utils.Registry;
 
 /**

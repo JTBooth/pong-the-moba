@@ -1,4 +1,4 @@
-package utils;
+package pongutils;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;

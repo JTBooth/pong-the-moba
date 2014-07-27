@@ -1,15 +1,12 @@
-package utils;
+package pongutils;
 
-import java.util.Arrays;
 import java.util.List;
-
-import client.PongDisplay;
 
 /**
  * Created by chris on 6/28/14.
  * sihrc @ Github
  */
-public class Debugger {
+public abstract class Debugger {
     /**
      * FILTERS *
      */
@@ -18,16 +15,6 @@ public class Debugger {
     public final static int WARNING = 1 << 2;
     public final static int ERROR = 1 << 3;
 
-    public final static int global = DEBUG;
-    /**
-     * Allowed classes
-     * ADD CLASSES FOR LOGGING
-     * *
-     */
-    public final static List<String> enabled = Arrays.asList(
-        PongDisplay.class.getSimpleName()
-    );
-
     /**
      * TAG INDICATORS *
      */
@@ -35,6 +22,9 @@ public class Debugger {
     private final static String INFO_TAG = ":\tINFO\t:";
     private final static String WARNING_TAG = ":\tWARN\t:";
     private final static String ERROR_TAG = ":\tERROR\t:";
+
+    public abstract List<String> getEnabled();
+    public abstract int getGlobal();
 
     /**
      * Class Specific Debugger *
@@ -59,7 +49,7 @@ public class Debugger {
      * General Log *
      */
     private void log(String message, String type, int filter) {
-        if ((filter & global) > 0 && enabled.contains(tag))
+        if ((filter & getGlobal()) > 0 && getEnabled().contains(tag))
             System.out.println(tag + type + message);
     }
 

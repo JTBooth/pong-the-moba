@@ -3,23 +3,25 @@ package utils;
 import java.util.Arrays;
 import java.util.List;
 
+import client.PongDisplay;
+
 /**
  * Created by chris on 6/28/14.
  * sihrc @ Github
  */
-public class Debugger extends pongutils.Debugger{
+public class Debugger extends pongutils.Debugger {
     /**
      * FILTERS *
      */
 
-    public final static int global = INFO; // | INFO | WARNING | ERROR;
-
+    public final static int global = DEBUG;
     /**
      * Allowed classes
      * ADD CLASSES FOR LOGGING
      * *
      */
     public final static List<String> enabled = Arrays.asList(
+        PongDisplay.class.getSimpleName()
     );
 
 

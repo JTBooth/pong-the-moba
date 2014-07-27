@@ -17,7 +17,8 @@ import manager.EffectManager;
 import manager.SpellManager;
 import pong.contact.PaddleBallPair;
 import pong.contact.PongContactListener;
-import serialize.CommandUpdate;
+import pongutils.IllegalShapeException;
+import serialization.CommandUpdate;
 import serialize.PongPacket;
 import server.PongServer;
 import shapes.Ball;
@@ -28,7 +29,6 @@ import shapes.PongShape;
 import shapes.Wall;
 import spell.DelayedSpell;
 import utils.Debugger;
-import utils.IllegalShapeException;
 import utils.Keyboard;
 import utils.Registry;
 import utils.Settings;
@@ -37,15 +37,13 @@ public class Pong {
     /**
      * System *
      */
-    final int FRAMES_PER_SECOND = 60;
-    final int WAIT = 1000 / FRAMES_PER_SECOND;
+    final int WAIT = 1000 / Settings.fps;
     boolean game_is_running = true;
     int lastStepTime;
     long frame;
-    long gameId;
     private Debugger debbie = new Debugger(Pong.class.getSimpleName());
     private Map<Integer, Player> players;
-    private Map<Long, Integer> remoteToLocal;
+    private Map<Integer, Integer> remoteToLocal;
 
     /**
      * Pong *
@@ -70,11 +68,10 @@ public class Pong {
      * Constructor
      * Creates a Pong Game
      */
-    public Pong(Player playerL, Player playerR, long gameId, PongServer server) {
+    public Pong(Player playerL, Player playerR, PongServer server) {
         /** Attach the server **/
         this.server = server;
-        this.gameId = gameId;
-        this.remoteToLocal = new HashMap<Long, Integer>();
+        this.remoteToLocal = new HashMap<Integer, Integer>();
 
         /** Create a World **/
         this.world = new World(new Vec2(0, 0));
@@ -114,12 +111,18 @@ public class Pong {
         init();
 
         while (game_is_running) {
-            update();
-            packagePackets();
             try {
+                update();
+                packagePackets();
                 Thread.sleep(WAIT);
-            } catch (InterruptedException e) {
+
+            } catch (Exception e) {
                 e.printStackTrace();
+            }
+
+            if (players.isEmpty()) {
+                Thread.currentThread().interrupt();
+                break;
             }
         }
     }
@@ -215,7 +218,7 @@ public class Pong {
         }
 
         nonPersistentNonShape.clear();
-        server.sendUpdate(outputStream.toByteArray());
+        server.sendUpdate(remoteToLocal.keySet().toArray(new Integer[remoteToLocal.size()]), outputStream.toByteArray());
     }
 
     /**
@@ -380,11 +383,11 @@ public class Pong {
         curPaddle.execute();
     }
 
-    public void received(CommandUpdate update) {
-        getConnectedPlayer(update.getPlayerId()).setKeys(update);
+    public void received(int connectionId, CommandUpdate update) {
+        getConnectedPlayer(connectionId).setKeys(update);
     }
 
-    public Player getConnectedPlayer(long id) {
+    public Player getConnectedPlayer(int id) {
         debbie.i(remoteToLocal.toString());
         return getPlayer(remoteToLocal.get(id));
     }
@@ -444,5 +447,10 @@ public class Pong {
 
     public void removePongShape(PongShape ps) {
         shapeList.remove(ps);
+    }
+
+    public void removeConnection(int id) {
+        players.remove(remoteToLocal.get(id));
+        remoteToLocal.remove(id);
     }
 }

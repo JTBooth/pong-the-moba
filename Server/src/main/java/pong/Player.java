@@ -3,7 +3,7 @@ package pong;
 import java.util.HashMap;
 import java.util.Map;
 
-import serialize.CommandUpdate;
+import serialization.CommandUpdate;
 import shapes.Paddle;
 import spell.Spell;
 import utils.Registry;
@@ -17,11 +17,11 @@ public class Player {
     private Pong pong;
     private Paddle paddle;
     private int who;
-    private long id;
+    private int id;
     private CommandUpdate commands;
     private Map<Integer, Spell> spells;
 
-    public Player(long id) {
+    public Player(int id) {
         this.id = id;
         this.mana = 0;
         commands = new CommandUpdate();
@@ -105,7 +105,7 @@ public class Player {
         return otherPlayer.getId() == id;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 }

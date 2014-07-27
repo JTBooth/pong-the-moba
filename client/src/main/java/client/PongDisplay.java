@@ -93,7 +93,7 @@ public class PongDisplay extends BasicGame {
                 keysPressed[i] = Keyboard.CHAR_NONE;
             }
         }
-        client.submit(keysPressed, displayListener.getGameId());
+        client.submit(keysPressed);
     }
 
     private void initializePackets() {

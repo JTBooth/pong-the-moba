@@ -1,4 +1,4 @@
-package serialize;
+package serialization;
 
 import com.esotericsoftware.kryo.Kryo;
 

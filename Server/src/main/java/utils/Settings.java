@@ -1,7 +1,7 @@
 package utils;
 
 
-public class Settings extends org.jbox2d.common.Settings {
+public class Settings extends pongutils.Settings {
     /**
      * System Settings *
      */
@@ -41,7 +41,6 @@ public class Settings extends org.jbox2d.common.Settings {
     public static float laserVelocity = 11f;
     public static float serveSpeed = 3f;
     public static float paddleLength = 2f;
-    public static float paddleWidth = 0.2f;
     public static float paddleSpeed = 4f;
     public static float maxPaddleRotateAngle = 0.4f;
     public static float paddleSpringConstant = 2f;
