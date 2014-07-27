@@ -1,0 +1,42 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'executable-jar'
+
+// This is the class that starts your application
+mainClass = 'client.PongDisplay'
+sourceCompatibility = 1.7
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'junit:junit:4.+'
+    compile 'com.esotericsoftware:kryonet:2.+'
+    compile 'org.slick2d:slick2d-core:1.0.+'
+    compile 'org.lwjgl.lwjgl:lwjgl:2.+'
+    compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.+'
+    compile project(':Pong')
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
+
+jar {
+    baseName = 'pong-the-moba-client'
+    version = '0.1.0'
+    manifest {
+        attributes 'Main-Class': 'client.PongDisplay'
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.nisgits.gradle:gradle-executable-jar-plugin:1.7.0'
+    }
+}
