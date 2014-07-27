@@ -8,10 +8,6 @@ public class Packet {
     public Object data;
     public float scale;
 
-    public Packet(Pattern pattern, Object obj) {
-        this(pattern, obj, 0);
-    }
-
     public static Packet pattern (Pattern pattern, float scale) {
         return new Packet(pattern, null, scale);
     }

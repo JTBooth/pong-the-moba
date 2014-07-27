@@ -15,19 +15,19 @@ public class PongClient extends Client {
      * Display Classes *
      */
     DisplayListener displayListener;
-    PongDisplay pongDisplay;
+    PongDisplayState pongDisplayState;
 
     /**
      * Info Holders *
      */
     int[] relevantChars;
 
-    public PongClient(PongDisplay pongDisplay) {
+    public PongClient(PongDisplayState pongDisplayState) {
         /** Kyro Registering **/
         registerClasses();
 
         /** Initialize **/
-        this.pongDisplay = pongDisplay;
+        this.pongDisplayState = pongDisplayState;
         displayListener = new DisplayListener(this);
 
         /** Start the server **/

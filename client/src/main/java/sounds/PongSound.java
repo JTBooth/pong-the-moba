@@ -21,12 +21,13 @@ public abstract class PongSound extends PongPacket {
     @Override
     public List<Packet> getSerialPattern() {
         return new ArrayList<Packet>() {{
-            add(new Packet(Pattern.FLOAT1B, 1f));
+            add(Packet.pattern(Pattern.FLOAT1B, 1f));
         }};
     }
 
     @Override
     public void extractData(List<Packet> data, Graphics graphics) {
+        System.out.println("Playing");
         sound.play(1f, (Float) data.get(0).data);
     }
 
