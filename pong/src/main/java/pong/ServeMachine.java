@@ -61,7 +61,7 @@ public class ServeMachine extends PongPacket {
     public List<Object> setSerialData() {
 
         ArrayList<Object> serialData = new ArrayList<Object>(3);
-        serialData.add(rotation);
+        serialData.add((rotation < 0 ? rotation + MathUtils.TWOPI : rotation));
         serialData.add(xPos);
         serialData.add(yPos);
 
@@ -112,6 +112,13 @@ public class ServeMachine extends PongPacket {
     }
 
     public void setRotation(float rotation) {
+
+        if (rotation > MathUtils.PI) {
+            rotation -= MathUtils.TWOPI;
+        }
+        else if (rotation < -MathUtils.PI) {
+            rotation += MathUtils.TWOPI;
+        }
         this.rotation=rotation;
     }
 }

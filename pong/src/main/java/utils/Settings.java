@@ -75,6 +75,7 @@ public class Settings extends org.jbox2d.common.Settings {
     public static float jetpackForce = 0.1f*serveMachineSpeed;
     public static float serveMachineMaxDist = 0.4f/serveMachineSpeed;
     public static float serveMachineStretch = 3.5f;
+    public static float serveMachineMaxRotation = 0.4f;
 
     /*
      * Serialization Settings

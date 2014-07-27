@@ -19,6 +19,7 @@ public class ServeMachineWander extends DelayedEffect {
     float jetpackDirection;
     float maxDistMeters;
     float verticalStretch;
+    boolean up;
 
     float originX;
     float originY;
@@ -34,6 +35,7 @@ public class ServeMachineWander extends DelayedEffect {
         rotVelocity = 0;
         originX=serveMachine.getxPos();
         originY=serveMachine.getyPos();
+        up=true;
     }
 
     @Override
@@ -61,9 +63,23 @@ public class ServeMachineWander extends DelayedEffect {
         xVelocity += force.x;
         yVelocity += force.y;
 
+        // handle rotation wobble
+        if (up && rotation < Settings.serveMachineMaxRotation)
+            rotation += 0.01*Settings.serveMachineMaxRotation;
+        else if (up && rotation >= Settings.serveMachineMaxRotation)
+            up=false;
+        else if (!up && rotation > -Settings.serveMachineMaxRotation)
+            rotation -= 0.01*Settings.serveMachineMaxRotation;
+        else if (!up && rotation <= -Settings.serveMachineMaxRotation)
+            up=true;
+
+
         // move serve machine according to updated velocity
         serveMachine.setxPos(xPos + xVelocity);
         serveMachine.setyPos(yPos + yVelocity);
+        serveMachine.setRotation(rotation);
+
+
 
         System.out.println("position: " + xPos + ", " + yPos);
         System.out.println("force: " + force);
