@@ -6,8 +6,8 @@ import org.newdawn.slick.geom.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import serialize.Packet;
-import serialize.Pattern;
+import serialization.Packet;
+import serialization.Pattern;
 import serialize.PongPacket;
 import utils.Debugger;
 import utils.Settings;
@@ -36,10 +36,10 @@ public class InfoBoard extends PongPacket {
     @Override
     public List<Packet> getSerialPattern() {
         return new ArrayList<Packet>() {{
-            add(new Packet(Pattern.BYTE)); //LEFT
-            add(new Packet(Pattern.BYTE)); //RIGHT
-            add(new Packet(Pattern.BYTE)); //Left Mana
-            add(new Packet(Pattern.BYTE)); //Right Mana
+            add(Packet.pattern(Pattern.BYTE)); //LEFT
+            add(Packet.pattern(Pattern.BYTE)); //RIGHT
+            add(Packet.pattern(Pattern.BYTE)); //Left Mana
+            add(Packet.pattern(Pattern.BYTE)); //Right Mana
         }};
     }
 

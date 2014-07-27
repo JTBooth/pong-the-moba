@@ -5,15 +5,15 @@ import org.newdawn.slick.Graphics;
 import java.util.Arrays;
 import java.util.List;
 
-import serialization.Bytes;
+import serialization.*;
 import utils.Debugger;
 
 /**
  * Created by rbooth on 7/13/14.
  */
 public abstract class PongPacket {
-    List<Packet> serialPattern;
     Debugger debbie = new Debugger(PongPacket.class.getSimpleName());
+    List<Packet> serialPattern;
 
     /**
      * Deserialize based on Pattern *

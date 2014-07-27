@@ -13,6 +13,7 @@ import shapes.Ball;
 import shapes.InfoBoard;
 import shapes.Laser;
 import shapes.Paddle;
+import shapes.ServeMachine;
 import shapes.Wall;
 import sounds.BounceSound;
 
@@ -34,6 +35,7 @@ public class Registry {
         add(Paddle.class);
         add(Wall.class);
         add(InfoBoard.class);
+        add(ServeMachine.class);
         add(BounceSound.class);
     }};
     //Packet IDs

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pong.Pong;
-import serialize.Packet;
-import serialize.Pattern;
+import serialization.Packet;
+import serialization.Pattern;
 import utils.Debugger;
 import utils.Settings;
 
@@ -45,11 +45,11 @@ public class Wall extends PongShape {
     @Override
     public List<Packet> setSerialData() {
         return new ArrayList<Packet>() {{
-            add(new Packet(Pattern.FLOAT2B, getAngle(), MathUtils.TWOPI));                      //ROTATION
-            add(new Packet(Pattern.FLOAT2B, body.getPosition().x, Settings.windowMeters[0]));   // X
-            add(new Packet(Pattern.FLOAT2B, body.getPosition().y, Settings.windowMeters[1]));   // Y
-            add(new Packet(Pattern.FLOAT1B, height, Settings.windowMeters[1] / 2f));            // Length
-            add(new Packet(Pattern.CHAR2B, color));                                            // COLOR
+            add(Packet.data(Pattern.FLOAT2B, getAngle(), MathUtils.TWOPI));                      //ROTATION
+            add(Packet.data(Pattern.FLOAT2B, body.getPosition().x, Settings.windowMeters[0]));   // X
+            add(Packet.data(Pattern.FLOAT2B, body.getPosition().y, Settings.windowMeters[1]));   // Y
+            add(Packet.data(Pattern.FLOAT1B, height, Settings.windowMeters[1] / 2f));            // Length
+            add(Packet.data(Pattern.CHAR2B, color));                                            // COLOR
         }};
     }
 

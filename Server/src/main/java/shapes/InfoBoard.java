@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pong.Player;
-import serialize.Packet;
-import serialize.Pattern;
+import serialization.Packet;
+import serialization.Pattern;
 import serialize.PongPacket;
 import utils.Debugger;
 import utils.Settings;
@@ -85,10 +85,10 @@ public class InfoBoard extends PongPacket {
     public List<Packet> setSerialData() {
         debbie.e(leftMana.getCurrentMana() + "");
         return new ArrayList<Packet>() {{
-            add(new Packet(Pattern.BYTE, left));                      //LEFT
-            add(new Packet(Pattern.BYTE, right));                     //RIGHT
-            add(new Packet(Pattern.BYTE, leftMana.getCurrentMana())); //Left Mana
-            add(new Packet(Pattern.BYTE, rightMana.getCurrentMana()));//Right Mana
+            add(Packet.data(Pattern.BYTE, left));                      //LEFT
+            add(Packet.data(Pattern.BYTE, right));                     //RIGHT
+            add(Packet.data(Pattern.BYTE, leftMana.getCurrentMana())); //Left Mana
+            add(Packet.data(Pattern.BYTE, rightMana.getCurrentMana()));//Right Mana
         }};
     }
 

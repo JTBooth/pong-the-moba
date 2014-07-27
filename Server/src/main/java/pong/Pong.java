@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import manager.EffectManager;
+import shapes.ServeMachine;
 import manager.SpellManager;
 import pong.contact.PaddleBallPair;
 import pong.contact.PongContactListener;
@@ -34,6 +35,8 @@ import utils.Registry;
 import utils.Settings;
 
 public class Pong {
+    private Debugger debbie = new Debugger(Pong.class.getSimpleName());
+
     /**
      * System *
      */
@@ -41,7 +44,8 @@ public class Pong {
     boolean game_is_running = true;
     int lastStepTime;
     long frame;
-    private Debugger debbie = new Debugger(Pong.class.getSimpleName());
+
+
     private Map<Integer, Player> players;
     private Map<Integer, Integer> remoteToLocal;
 
@@ -52,6 +56,8 @@ public class Pong {
     private PongServer server;
     private SpellManager spellManager;
     private EffectManager effectManager;
+    private ServeMachine serveMachine;
+
     private InfoBoard infoBoard;
     private Ball ball;
     private Set<DelayedSpell> delayedEffects = Collections.newSetFromMap(new ConcurrentHashMap<DelayedSpell, Boolean>());
@@ -84,6 +90,7 @@ public class Pong {
         /** Global Physics Effect Manager **/
         effectManager = new EffectManager("drag");
     }
+
 
     /**
      * *******************************************
@@ -120,7 +127,7 @@ public class Pong {
                 e.printStackTrace();
             }
 
-            if (players.isEmpty()) {
+            if (players.size() < Settings.REQUIRED_PLAYERS) {
                 Thread.currentThread().interrupt();
                 break;
             }
@@ -176,6 +183,9 @@ public class Pong {
         /** Spell keeper for this game **/
         this.spellManager = new SpellManager(this);
 
+        /** Create serveMachine **/
+        this.serveMachine=new ServeMachine(Settings.windowMeters[0]/2, Settings.windowMeters[1]/2, this);
+        addShape(serveMachine);
     }
 
     public void update() {
@@ -292,23 +302,8 @@ public class Pong {
      * ***************************************
      */
     private void resetBall(int i) {
-        Vec2 ballVelocity;
-        switch (i) {
-            case Player.LEFT:
-                ballVelocity = new Vec2(-Settings.serveSpeed, 0);
-                break;
-            case Player.RIGHT:
-                ballVelocity = new Vec2(Settings.serveSpeed, 0);
-                break;
-            default:
-                debbie.e("You served the ball to not a player: player # " + i
-                        + ". Players are 0 and 1.");
-                throw new RuntimeException();
-        }
-        ball.setPosition(Settings.windowMeters[0] / 2, Settings.windowMeters[1] / 2);
-        ball.getBody().setAngularVelocity(0);
-        ball.getBody().setLinearVelocity(ballVelocity);
-        debbie.i("reset ball to (" + ball.getX() + ", " + ball.getY() + ")");
+        System.out.println("serving from " + serveMachine.getxPos() + ", " + serveMachine.getyPos());
+        serveMachine.serve(i, ball);
     }
 
     public void tendDelayedEffects() {

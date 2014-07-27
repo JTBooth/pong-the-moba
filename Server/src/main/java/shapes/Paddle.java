@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import pong.Pong;
-import serialize.Packet;
-import serialize.Pattern;
+import serialization.Packet;
+import serialization.Pattern;
 import utils.Debugger;
 import utils.Settings;
 
@@ -116,13 +116,12 @@ public class Paddle extends PongShape {
     @Override
     public List<Packet> setSerialData() {
         return new ArrayList<Packet>() {{
-            add(new Packet(Pattern.FLOAT2B, getAngle(), MathUtils.TWOPI));                      //ROTATION
-            add(new Packet(Pattern.FLOAT2B, body.getPosition().x, Settings.windowMeters[0]));   // X
-            add(new Packet(Pattern.FLOAT2B, body.getPosition().y, Settings.windowMeters[1]));   // Y
-            add(new Packet(Pattern.FLOAT1B, length, Settings.windowMeters[1]));                 // Length
-            add(new Packet(Pattern.BYTE, spriteSheetId));                                       // Spritesheet ID
-            add(new Packet(Pattern.BYTE, spriteSheetFrame));                                    // Spritesheet frame
-
+            add(Packet.data(Pattern.FLOAT2B, getAngle(), MathUtils.TWOPI));                      //ROTATION
+            add(Packet.data(Pattern.FLOAT2B, body.getPosition().x, Settings.windowMeters[0]));   // X
+            add(Packet.data(Pattern.FLOAT2B, body.getPosition().y, Settings.windowMeters[1]));   // Y
+            add(Packet.data(Pattern.FLOAT1B, length, Settings.windowMeters[1]));                 // Length
+            add(Packet.data(Pattern.BYTE, spriteSheetId));                                       // Spritesheet ID
+            add(Packet.data(Pattern.BYTE, spriteSheetFrame));                                    // Spritesheet frame
         }};
     }
 

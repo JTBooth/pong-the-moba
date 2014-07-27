@@ -9,8 +9,8 @@ import org.newdawn.slick.geom.Transform;
 import java.util.ArrayList;
 import java.util.List;
 
-import serialize.Packet;
-import serialize.Pattern;
+import serialization.Packet;
+import serialization.Pattern;
 import serialize.PongPacket;
 import utils.Debugger;
 import utils.Settings;
@@ -24,11 +24,11 @@ public class Wall extends PongPacket {
     @Override
     public List<Packet> getSerialPattern() {
         return new ArrayList<Packet>() {{
-            add(new Packet(Pattern.FLOAT2B, Settings.TWOPI));                      //ROTATION
-            add(new Packet(Pattern.FLOAT2B, Settings.windowMeters[0]));             // X
-            add(new Packet(Pattern.FLOAT2B, Settings.windowMeters[1]));             // Y
-            add(new Packet(Pattern.FLOAT1B, Settings.windowMeters[1] / 2f));        // Length
-            add(new Packet(Pattern.CHAR2B));                                         // COLOR
+            add(Packet.pattern(Pattern.FLOAT2B, Settings.TWOPI));                      //ROTATION
+            add(Packet.pattern(Pattern.FLOAT2B, Settings.windowMeters[0]));             // X
+            add(Packet.pattern(Pattern.FLOAT2B, Settings.windowMeters[1]));             // Y
+            add(Packet.pattern(Pattern.FLOAT1B, Settings.windowMeters[1] / 2f));        // Length
+            add(Packet.pattern(Pattern.CHAR2B));                                         // COLOR
         }};
     }
 

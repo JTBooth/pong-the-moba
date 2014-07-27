@@ -3,8 +3,8 @@ package sounds;
 import java.util.ArrayList;
 import java.util.List;
 
-import serialize.Packet;
-import serialize.Pattern;
+import serialization.Packet;
+import serialization.Pattern;
 import serialize.PongPacket;
 import utils.Debugger;
 
@@ -17,7 +17,7 @@ public abstract class PongSound extends PongPacket {
     @Override
     public List<Packet> setSerialData() {
         return new ArrayList<Packet>() {{
-            add(new Packet(Pattern.FLOAT1B, getVolume(), 1f));
+            add(Packet.data(Pattern.FLOAT1B, getVolume(), 1f));
         }};
     }
 

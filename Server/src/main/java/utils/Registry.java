@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+import shapes.ServeMachine;
 import serialize.PongPacket;
 import shapes.Ball;
 import shapes.InfoBoard;
@@ -34,6 +36,7 @@ public class Registry {
         add(Paddle.class);
         add(Wall.class);
         add(InfoBoard.class);
+        add(ServeMachine.class);
         add(BounceSound.class);
     }};
     //Packet IDs

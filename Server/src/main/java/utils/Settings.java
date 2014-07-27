@@ -10,6 +10,7 @@ public class Settings extends pongutils.Settings {
     public static final int velocityIterations = 10;
     public static final int positionIterations = 10;
     public static final int winningScore = 5; // unused
+    public static final int REQUIRED_PLAYERS = 2;
 
     public static final int minFramesBeforeReset = 180;
     public static final double PTM_RATIO = 100.0;
@@ -46,7 +47,12 @@ public class Settings extends pongutils.Settings {
     public static float paddleSpringConstant = 2f;
     public static float paddleDampingConstant = .2f;
     public static int ticksPerManaGain = 60;
-    public static byte maxMana = 100;
+    public static byte maxMana = 20;
+    public static float serveMachineSpeed = 0.05f;
+    public static float jetpackForce = 0.1f*serveMachineSpeed;
+    public static float serveMachineMaxDist = 0.4f/serveMachineSpeed;
+    public static float serveMachineStretch = 3.5f;
+    public static float serveMachineMaxRotation = 0.4f;
 
 
 //    public static void refreshSettings() {

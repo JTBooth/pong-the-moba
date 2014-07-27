@@ -38,7 +38,7 @@ public class Settings extends pongutils.Settings {
      */
     public static final int manaBarWidth = 25;
     public static final float[] scorePositions = new float[]{windowSize[0] / 4 - 40, windowSize[1] / 2 - 40, 3 * windowSize[0] / 4 - 40, windowSize[1] / 2 - 40};
-
+    public static final float serveMachineLineLength = 60f;
 
     /**
      * Gameplay Settings *

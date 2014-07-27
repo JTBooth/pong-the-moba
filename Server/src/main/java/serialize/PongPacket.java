@@ -4,6 +4,7 @@ import java.util.List;
 
 import pongutils.IllegalShapeException;
 import serialization.Bytes;
+import serialization.Packet;
 import utils.Debugger;
 import utils.Registry;
 
@@ -26,11 +27,15 @@ public abstract class PongPacket {
         byte[] serialized = new byte[getBytePatternCount(packets)];
         int pointer = 0;
 
+        debbie.d(this.getClass().getSimpleName());
+
         byte[] id = Bytes.char2Bytes2(Registry.getPacketId(this.getClass()));
         System.arraycopy(id, 0, serialized, pointer, id.length);
         pointer += id.length;
 
         for (Packet packet : packets) {
+            debbie.d(this.getClass().getSimpleName() + " Serializing");
+
             switch (packet.pattern) {
                 case FLOAT2B:
                     byte[] float2B = Bytes.float2Byte2((Float) packet.data, packet.scale);

@@ -8,12 +8,12 @@ import org.newdawn.slick.geom.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import serialize.Packet;
-import serialize.Pattern;
+import pongutils.Settings;
+import serialization.Packet;
+import serialization.Pattern;
 import serialize.PongPacket;
 import utils.Debugger;
 import utils.Registry;
-import pongutils.Settings;
 
 public class Paddle extends PongPacket {
     Debugger debbie = new Debugger(Paddle.class.getSimpleName());
@@ -24,12 +24,12 @@ public class Paddle extends PongPacket {
     @Override
     public List<Packet> getSerialPattern() {
         return new ArrayList<Packet>() {{
-            add(new Packet(Pattern.FLOAT2B, Settings.TWOPI));                      //ROTATION
-            add(new Packet(Pattern.FLOAT2B, Settings.windowMeters[0]));            // X
-            add(new Packet(Pattern.FLOAT2B, Settings.windowMeters[1]));            // Y
-            add(new Packet(Pattern.FLOAT1B, Settings.windowMeters[1]));            // Length
-            add(new Packet(Pattern.BYTE));                                          // Spritesheet ID
-            add(new Packet(Pattern.BYTE));                                          // Spritesheet frame
+            add(Packet.pattern(Pattern.FLOAT2B, Settings.TWOPI));                      //ROTATION
+            add(Packet.pattern(Pattern.FLOAT2B, Settings.windowMeters[0]));            // X
+            add(Packet.pattern(Pattern.FLOAT2B, Settings.windowMeters[1]));            // Y
+            add(Packet.pattern(Pattern.FLOAT1B, Settings.windowMeters[1]));            // Length
+            add(Packet.pattern(Pattern.BYTE));                                          // Spritesheet ID
+            add(Packet.pattern(Pattern.BYTE));                                          // Spritesheet frame
         }};
     }
 

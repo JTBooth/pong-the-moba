@@ -8,11 +8,23 @@ public class Packet {
     public Object data;
     public float scale;
 
-    public Packet(Pattern pattern, float scale) {
-        this(pattern, null, scale);
+    public static Packet pattern (Pattern pattern, float scale) {
+        return new Packet(pattern, null, scale);
     }
 
-    public Packet(Pattern pattern, Object data, float scale) {
+    public static Packet pattern (Pattern pattern) {
+        return pattern(pattern, 0);
+    }
+
+    public static Packet data (Pattern pattern, Object data, float scale) {
+        return new Packet(pattern, data, scale);
+    }
+
+    public static Packet data (Pattern pattern, Object data) {
+        return data(pattern, data, 0);
+    }
+
+    private Packet(Pattern pattern, Object data, float scale) {
         this.pattern = pattern;
         this.scale = scale;
 
