@@ -15,15 +15,19 @@ public abstract class ContactPair {
     char[] id;
     Pong pong;
 
-    /** Super Constructor **/
-    public ContactPair(PongShape shapeA, PongShape shapeB, Pong pong){
+    /**
+     * Super Constructor *
+     */
+    public ContactPair(PongShape shapeA, PongShape shapeB, Pong pong) {
         this.pong = pong;
         this.id = new char[2];
         setContactPair(shapeA, shapeB);
     }
 
-    /** Sets the contact pair ID - this should be called in the constructor **/
-    public void setContactPair(PongShape shapeA, PongShape shapeB){
+    /**
+     * Sets the contact pair ID - this should be called in the constructor *
+     */
+    public void setContactPair(PongShape shapeA, PongShape shapeB) {
         char a = Registry.getPacketId(shapeA.getClass());
         char b = Registry.getPacketId(shapeB.getClass());
 
@@ -36,16 +40,23 @@ public abstract class ContactPair {
         }
     }
 
-    /** Check if the fixtures match accordingly **/
+    /**
+     * Check if the fixtures match accordingly *
+     */
     public boolean check(Contact contact) {
         char a = (Character) contact.getFixtureA().getUserData();
         char b = (Character) contact.getFixtureB().getUserData();
         return ((a < b) && (id[0] == a) && (id[1] == b)) || ((a >= b) && (id[0] == b) && (id[1] == a));
     }
 
-    /** Abstract Methods to fill in **/
+    /**
+     * Abstract Methods to fill in *
+     */
     public abstract void beginContactI(Contact contact);
+
     public abstract void preSolveII(Contact contact, Manifold oldManifold);
+
     public abstract void postSolveIII(Contact contact, ContactImpulse impulse);
+
     public abstract void endContactIV(Contact contact);
 }

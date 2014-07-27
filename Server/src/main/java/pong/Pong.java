@@ -2,13 +2,6 @@ package pong;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
-import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,11 +13,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import client.resources.SpriteSheetMap;
 import manager.EffectManager;
 import manager.SpellManager;
 import pong.contact.PaddleBallPair;
 import pong.contact.PongContactListener;
+import serialize.CommandUpdate;
 import serialize.PongPacket;
 import server.PongServer;
 import shapes.Ball;
@@ -36,20 +29,27 @@ import shapes.Wall;
 import spell.DelayedSpell;
 import utils.Debugger;
 import utils.IllegalShapeException;
+import utils.Keyboard;
 import utils.Registry;
 import utils.Settings;
 
-public class Pong extends BasicGame {
-    private Debugger debbie = new Debugger(Pong.class.getSimpleName());
-
-    /** System **/
+public class Pong {
+    /**
+     * System *
+     */
+    final int FRAMES_PER_SECOND = 60;
+    final int WAIT = 1000 / FRAMES_PER_SECOND;
+    boolean game_is_running = true;
     int lastStepTime;
     long frame;
     long gameId;
+    private Debugger debbie = new Debugger(Pong.class.getSimpleName());
     private Map<Integer, Player> players;
     private Map<Long, Integer> remoteToLocal;
 
-    /** Pong **/
+    /**
+     * Pong *
+     */
     private World world;
     private PongServer server;
     private SpellManager spellManager;
@@ -58,7 +58,9 @@ public class Pong extends BasicGame {
     private Ball ball;
     private Set<DelayedSpell> delayedEffects = Collections.newSetFromMap(new ConcurrentHashMap<DelayedSpell, Boolean>());
 
-    /** Packet Lists **/
+    /**
+     * Packet Lists *
+     */
     private List<PongShape> shapeList;
     private List<PongPacket> persistentNonShape;
     private List<PongPacket> nonPersistentNonShape;
@@ -67,11 +69,8 @@ public class Pong extends BasicGame {
     /**
      * Constructor
      * Creates a Pong Game
-     *
-     * @param title -  title of the Pong window
      */
-    public Pong(String title, Player playerL, Player playerR, long gameId, PongServer server) {
-        super(title);
+    public Pong(Player playerL, Player playerR, long gameId, PongServer server) {
         /** Attach the server **/
         this.server = server;
         this.gameId = gameId;
@@ -89,9 +88,40 @@ public class Pong extends BasicGame {
         effectManager = new EffectManager("drag");
     }
 
+    /**
+     * *******************************************
+     * Methods that add  objects to serialize list
+     * *******************************************
+     */
+    public void addPlayer(Player player) {
+        for (int i = 0; i < Player.TOTAL; i++) {
+            if (!players.containsKey(i)) {
+                players.put(i, player);
+                debbie.i("Added player ID " + player.getId() + " as " + i);
+                remoteToLocal.put(player.getId(), i);
+                player.setWho(i);
+                return;
+            }
+        }
+
+        // No room for this player.
+        // TODO send them an apology
+        debbie.w("Not enough room for another player!");
+    }
+
     public void start() {
         resetGame();
-        createGame();
+        init();
+
+        while (game_is_running) {
+            update();
+            packagePackets();
+            try {
+                Thread.sleep(WAIT);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -111,70 +141,11 @@ public class Pong extends BasicGame {
     }
 
     /**
-     * Starting the Game *
-     */
-    private void createGame() {
-        /** Start the Game **/
-        AppGameContainer app;
-        try {
-            app = new AppGameContainer(this);
-            app.setDisplayMode(200, 20,
-                    false);
-            app.setVSync(true);
-            app.setAlwaysRender(true);
-            app.setTargetFrameRate(Settings.fps);
-
-            app.start();
-        } catch (SlickException e) {
-            debbie.e(e.getMessage());
-        }
-    }
-
-    public void render(GameContainer arg0, Graphics graphics)
-            throws SlickException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        for (PongPacket ps : persistentNonShape) {
-            buildArray(outputStream, ps);
-        }
-
-        for (PongPacket ps: shapeList) {
-            buildArray(outputStream, ps);
-        }
-
-        for (PongPacket ps: nonPersistentNonShape) {
-            buildArray(outputStream, ps);
-        }
-
-        nonPersistentNonShape.clear();
-        server.sendUpdate(outputStream.toByteArray());
-    }
-
-    public void buildArray(ByteArrayOutputStream outputStream, PongPacket ps) {
-        try {
-            outputStream.write(ps.serialize());
-        } catch (IOException e) {
-            debbie.e(Registry.getPacketId(ps.getClass()) + " failed to write to bytearrayoutputstream " + e.getMessage());
-        } catch (IllegalShapeException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public boolean closeRequested() {
-        return true;
-    }
-
-    @Override
-    public String getTitle() {
-        return Settings.title;
-    }
-
-    /**
      * Game Loop: init(), render() and update() *
      */
 
-    @Override
-    public void init(GameContainer arg0) throws SlickException {
+
+    public void init() {
         /** Create Game Pieces **/
         makeWalls();
         makeBall((int) Settings.windowMeters[1], (int) Settings.windowMeters[0]);
@@ -192,7 +163,7 @@ public class Pong extends BasicGame {
             addShape(paddle);
             contactListener.registerPair(new PaddleBallPair(player.getPaddle(), ball, this));
         }
-        
+
         addShape(ball);
         addPersistentNonShape(infoBoard);
 
@@ -201,10 +172,10 @@ public class Pong extends BasicGame {
 
         /** Spell keeper for this game **/
         this.spellManager = new SpellManager(this);
+
     }
 
-    @Override
-    public void update(GameContainer arg0, int arg1) throws SlickException {
+    public void update() {
         ++frame;
 
         step();
@@ -224,6 +195,76 @@ public class Pong extends BasicGame {
         /** Update Spells **/
         spellManager.update();
         tendDelayedEffects();
+    }
+
+    /**
+     * Starting the Game *
+     */
+    public void packagePackets() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        for (PongPacket ps : persistentNonShape) {
+            buildArray(outputStream, ps);
+        }
+
+        for (PongPacket ps : shapeList) {
+            buildArray(outputStream, ps);
+        }
+
+        for (PongPacket ps : nonPersistentNonShape) {
+            buildArray(outputStream, ps);
+        }
+
+        nonPersistentNonShape.clear();
+        server.sendUpdate(outputStream.toByteArray());
+    }
+
+    /**
+     * ***************************************
+     * Methods that create objects
+     * ***************************************
+     */
+
+    private void makeWalls() {
+        float width = Settings.windowMeters[0];
+        float height = Settings.windowMeters[1];
+
+        new Wall(width / 2, height + 0.001f, 0.001f, width, false, (char) 0, getWorld(), this);
+        new Wall(width / 2, 0 - 0.001f, 0.001f, width, false, (char) 0, getWorld(), this);
+    }
+
+    private void makeBall(int height, int width) {
+        ball = new Ball(width / 2, height / 2, Settings.ballRadius, getWorld(),
+                true, '1', this);
+        ball.getBody().setLinearVelocity(new Vec2(-Settings.serveSpeed, 0));
+    }
+
+    private Paddle makePaddle(int player) {
+        float x;
+        byte spriteSheetId = 0;
+
+        switch (player) {
+            case Player.LEFT:
+                x = 0.5f;
+                spriteSheetId = Registry.RED_PADDLE;
+                break;
+            case Player.RIGHT:
+                x = Settings.windowMeters[0] - 0.5f;
+                spriteSheetId = Registry.BLUE_PADDLE;
+                break;
+            default:
+                x = 1f;
+        }
+        debbie.i("Making Paddle for player " + player);
+        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleLength, spriteSheetId, getWorld(), this);
+    }
+
+    public void addShape(PongShape ps) {
+        //TODO - add default contact for every shape - maybe coded in the Shape Class itself. (template for contacts)
+        shapeList.add(ps);
+    }
+
+    public void addPersistentNonShape(PongPacket pp) {
+        persistentNonShape.add(pp);
     }
 
     /**
@@ -276,6 +317,25 @@ public class Pong extends BasicGame {
         }
     }
 
+    public void buildArray(ByteArrayOutputStream outputStream, PongPacket ps) {
+        try {
+            outputStream.write(ps.serialize());
+        } catch (IOException e) {
+            debbie.e(Registry.getPacketId(ps.getClass()) + " failed to write to bytearrayoutputstream " + e.getMessage());
+        } catch (IllegalShapeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * ***************************************
+     * Methods that get current objects
+     * ***************************************
+     */
+    public org.jbox2d.dynamics.World getWorld() {
+        return world;
+    }
+
     public void execute(Player player) {
         debbie.d("Executing Player " + player.who());
         Paddle curPaddle = player.getPaddle();
@@ -320,60 +380,21 @@ public class Pong extends BasicGame {
         curPaddle.execute();
     }
 
-    /**
-     * *******************************************
-     * Methods that add  objects to serialize list
-     * *******************************************
-     */
-    public void addPlayer(Player player) {
-        for (int i = 0; i < Player.TOTAL; i++) {
-            if (!players.containsKey(i)) {
-                players.put(i, player);
-                debbie.i("Added player ID " + player.getId() + " as " + i);
-                remoteToLocal.put(player.getId(), i);
-                player.setWho(i);
-                return;
-            }
-        }
-
-        Log.info("No room for player " + player.getId());
-        // No room for this player.
-        // TODO send them an apology
-        debbie.w("Not enough room for another player!");
+    public void received(CommandUpdate update) {
+        getConnectedPlayer(update.getPlayerId()).setKeys(update);
     }
 
-    public void addShape(PongShape ps) {
-        //TODO - add default contact for every shape - maybe coded in the Shape Class itself. (template for contacts)
-        shapeList.add(ps);
+    public Player getConnectedPlayer(long id) {
+        debbie.i(remoteToLocal.toString());
+        return getPlayer(remoteToLocal.get(id));
+    }
+
+    public Player getPlayer(int player) {
+        return players.get(player);
     }
 
     public void addNonPersistent(PongPacket pp) {
         nonPersistentNonShape.add(pp);
-    }
-
-    public void addPersistentNonShape(PongPacket pp) {
-        persistentNonShape.add(pp);
-    }
-
-
-    /**
-     * ***************************************
-     * Methods that create objects
-     * ***************************************
-     */
-
-    private void makeWalls() {
-        float width = Settings.windowMeters[0];
-        float height = Settings.windowMeters[1];
-
-        new Wall(width / 2, height + 0.001f, 0.001f, width, false, (char) 0, getWorld(), this);
-        new Wall(width / 2, 0 - 0.001f, 0.001f, width, false, (char) 0, getWorld(), this);
-    }
-
-    private void makeBall(int height, int width) {
-        ball = new Ball(width / 2, height / 2, Settings.ballRadius, getWorld(),
-                true, '1', this);
-        ball.getBody().setLinearVelocity(new Vec2(-Settings.serveSpeed, 0));
     }
 
     public Ball makeLaser(Player player) {
@@ -403,37 +424,6 @@ public class Pong extends BasicGame {
                 getWorld(), this);
     }
 
-    private Paddle makePaddle(int player) {
-        float x;
-        byte spriteSheetId = 0;
-
-        switch (player) {
-            case Player.LEFT:
-                x = 0.5f;
-                spriteSheetId = SpriteSheetMap.RED_PADDLE;
-                break;
-            case Player.RIGHT:
-                x = Settings.windowMeters[0] - 0.5f;
-                spriteSheetId = SpriteSheetMap.BLUE_PADDLE;
-                break;
-            default:
-                x = 1f;
-        }
-        debbie.i("Making Paddle for player " + player);
-        return new Paddle(x, Settings.windowMeters[1] / 2, Settings.paddleLength, spriteSheetId, getWorld(), this);
-    }
-
-
-
-    /**
-     * ***************************************
-     * Methods that get current objects
-     * ***************************************
-     */
-    public org.jbox2d.dynamics.World getWorld() {
-        return world;
-    }
-
     public Debugger getDebbie() {
         return debbie;
     }
@@ -442,17 +432,8 @@ public class Pong extends BasicGame {
         return players;
     }
 
-    public Player getPlayer(int player) {
-        return players.get(player);
-    }
-
     public Set<DelayedSpell> getDelayedEffects() {
         return delayedEffects;
-    }
-
-    public Player getConnectedPlayer(long id) {
-        debbie.i(remoteToLocal.toString());
-        return getPlayer(remoteToLocal.get(id));
     }
 
     /**
@@ -464,6 +445,4 @@ public class Pong extends BasicGame {
     public void removePongShape(PongShape ps) {
         shapeList.remove(ps);
     }
-
-
 }

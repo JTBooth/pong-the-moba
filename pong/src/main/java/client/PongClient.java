@@ -5,6 +5,7 @@ import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
 
+import serialize.CommandUpdate;
 import serialize.HousewarmingPacket;
 import serialize.KryoRegisterer;
 import utils.Debugger;

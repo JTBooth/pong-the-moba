@@ -2,9 +2,7 @@ package server;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.minlog.Log;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -12,10 +10,10 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import client.CommandUpdate;
 import pong.Player;
-import serialize.HousewarmingPacket;
 import pong.Pong;
+import serialize.CommandUpdate;
+import serialize.HousewarmingPacket;
 import utils.Debugger;
 
 public class ServerListener extends Listener {
@@ -55,14 +53,12 @@ public class ServerListener extends Listener {
 
     @Override
     public void received(Connection connection, Object packet) {
-        debbie.d("Received packet from connection " + connection.getRemoteAddressUDP().getAddress().toString());
+        //debbie.d("Received packet from connection " + connection.getRemoteAddressUDP().getAddress().toString());
         if (packet instanceof CommandUpdate) {
             CommandUpdate update = (CommandUpdate) packet;
-            debbie.i("Package: " + update.getGameId());
-            debbie.i("Current Games" + games.toString());
-            Player receiver = getInstance(update.getGameId()).getConnectedPlayer(update.getPlayerId());
-            Log.info(receiver.getId() + ": " + Arrays.toString(update.getKeys()));
-            receiver.setKeys(update);
+            //debbie.i("Package: " + update.getGameId());
+            //debbie.i("Current Games" + games.toString());
+            getInstance(update.getGameId()).received(update);
         }
     }
 
@@ -136,7 +132,7 @@ public class ServerListener extends Listener {
                 debbie.i("Created Players with ids " + id1 + " " + id2);
 
                 /** Add to a pong game **/
-                Pong pong = new Pong("Pong the MOBA", player1, player2, gameId, server);
+                Pong pong = new Pong(player1, player2, gameId, server);
                 games.put(gameId, pong);
 
                 new Game(pong).start();

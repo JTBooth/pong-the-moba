@@ -4,12 +4,13 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by rbooth on 7/24/14.
  */
 public class SpriteSheetMap extends HashMap<Byte, SpriteSheet> {
+    public static final byte RED_PADDLE = (byte) 0;
+    public static final byte BLUE_PADDLE = (byte) 1;
     public SpriteSheetMap() {
         SpriteSheet redPaddle = null;
         SpriteSheet bluePaddle = null;
@@ -24,7 +25,4 @@ public class SpriteSheetMap extends HashMap<Byte, SpriteSheet> {
         this.put(RED_PADDLE, redPaddle);
         this.put(BLUE_PADDLE, bluePaddle);
     }
-
-    public static final byte RED_PADDLE = (byte) 0;
-    public static final byte BLUE_PADDLE = (byte) 1;
 }

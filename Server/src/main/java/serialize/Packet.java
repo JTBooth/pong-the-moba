@@ -8,8 +8,8 @@ public class Packet {
     public Object data;
     public float scale;
 
-    public Packet(Pattern pattern, float scale) {
-        this(pattern, null, scale);
+    public Packet(Pattern pattern, Object data) {
+        this(pattern, data, 0);
     }
 
     public Packet(Pattern pattern, Object data, float scale) {
@@ -21,10 +21,6 @@ public class Packet {
         } else {
             this.data = data;
         }
-    }
-
-    public Packet(Pattern pattern) {
-        this(pattern, null, 0);
     }
 
     @Override

@@ -17,15 +17,16 @@ import utils.Registry;
  * Created by sihrc on 7/4/14.
  */
 public abstract class PongShape extends PongPacket {
-    private Debugger debbie = new Debugger(PongShape.class.getSimpleName());
-
     World world;
     Pong pong;
     Body body;
     FixtureDef fd;
     char color;
+    private Debugger debbie = new Debugger(PongShape.class.getSimpleName());
 
-    public PongShape(){}
+    public PongShape() {
+    }
+
     public PongShape(float x, float y, boolean isBullet, char color, World world, Pong pong) {
         this.world = world;
         this.pong = pong;
@@ -43,18 +44,21 @@ public abstract class PongShape extends PongPacket {
         fd.userData = Registry.getPacketId(this.getClass());
     }
 
+    public BodyType setBodyType() {
+        return BodyType.KINEMATIC;
+    }
+
     /**
      * Get Methods *
      */
     public Fixture getFixture() {
         return body.getFixtureList();
     }
+
     public Body getBody() {
         return body;
     }
-    public BodyType setBodyType() {
-        return BodyType.KINEMATIC;
-    }
+
     public float getAngle() {
         float angle = body.getAngle();
         angle = angle % MathUtils.TWOPI;

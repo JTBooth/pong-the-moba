@@ -5,8 +5,8 @@ import org.jbox2d.dynamics.BodyType;
 import java.util.ArrayList;
 import java.util.List;
 
-import pong.GlobalEffect;
 import pong.DragEffect;
+import pong.GlobalEffect;
 import shapes.PongShape;
 
 /**

@@ -13,7 +13,9 @@ import utils.Debugger;
  * Created by sihrc on 7/9/14.
  */
 public class PaddleBallPair extends ContactPair {
-    /** Debbie **/
+    /**
+     * Debbie *
+     */
     Debugger debbie = new Debugger(PaddleBallPair.class.getSimpleName());
 
     /**

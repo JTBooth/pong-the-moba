@@ -11,7 +11,8 @@ public abstract class Spell {
     int cost;
     int cooldown;
 
-    public Spell(){}
+    public Spell() {
+    }
 
     public void setup(Pong pong, Player player) {
         this.player = player;
@@ -21,6 +22,10 @@ public abstract class Spell {
         this.cooldown = setCoolDown();
     }
 
+    public abstract int setCost();
+
+    public abstract int setCoolDown();
+
     public void cast() {
         if (player.mana > cost && cooldownCounter == 0) {
             applyEffects();
@@ -29,14 +34,14 @@ public abstract class Spell {
         }
     }
 
+    /**
+     * What does the spell do *
+     */
+    public abstract void applyEffects();
+
     public void coolDown() {
         if (cooldownCounter > 0) {
             cooldownCounter -= 1;
         }
     }
-
-    /** What does the spell do **/
-    public abstract void applyEffects();
-    public abstract int setCost();
-    public abstract int setCoolDown();
 }

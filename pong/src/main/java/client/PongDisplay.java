@@ -66,10 +66,10 @@ public class PongDisplay extends BasicGame {
         int pointer = 0;
         char id;
 
-        debbie.d("Entering while loop");
+        debbie.i("Entering while loop");
         while (pointer < pieces.length) {
             id = Bytes.twoBytes2Char(Arrays.copyOfRange(pieces, pointer, pointer += 2));
-            debbie.d("rendering " + Registry.getPacket(id).getClass().getSimpleName());
+            debbie.d(id + " ID");
             pointer = packetTemplate.get(id).deserialize(pieces, pointer, graphics);
         }
     }
@@ -98,11 +98,14 @@ public class PongDisplay extends BasicGame {
 
     private void initializePackets() {
         packetTemplate = new HashMap<Character, PongPacket>();
+        debbie.d("HERE");
+
         try {
             PongPacket packet;
             for (Map.Entry<Character, Class<? extends PongPacket>> entry : Registry.packets.entrySet()) {
                 packet = entry.getValue().newInstance();
                 packet.setup();
+                debbie.d("ID ADDED " + entry.getValue().getSimpleName());
                 packetTemplate.put(entry.getKey(), packet);
             }
         } catch (IllegalAccessException e) {

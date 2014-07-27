@@ -3,7 +3,7 @@ package pong;
 import java.util.HashMap;
 import java.util.Map;
 
-import client.CommandUpdate;
+import serialize.CommandUpdate;
 import shapes.Paddle;
 import spell.Spell;
 import utils.Registry;
@@ -13,16 +13,13 @@ public class Player {
     final public static int TOTAL = 2;
     final public static int LEFT = 0;
     final public static int RIGHT = 1;
-
+    public byte mana;
     private Pong pong;
     private Paddle paddle;
-
     private int who;
     private long id;
-
     private CommandUpdate commands;
     private Map<Integer, Spell> spells;
-    public byte mana;
 
     public Player(long id) {
         this.id = id;
@@ -30,27 +27,12 @@ public class Player {
         commands = new CommandUpdate();
     }
 
-    /** Step **/
+    /**
+     * Step *
+     */
     public void step(long tick) {
         if (tick % Settings.ticksPerManaGain == 0 && mana < Settings.maxMana) {
             mana += 1;
-        }
-    }
-
-    /** Initialize Spells **/
-    private void initializeSpells() {
-        spells = new HashMap<Integer, Spell>(Registry.spells.size());
-        try {
-            Spell spell;
-            for (Map.Entry<Integer, Class<? extends Spell>> entry : Registry.spells.entrySet()) {
-                spell = entry.getValue().newInstance();
-                spell.setup(pong, this);
-                spells.put(entry.getKey(), spell);
-            }
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
         }
     }
 
@@ -61,15 +43,15 @@ public class Player {
         return paddle;
     }
 
-    public Map<Integer, Spell> getSpells() {
-        return spells;
-    }
-
     /**
      * SETTERS *
      */
     public void setPaddle(Paddle paddle) {
         this.paddle = paddle;
+    }
+
+    public Map<Integer, Spell> getSpells() {
+        return spells;
     }
 
     public Spell getSpell(int key) {
@@ -95,6 +77,25 @@ public class Player {
     public void setPong(Pong pong) {
         this.pong = pong;
         initializeSpells();
+    }
+
+    /**
+     * Initialize Spells *
+     */
+    private void initializeSpells() {
+        spells = new HashMap<Integer, Spell>(Registry.spells.size());
+        try {
+            Spell spell;
+            for (Map.Entry<Integer, Class<? extends Spell>> entry : Registry.spells.entrySet()) {
+                spell = entry.getValue().newInstance();
+                spell.setup(pong, this);
+                spells.put(entry.getKey(), spell);
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

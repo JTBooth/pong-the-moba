@@ -15,16 +15,22 @@ import utils.Debugger;
  */
 
 public class PongContactListener implements ContactListener {
-    /** Debugger **/
+    /**
+     * Debugger *
+     */
     Debugger debbie = new Debugger(PongContactListener.class.getSimpleName());
 
-    /** Private variables **/
+    /**
+     * Private variables *
+     */
     List<ContactPair> pairs = new ArrayList<ContactPair>();
     ContactPair currentPair;
     boolean matched = false;
 
 
-    /** Modifying Contact Pairs in Contact List **/
+    /**
+     * Modifying Contact Pairs in Contact List *
+     */
     public void registerPair(ContactPair pair) {
         pairs.add(pair);
     }
@@ -33,8 +39,17 @@ public class PongContactListener implements ContactListener {
         pairs.remove(pair);
     }
 
-    /** Check for specific contact pair to use **/
-    private void checking(Contact contact){
+    @Override
+    public void beginContact(Contact contact) {
+        checking(contact);
+        if (matched)
+            currentPair.beginContactI(contact);
+    }
+
+    /**
+     * Check for specific contact pair to use *
+     */
+    private void checking(Contact contact) {
         if (!matched) {
             for (ContactPair pair : pairs) {
                 if (pair.check(contact)) {
@@ -45,12 +60,12 @@ public class PongContactListener implements ContactListener {
         }
     }
 
-
     @Override
-    public void beginContact(Contact contact) {
-        checking(contact);
-        if (matched)
-            currentPair.beginContactI(contact);
+    public void endContact(Contact contact) {
+        if (matched) {
+            currentPair.endContactIV(contact);
+            matched = false;
+        }
     }
 
     @Override
@@ -63,13 +78,5 @@ public class PongContactListener implements ContactListener {
     public void postSolve(Contact contact, ContactImpulse impulse) {
         if (matched)
             currentPair.postSolveIII(contact, impulse);
-    }
-
-    @Override
-    public void endContact(Contact contact) {
-        if (matched) {
-            currentPair.endContactIV(contact);
-            matched = false;
-        }
     }
 }

@@ -1,4 +1,4 @@
-package client;
+package serialize;
 
 public class CommandUpdate implements Comparable<CommandUpdate> {
     private int[] keys;

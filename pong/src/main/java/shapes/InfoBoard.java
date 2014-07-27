@@ -9,7 +9,6 @@ import java.util.List;
 import serialize.Packet;
 import serialize.Pattern;
 import serialize.PongPacket;
-import pong.Player;
 import utils.Debugger;
 import utils.Settings;
 
@@ -20,12 +19,6 @@ import static serialize.Bytes.uByte;
  */
 public class InfoBoard extends PongPacket {
     Debugger debbie = new Debugger(InfoBoard.class.getSimpleName());
-    /**
-     * SCORES *
-     */
-    private byte left = 0;
-    private byte right = 0;
-    private int winningScore;
 
     /**
      * Mana *
@@ -34,69 +27,14 @@ public class InfoBoard extends PongPacket {
     private ManaBar rightMana = new ManaBar(Settings.maxMana, Settings.windowSize[0] - Settings.manaBarWidth);
 
     /**
-     * Players *
-     */
-    private String p1name = "Player 1";
-    private String p2name = "Player 2";
-
-    /**
      * Constructor *
      */
     public InfoBoard() {
     }
 
-
-    public InfoBoard(int winningScore) {
-        this(winningScore, "PLAYER 1", "PLAYER 2");
-    }
-
-    public InfoBoard(int winningScore, String p1name, String p2name) {
-        this.winningScore = winningScore;
-        this.p1name = p1name;
-        this.p2name = p2name;
-    }
-
-    public boolean gameOver() {
-        return (left > winningScore || right > winningScore) && left != right;
-    }
-
-    public String getLeaderName() {
-        if (left > right) {
-            return p1name;
-        } else if (right > left) {
-            return p2name;
-        } else {
-            return "DRAW";
-        }
-    }
-
-    public void playerScored(int player) {
-        if (player == Player.LEFT) {
-            left++;
-        } else {
-            right++;
-        }
-    }
-
-    public void setMana(byte leftMana, byte rightMana) {
-        this.leftMana.setCurrentMana(leftMana);
-        this.rightMana.setCurrentMana(rightMana);
-    }
-
-    @Override
-    public List<Object> setSerialData() {
-        debbie.e(leftMana.getCurrentMana() + "");
-        return new ArrayList<Object>(){{
-            add(left);                      //LEFT
-            add(right);                     //RIGHT
-            add(leftMana.getCurrentMana()); //Left Mana
-            add(rightMana.getCurrentMana());//Right Mana
-        }};
-    }
-
     @Override
     public List<Packet> getSerialPattern() {
-        return new ArrayList<Packet>(){{
+        return new ArrayList<Packet>() {{
             add(new Packet(Pattern.BYTE)); //LEFT
             add(new Packet(Pattern.BYTE)); //RIGHT
             add(new Packet(Pattern.BYTE)); //Left Mana
@@ -118,17 +56,12 @@ public class InfoBoard extends PongPacket {
         //Draw left mana
         debbie.e("READING " + data.get(counter) + " MANA");
 
-        leftMana.setCurrentMana((Byte)data.get(counter++).data);
+        leftMana.setCurrentMana((Byte) data.get(counter++).data);
         leftMana.render(graphics);
 
         //Draw right mana
-        rightMana.setCurrentMana((Byte)data.get(counter++).data);
+        rightMana.setCurrentMana((Byte) data.get(counter++).data);
         rightMana.render(graphics);
-    }
-
-    @Override
-    public boolean shouldSerialize() {
-        return true;
     }
 
     private class ManaBar {
