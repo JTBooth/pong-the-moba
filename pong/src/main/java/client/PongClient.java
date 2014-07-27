@@ -15,7 +15,7 @@ public class PongClient extends Client {
      * Display Classes *
      */
     DisplayListener displayListener;
-    PongDisplay pongDisplay;
+    PongDisplayState pongDisplayState;
 
     /**
      * Info Holders *
@@ -23,12 +23,12 @@ public class PongClient extends Client {
     long userId;
     int[] relevantChars;
 
-    public PongClient(PongDisplay pongDisplay) {
+    public PongClient(PongDisplayState pongDisplayState) {
         /** Kyro Registering **/
         registerClasses();
 
         /** Initialize **/
-        this.pongDisplay = pongDisplay;
+        this.pongDisplayState = pongDisplayState;
         displayListener = new DisplayListener(this);
 
 
@@ -39,7 +39,7 @@ public class PongClient extends Client {
 
         try {
             //connect(5000, "127.0.0.1", 54555, 54777);
-            connect(5000, IP.testIp, 54555, 54777);
+            connect(5000, IPHolder.testIp, 54555, 54777);
             setTimeout(0);
         } catch (IOException e) {
             System.out.println("Server is not started. Cannot connect.");
