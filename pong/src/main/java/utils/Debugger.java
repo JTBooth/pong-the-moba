@@ -3,6 +3,7 @@ package utils;
 import java.util.Arrays;
 import java.util.List;
 
+import pong.ServeMachine;
 import shapes.Paddle;
 
 /**
@@ -28,7 +29,8 @@ public class Debugger {
     public final static List<String> enabled = Arrays.asList(
 //            Pong.class.getSimpleName()
 //            PongShape.class.getSimpleName()
-            Paddle.class.getSimpleName()
+            Paddle.class.getSimpleName(),
+            ServeMachine.class.getSimpleName()
 //            Ball.class.getSimpleName()
 //            PongPacket.class.getSimpleName()
 //            Serializer.class.getSimpleName(),

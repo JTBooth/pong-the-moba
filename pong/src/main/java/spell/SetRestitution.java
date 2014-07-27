@@ -2,7 +2,7 @@ package spell;
 
 import shapes.Paddle;
 
-public class SetRestitution extends DelayedSpell {
+public class SetRestitution extends DelayedEffect {
     Paddle paddle;
     float restitution;
 

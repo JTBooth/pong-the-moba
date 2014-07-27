@@ -34,7 +34,7 @@ import shapes.Laser;
 import shapes.Paddle;
 import shapes.PongShape;
 import shapes.Wall;
-import spell.DelayedSpell;
+import spell.DelayedEffect;
 import utils.Debugger;
 import utils.IllegalShapeException;
 import utils.Registry;
@@ -46,7 +46,7 @@ public class Pong extends BasicGame {
     long gameId;
     private Debugger debbie = new Debugger(Pong.class.getSimpleName());
     private PongServer server;
-    private Set<DelayedSpell> delayedEffects = Collections.newSetFromMap(new ConcurrentHashMap<DelayedSpell, Boolean>());
+    private Set<DelayedEffect> delayedEffects = Collections.newSetFromMap(new ConcurrentHashMap<DelayedEffect, Boolean>());
     private List<PongShape> shapeList;
     private List<PongPacket> nonPhysicsList;
     private Map<Integer, Player> players;
@@ -57,6 +57,7 @@ public class Pong extends BasicGame {
     private InfoBoard infoBoard;
     private EffectManager effectManager;
     private SoundManager soundManager;
+    private ServeMachine serveMachine;
 
 
     /**
@@ -85,6 +86,8 @@ public class Pong extends BasicGame {
 
         /** Sound effects **/
         soundManager = new SoundManager();
+
+
     }
 
     public void start() {
@@ -191,6 +194,9 @@ public class Pong extends BasicGame {
 
         /** Spell keeper for this game **/
         this.spellManager = new SpellManager(this);
+        /** Create serveMachine **/
+        this.serveMachine=new ServeMachine(Settings.windowMeters[0]/2, Settings.windowMeters[1]/2, this);
+        nonPhysicsList.add(serveMachine);
     }
 
     @Override
@@ -238,27 +244,12 @@ public class Pong extends BasicGame {
      * ***************************************
      */
     private void resetBall(int i) {
-        Vec2 ballVelocity;
-        switch (i) {
-            case Player.LEFT:
-                ballVelocity = new Vec2(-Settings.serveSpeed, 0);
-                break;
-            case Player.RIGHT:
-                ballVelocity = new Vec2(Settings.serveSpeed, 0);
-                break;
-            default:
-                debbie.e("You served the ball to not a player: player # " + i
-                        + ". Players are 0 and 1.");
-                throw new RuntimeException();
-        }
-        ball.setPosition(Settings.windowMeters[0] / 2, Settings.windowMeters[1] / 2);
-        ball.getBody().setAngularVelocity(0);
-        ball.getBody().setLinearVelocity(ballVelocity);
-        debbie.i("reset ball to (" + ball.getX() + ", " + ball.getY() + ")");
+        System.out.println("serving from " + serveMachine.getxPos() + ", " + serveMachine.getyPos());
+        serveMachine.serve(i, ball);
     }
 
     public void tendDelayedEffects() {
-        for (DelayedSpell delayedEffect : delayedEffects) {
+        for (DelayedEffect delayedEffect : delayedEffects) {
             delayedEffect.tick();
             if (delayedEffect.ticksRemaining <= 0) {
                 delayedEffects.remove(delayedEffect);
@@ -423,7 +414,7 @@ public class Pong extends BasicGame {
         return players.get(player);
     }
 
-    public Set<DelayedSpell> getDelayedEffects() {
+    public Set<DelayedEffect> getDelayedEffects() {
         return delayedEffects;
     }
 

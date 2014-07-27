@@ -38,6 +38,7 @@ public class Settings extends org.jbox2d.common.Settings {
     public static final float[] windowMeters = new float[]{p2m(windowSize[0]), p2m(windowSize[1])};
     public static final float margin = 10f;
     public static final int manaBarWidth = 25;
+    public static final float serveMachineLineLength = 60f;
     /**
      * Colors *
      */
@@ -69,7 +70,11 @@ public class Settings extends org.jbox2d.common.Settings {
     public static float paddleSpringConstant = 2f;
     public static float paddleDampingConstant = .2f;
     public static int ticksPerManaGain = 60;
-    public static byte maxMana = 100;
+    public static byte maxMana = 20;
+    public static float serveMachineSpeed = 0.05f;
+    public static float jetpackForce = 0.1f*serveMachineSpeed;
+    public static float serveMachineMaxDist = 0.4f/serveMachineSpeed;
+    public static float serveMachineStretch = 3.5f;
 
     /*
      * Serialization Settings

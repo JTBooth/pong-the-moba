@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import client.resources.SpriteSheetMap;
+import pong.ServeMachine;
 import serialize.PongPacket;
 import shapes.Ball;
 import shapes.InfoBoard;
@@ -34,6 +35,7 @@ public class Registry {
         add(Paddle.class);
         add(Wall.class);
         add(InfoBoard.class);
+        add(ServeMachine.class);
     }};
 
     /**
