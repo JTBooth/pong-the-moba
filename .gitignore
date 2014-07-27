@@ -37,6 +37,7 @@ out/
 #Local Settings
 src/client/IP.java
 
+*.jar
 .gradle/
 *.lock
 *IP.class
